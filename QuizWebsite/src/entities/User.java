@@ -1,3 +1,5 @@
+package entities;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
