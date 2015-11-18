@@ -1,9 +1,12 @@
+package entities;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.*;
 
 public class User {
 	String username;
 	String password;//will be stored as encrypted
+	List<User> friends;
 	
 	public static MessageDigest md;
 	
@@ -21,6 +24,7 @@ public class User {
 	
 	public User(String un, String pw){//pw is not encrypted
 		this.username = un;
+		this.friends = new ArrayList<User>();
 		try {
 			md = MessageDigest.getInstance("SHA");
 		} catch (NoSuchAlgorithmException e) {
@@ -30,6 +34,10 @@ public class User {
 		byte[] bpw = new byte[20];
 		System.arraycopy(md.digest(pass), 0, bpw, 0, bpw.length);
 		password = hexToString(bpw);
+	}
+	
+	public void addFriend(User friend){
+		friends.add(friend);
 	}
 
 }
