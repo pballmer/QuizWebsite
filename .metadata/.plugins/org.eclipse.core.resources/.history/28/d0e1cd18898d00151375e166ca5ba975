@@ -1,0 +1,29 @@
+@CHARSET "UTF-8";
+
+#main {
+width: 720px;
+font-family: "Palatino Linotype";
+color: RED;
+}
+
+#navbar {
+	width: 720px;
+	background-color: aquamarine;
+}
+
+.column {
+float: left;
+margin-right: 15px;
+}
+
+.panel {
+overflow: hidden;
+}
+
+.wide { width: 460px; }
+.wide { width: 460px; }
+.standard-width { width: 200px; }
+
+h1 {
+	color: #B1967C;
+}
