@@ -4,7 +4,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Quiz Website</title>
+<title>Quiz Website
+<%
+String name = (String)session.getAttribute("name");
+if (name != null) out.println(" - " + name);
+%>
+</title>
 <link rel="stylesheet" type="text/css" href="main.css">
 </head>
 <body>
@@ -12,6 +17,8 @@
 
 <div id="navbar">
 Navigation?
+<!-- Make this an if to see if logged in. also maybe separate page entirely if logged in -->
+<a href="login.html">Log in</a>
 </div>
 
 <div class="column wide"> <!-- Left column -->
@@ -38,11 +45,6 @@ Navigation?
 <h1>Achievements</h1>
 </div>
 </div>
-</div>
-
-<h1>Hi!</h1>
-Test font difference
-
 
 </div>
 </body>
