@@ -7,6 +7,6 @@
 <title>Quiz Website</title>
 </head>
 <body>
-<h1>Hi!</h1>
+<h1>Hi This is a QuizWebSite!</h1>
 </body>
 </html>
