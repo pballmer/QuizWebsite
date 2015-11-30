@@ -11,7 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import db.DBConnection;
+import db.UserHelper;
+
 import entities.AccountManager;
+import entities.User;
 
 /**
  * Servlet implementation class AccountCreationServlet
@@ -47,11 +51,12 @@ public class AccountCreationServlet extends HttpServlet {
 			RequestDispatcher dispatch = request.getRequestDispatcher("accountexists.jsp");
 			dispatch.forward(request, response);
 		} else {
-			manager.createAccount(name, pass);
+			User newUser = manager.createAccount(name, pass);
 			HttpSession session = request.getSession();
 	        session.setAttribute("name", name);
-	        // TODO update database
-			RequestDispatcher dispatch = request.getRequestDispatcher("success.jsp");
+	        DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
+	        UserHelper.addUser(conn, newUser);
+			RequestDispatcher dispatch = request.getRequestDispatcher("index.jsp");
 			dispatch.forward(request, response);
 		}	
 	}
