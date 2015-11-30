@@ -1,13 +1,15 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Create Account</title>
 </head>
 <body>
-<h1>Create New Account</h1>
-<p>Please enter a proposed username and password.</p>
-<form action="AccountCreationServlet" method="post">
+<h1>The Name <%= request.getParameter("name") %> is Already In Use</h1>
+<p>Please enter another username and password.</p>
+<form action="CreationServlet" method="post">
 <p>User Name:
 <input type="text" name="name" />
 <p>Password:
