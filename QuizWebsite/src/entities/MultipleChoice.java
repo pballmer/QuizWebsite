@@ -7,7 +7,7 @@ public class MultipleChoice extends QuestionAbstract{
 
 	public MultipleChoice(int questionID, int quizID, String question, Set<ArrayList<String>> answers) {
 		super(questionID, quizID, question, answers);
-		this.type = questionTypes[0];
+		// TODO Auto-generated constructor stub
 	}
 	
 
