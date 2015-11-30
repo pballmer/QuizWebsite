@@ -1,8 +1,6 @@
-package entities;
+package src.entities;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+
 
 public abstract class QuestionAbstract {
 
@@ -26,21 +24,28 @@ public abstract class QuestionAbstract {
 		this.question = question;
 		this.answers = answers;
 	}
+	
+	/*This gets the question itself
+	 * */
 	String getQuestion() {
 		return question;
 	}
 
+	/*This gets an arraylist of answers
+	 * */
 	Set<ArrayList<String>> getAnswers() {
 		return answers;
 	}
 
+	
 	int getQuizID() {
 		return quizID;
 	}
-
+	
 	int getQuestionID() {
 		return questionID;
 	}
+	
 	public boolean checkAnswer(ArrayList<String> answer){
 		for(ArrayList<String> curr: answers){
 			if(curr.equals(answer))
