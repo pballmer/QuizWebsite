@@ -127,6 +127,7 @@ public class UserHelper
 		return null;
 	}
 	
+	// TODO purpose of this method?
 	public static User getUser(DBConnection conn, String UserID, String Password, String Admin)
 	{
 		try
@@ -178,6 +179,7 @@ public class UserHelper
 		return userList;
 	}
 	
+	// TODO seems like we would use the above method, passing in "", "", true
 	public static ArrayList<User> getAdmins(DBConnection conn)
 	{
 		ArrayList<User> userList = new ArrayList<User>();
@@ -214,6 +216,7 @@ public class UserHelper
 		return user.getPassword();
 	}
 	
+	//AL<String>?
 	public static ArrayList<User> getAllUserIDs(DBConnection conn)
 	{
 		ArrayList<User> userList = new ArrayList<User>();
@@ -231,7 +234,7 @@ public class UserHelper
 				for (int i = 1; i <= numRows; i++)
 				{
 					User user = getUserFromRecord(results, i);
-					userList.add(user.getPassword());
+					userList.add(user.getPassword()); // TODO getUsername?
 				}
 			}
 		}
@@ -338,5 +341,21 @@ public class UserHelper
 			System.err.println("Error occured when accessing database.");
 		}
 		return friends;
+	}
+	
+	public static void addUser(DBConnection conn, User user) {
+		String name = user.getUsername();
+		String pass = user.getPassword();
+		boolean admin = user.isAdmin();
+		String command = "INSERT INTO Users VALUES(\"" + name + "\",\"" 
+						+ pass + "\"," + admin + ")";
+		try {
+			PreparedStatement ps = conn.getConnection().prepareStatement(command);
+			ps.execute(); // TODO is this right?
+		} catch (SQLException e) {
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();
+		}
+		
 	}
 }
