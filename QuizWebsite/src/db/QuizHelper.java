@@ -305,4 +305,72 @@ public class QuizHelper
 		
 		return quizList;
 	}
+	
+	public static void addQuiz(DBConnection conn, Quiz quiz)
+	{
+		int QuizID = quiz.getQuizID();
+		String QuizName = quiz.getQuizname();
+		String Description = quiz.getDescription();
+		String command = "INSERT INTO Quiz VALUES(" + QuizID + ",\"" 
+						+ QuizName + "\", \"" + Description + "\");";
+		try {
+			PreparedStatement ps = conn.getConnection().prepareStatement(command);
+			ps.executeQuery(); // TODO is this right?
+		} catch (SQLException e) {
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();
+		}
+	}
+	
+	public static void addQuizMade(DBConnection conn, Quiz quiz, String user, int Status)
+	{
+		String QuizID = quiz.getQuizID();
+		String query = "INSERT INTO QuizzesMade VALUES(\"" + user + "\", " 
+						+ QuizID + "," + Status + ");";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.executeQuery();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();
+		}
+	}
+	
+	public static void addQuizTaken(DBConnection conn, Quiz quiz, String user, double score, String start, String end)
+	{
+		int QuizID = quiz.getQuizID();
+		String query = "INSERT INTO QuizzesTaken VALUES(\"" + user + "\"," + QuizID + ", " + score + ", \"" + start + "\", \"" + end + "\");"; 
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.executeQuery();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();			
+		}
+	}
+	
+	public static void addQuizQuestion(DBConnection conn, Quiz quiz, Question question)
+	{
+		int QuizID = quiz.getQuizID();
+		String questionID = question.getQuestionID();
+		String query = "INSERT INTO QuizQuestion VALUES(" + QuizID + ", " + questionID + ");";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.executeQuery();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();	
+		}
+	}
+	
+	
 }
