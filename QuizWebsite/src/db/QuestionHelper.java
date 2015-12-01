@@ -22,7 +22,7 @@ public class QuestionHelper
 	private static final int FILL_IN_BLANK = 2;
 	private static final int PICTURE_RESPONSE = 3;
 	
-	public static Question getQuestionFromRecord(ResultSet rs, int row, DBConnection conn)
+	public static QuestionAbstract getQuestionFromRecord(ResultSet rs, int row, DBConnection conn)
 	{
 		Question question = null;
 		try 
@@ -41,7 +41,7 @@ public class QuestionHelper
 		return question;
 	}
 	
-	public static Question getQuestion(DBConnection conn, String QuestionID)
+	public static QuestionAbstract getQuestion(DBConnection conn, String QuestionID)
 	{
 		try
 		{
@@ -62,9 +62,9 @@ public class QuestionHelper
 		return null;
 	}
 	
-	public static ArrayList<Question> getAllQuestionsOfType(DBConnection conn, String QuestionType)
+	public static ArrayList<QuestionAbstract> getAllQuestionsOfType(DBConnection conn, String QuestionType)
 	{
-		ArrayList<Question> questions = new ArrayList<Question>();
+		ArrayList<QuestionAbstract> questions = new ArrayList<QuestionAbstract>();
 		try 
 		{
 			String query = "SELECT * FROM Question WHERE QuestionType = " + QuestionType + ";";
@@ -81,7 +81,7 @@ public class QuestionHelper
 					results.absolute(i);
 					String QuestionID = results.getString(QUESTION_ID);
 					ArrayList<String> answers = getAnswers(conn, QuestionID);
-					Question question = new Question(QuestionID, QuestionType, answers);
+					QuestionAbstract question = new QuestionAbstract(QuestionID, QuestionType, answers);
 					questions.add(question);
 				}
 			}
@@ -127,11 +127,11 @@ public class QuestionHelper
 	
 	public static ArrayList<String> getQuestionOptions(DBConnection conn, String QuestionID)
 	{
-		Question question = null;
+		QuestionAbstract question = null;
 		
 		try {
 			String quesQuery = "SELECT * FROM Question WHERE QuestionID =" + QuestionID + ";";
-			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			PreparedStatement ps = conn.getConnection().prepareStatement(quesQuery);
 			ResultSet results = ps.executeQuery();
 			if (results.isBeforeFirst())
 			{

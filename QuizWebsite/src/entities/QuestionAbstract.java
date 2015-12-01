@@ -37,7 +37,9 @@ public abstract class QuestionAbstract {
 	
 	/* This will add the question into the correct table and add it's answers as well, regardless of type, however you must insert type
 	 * */
-	public void addQuestionAbstract(String question, ArrayList<String> answers, DBConnection conn, int type)
+	public void addQuestionAbstract(String question, ArrayList<String> answers, DBConnection conn, int type){
+		
+	}
 	
 	
 	/*This gets the question itself
