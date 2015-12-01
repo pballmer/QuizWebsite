@@ -1,4 +1,4 @@
-
+//
 package db;
 
 import java.sql.PreparedStatement;
@@ -307,10 +307,9 @@ public class QuizHelper
 	
 	public static void addQuiz(DBConnection conn, Quiz quiz)
 	{
-		int QuizID = quiz.getId();
-		String QuizName = quiz.getName();
+		String QuizName = quiz.getQuizname();
 		String Description = quiz.getDescription();
-		String command = "INSERT INTO Quiz VALUES(" + QuizID + ",'" 
+		String command = "INSERT INTO Quiz VALUES(NULL,'" 
 						+ QuizName + "', '" + Description + "');";
 		try {
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
@@ -344,7 +343,7 @@ public class QuizHelper
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ps.executeQuery();
+			ps.execute();
 		}
 		catch (SQLException e)
 		{
@@ -361,7 +360,7 @@ public class QuizHelper
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ps.executeQuery();
+			ps.execute();
 		}
 		catch (SQLException e)
 		{

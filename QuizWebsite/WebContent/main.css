@@ -1,17 +1,85 @@
 @CHARSET "UTF-8";
 
+html
+	{
+	background-color:#F8F8FF;
+	}
+	
 #main {
-width: 720px;
-font-family: "Palatino Linotype";
-color: RED;
+width: 100%;
+<!--font-family: "Palatino Linotype";-->
+font-family:verdana;
+
+
 }
 
-#navbar {
-	width: 720px;
-	height: 90px;
-	background-color: aquamarine;
+#form
+	{
+		background-color:white;
+		box-shadow:-1px 1px 1px rgba(0,0,0,0.15);
+		padding: 10px;
+	}
+
+#announcements
+	{
+	background-color: white;
+	box-shadow:-1px 1px 1px rgba(0,0,0,0.15);
+	}
+
+	
+#header h1{
+	display: inline-block;
+	}
+
+#miscinfo td.header{
+		padding: 0px 65px 0px 65px;
+		border-radius: 1px 1px 0px 1px;
+	}
+
+#miscinfo td{
+		background-color: white;
+		white-space: nowrap;
+	}
+#miscinfo table{
+	box-shadow:-1px 1px 1px rgba(0,0,0,0.15);	
+}
+	
+#navigation ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;	
+	}
+	
+#navigation{
+	width:100%;
+	background-color:#333;
 }
 
+body{
+	margin:0px;	
+}
+#navigation li{
+	float:left;	
+	
+	}	
+	
+#navigation li a{
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+#navigation .active {
+    background-color:#6495ED;
+}
+
+#navigation li a:hover{
+	background-color: #111;
+	}
+}
 .column {
 float: left;
 margin-right: 15px;
@@ -26,5 +94,63 @@ overflow: hidden;
 .standard-width { width: 200px; }
 
 h1 {
-	color: #B1967C;
+	<!--color: #B1967C;-->
+	color: black;
 }
+
+/*----- Tabs -----*/
+.tabs {
+    width:100%;
+    display:inline-block;
+}
+ 
+    /*----- Tab Links -----*/
+    /* Clearfix */
+    .tab-nav:after {
+        display:block;
+        clear:both;
+        content:'';
+    }
+ 
+    .tab-nav li {
+        margin:0px 1px;
+        float:left;
+        list-style:none;
+    }
+ 
+        .tab-nav a {
+            padding:9px 15px;
+            display:inline-block;
+            border-radius:1px 1px 0px 0px;
+            background:#333;
+            font-size:16px;
+            font-weight:600;
+            color:white;
+            transition:all linear 0.15s;
+            text-decoration: none;
+        }
+ 
+        .tab-nav a:hover {
+            background:#111;
+            text-decoration:none;
+        }
+ 
+    li.active a, li.active a:hover {
+    	 background-color:#6495ED;
+    }
+ 
+    /*----- Content of Tabs -----*/
+    .tab-content {
+        padding:15px;
+        border-radius:1px;
+        box-shadow:-1px 1px 1px rgba(0,0,0,0.15);
+        background:white;
+    }
+ 
+        .tab {
+            display:none;
+        }
+ 
+        .tab.active {
+            display:block;
+        }

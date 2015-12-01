@@ -17,6 +17,11 @@
 <!-- <p><input type="text" name="desc" /></p> <!-- TODO Make this field bigger --> 
 </div>
 
+<div class="panel">
+<select>
+</select>
+</div>
+
 <form action="QuizCreationServlet" method="post" id="submit">
 <p><input type="submit" value="Finish!"/></p>
 </form>
