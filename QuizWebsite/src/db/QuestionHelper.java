@@ -197,7 +197,7 @@ public class QuestionHelper
 		}
 		return options;
 	}
-	
+	//will return int later
 	public static void addQuestion(DBConnection conn, int type)
 	{
 		String query = "INSERT INTO Question VALUES(NULL," + type + ");";
@@ -235,7 +235,7 @@ public class QuestionHelper
 	{
 
 		int id = question.getQuestionID();
-		String text = question.getText();
+		String text = question.getQuestion();
 		ArrayList<String> answers = question.getAnswers();
 		
 		addQuestion(conn, FILL_IN_BLANK);

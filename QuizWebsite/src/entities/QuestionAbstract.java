@@ -1,4 +1,5 @@
 package entities;
+import db.QuestionHelper;
 
 import java.util.ArrayList;
 
@@ -23,29 +24,32 @@ public abstract class QuestionAbstract {
 	public ArrayList<String> answers = new ArrayList<String>(); 
 	
 	
-	public QuestionAbstract(int questionID, int quizID, String question, ArrayList<String> answers){
+	public QuestionAbstract(int questionID, int quizID, String question, ArrayList<String> answers, int  type){
 		this.questionID =  questionID;
-		this.quizID = quizID;
-		this.question = question;
-		this.answers = answers;
-		
+		this.type = type;
 		DBConnection dbConn = new DBConnection();
-		addQuestions(dbConn.getConnection(), 
-		
+		//Question helper will return int, Kim to change this later
+		this.quizID = QuestionHelper.addQuestion(dbConn, this.type);
+		this.question = question;
+		this.answers = answers;	
 	}
 	
 	/*This gets the question itself
 	 * */
-	String getQuestion() {
+	public String getQuestion() {
 		return question;
 	}
 
 	/*This gets an arraylist of answers
 	 * */
-	ArrayList<String> getAnswers() {
+	public ArrayList<String> getAnswers() {
 		return answers;
 	}
 
+	//check answer
+	public boolean checkAnswer(String answer){
+		return this.answers.contains(answer);
+	}
 	
 	public int getQuizID() {
 		return quizID;
