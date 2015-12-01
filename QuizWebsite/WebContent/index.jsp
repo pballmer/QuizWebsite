@@ -17,8 +17,15 @@ if (name != null) out.println(" - " + name);
 
 <div id="navbar">
 Navigation?
-<!-- Make this an if to see if logged in. also maybe separate page entirely if logged in -->
-<a href="login.html">Log in</a>
+<!-- maybe separate page entirely if logged in? -->
+<%
+if (name == null) {
+	out.println("<a href=\"login.html\">Log in</a>");
+} else {
+	out.println("<a href=\"createquiz.html\">Make a New Quiz</a>");
+}
+%>
+
 </div>
 
 <div class="column wide"> <!-- Left column -->
