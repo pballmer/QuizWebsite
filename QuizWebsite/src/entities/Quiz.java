@@ -1,4 +1,4 @@
-package entities;
+package src.entities;
 import java.util.*;
 
 public class Quiz {
@@ -25,6 +25,7 @@ public class Quiz {
 		this.creator = user;
 		this.id = getDBid()//TODO integrate this with kims database shit
 		this.startTime = System.currentTimeMillis();
+		
 	}
 	
 	//constructor with all options set
@@ -52,7 +53,7 @@ public class Quiz {
 	public void randomize(){
 		long seed = System.nanoTime();
 		Collections.shuffle(questions, new Random(seed));
-		//TODO: update FE/BE
+		//TODO: update BE
 	}
 	
 	public long getQuizTime(){

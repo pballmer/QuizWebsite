@@ -9,8 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import entities.Quiz;
-import entities.User;
+import entities.*;
 
 public class UserHelper 
 {
@@ -138,7 +137,7 @@ public class UserHelper
 			ResultSet results = ps.executeQuery();
 			if (results.isBeforeFirst())
 			{
-				return getUserFromRecord(results, i);
+				return getUserFromRecord(results, 1);
 			}
 		}
 		catch (SQLException ex)
@@ -217,7 +216,7 @@ public class UserHelper
 	}
 	
 	//AL<String>?
-	public static ArrayList<User> getAllUserIDs(DBConnection conn)
+	public static ArrayList<String> getAllUserIDs(DBConnection conn)
 	{
 		ArrayList<User> userList = new ArrayList<User>();
 		try
@@ -234,7 +233,7 @@ public class UserHelper
 				for (int i = 1; i <= numRows; i++)
 				{
 					User user = getUserFromRecord(results, i);
-					userList.add(user.getPassword()); // TODO getUsername?
+					userList.add(user.getUsername()); // TODO getUsername?
 				}
 			}
 		}
@@ -347,15 +346,16 @@ public class UserHelper
 		String name = user.getUsername();
 		String pass = user.getPassword();
 		boolean admin = user.isAdmin();
-		String command = "INSERT INTO Users VALUES(\"" + name + "\",\"" 
-						+ pass + "\"," + admin + ")";
+		String command = "INSERT INTO Users VALUES('" + name + "','" 
+						+ pass + "'," + admin + ");";
 		try {
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
-			ps.execute(); // TODO is this right?
+			ps.executeQuery(); // TODO is this right?
 		} catch (SQLException e) {
 			System.err.println("Error occured when inserting user into database.");
 			e.printStackTrace();
 		}
-		
 	}
+	
+	
 }
