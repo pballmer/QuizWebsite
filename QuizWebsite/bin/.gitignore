@@ -1,3 +1,5 @@
-/build/
+/db/
+/entities/
+/listeners/
+/servlets/
 /src/
-/WebContent/

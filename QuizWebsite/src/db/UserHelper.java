@@ -346,8 +346,8 @@ public class UserHelper
 		String name = user.getUsername();
 		String pass = user.getPassword();
 		boolean admin = user.isAdmin();
-		String command = "INSERT INTO Users VALUES(\"" + name + "\",\"" 
-						+ pass + "\"," + admin + ");";
+		String command = "INSERT INTO Users VALUES('" + name + "','" 
+						+ pass + "'," + admin + ");";
 		try {
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
 			ps.executeQuery(); // TODO is this right?

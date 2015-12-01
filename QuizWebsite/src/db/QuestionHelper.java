@@ -1,9 +1,11 @@
-package db;
+package src.db;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import db.DBConnection;
 
 import entities.*;
 
@@ -217,7 +219,7 @@ public class QuestionHelper
 		{
 			for (int i = 0; i < answers.size(); i++)
 			{
-				String query = "INSERT INTO Answers VALUES(" + id + ", \"" + answers.get(i) + "\");";
+				String query = "INSERT INTO Answers VALUES(" + id + ", '" + answers.get(i) + "');";
 				PreparedStatement ps = conn.getConnection().prepareStatement(query);
 				ps.executeQuery();
 			}
@@ -241,7 +243,7 @@ public class QuestionHelper
 
 		try
 		{
-			String query = "INSERT INTO FillInBlank VALUES(" + id + ", \"" + text + "\");";
+			String query = "INSERT INTO FillInBlank VALUES(" + id + ", '" + text + "');";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ps.executeQuery();
 		}
@@ -264,7 +266,7 @@ public class QuestionHelper
 		{
 			for (int i = 0; i < options.size(); i++)
 			{
-				String query = "INSERT INTO FillInBlank VALUES(" + id + ", \"" + options.get(i) + "\");";
+				String query = "INSERT INTO FillInBlank VALUES(" + id + ", '" + options.get(i) + "');";
 				PreparedStatement ps = conn.getConnection().prepareStatement(query);
 				ps.executeQuery();				
 			}
@@ -288,7 +290,7 @@ public class QuestionHelper
 		{
 			for (int i = 0; i < options.size(); i++)
 			{
-				String query = "INSERT INTO PictureResponse VALUES(" + id + ", \"" + options.get(i) + "\");";
+				String query = "INSERT INTO PictureResponse VALUES(" + id + ", '" + options.get(i) + "');";
 				PreparedStatement ps = conn.getConnection().prepareStatement(query);
 				ps.executeQuery();				
 			}
@@ -311,7 +313,7 @@ public class QuestionHelper
 		
 		try
 		{
-			String query = "INSERT INTO PictureResponse VALUES(" + id + ", \"" + text + "\");";
+			String query = "INSERT INTO PictureResponse VALUES(" + id + ", '" + text + "');";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ps.executeQuery();				
 		}
