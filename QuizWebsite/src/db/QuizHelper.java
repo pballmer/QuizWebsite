@@ -310,8 +310,8 @@ public class QuizHelper
 		int QuizID = quiz.getId();
 		String QuizName = quiz.getName();
 		String Description = quiz.getDescription();
-		String command = "INSERT INTO Quiz VALUES(" + QuizID + ",\"" 
-						+ QuizName + "\", \"" + Description + "\");";
+		String command = "INSERT INTO Quiz VALUES(" + QuizID + ",'" 
+						+ QuizName + "', '" + Description + "');";
 		try {
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
 			ps.executeQuery(); // TODO is this right?
@@ -324,8 +324,7 @@ public class QuizHelper
 	public static void addQuizMade(DBConnection conn, Quiz quiz, String user)
 	{
 		int QuizID = quiz.getId();
-		String query = "INSERT INTO QuizzesMade VALUES(\"" + user + "\", " 
-						+ QuizID + ");";
+		String query = "INSERT INTO QuizzesMade VALUES(\"" + user + "\", " + QuizID + ");";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
