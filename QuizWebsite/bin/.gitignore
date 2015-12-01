@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-/src/
-=======
-/build/
-/src/
-/WebContent/
->>>>>>> master
+/db/
+/entities/
+/listeners/
+/servlets/
