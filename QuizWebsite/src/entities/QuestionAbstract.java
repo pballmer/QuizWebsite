@@ -28,7 +28,7 @@ public abstract class QuestionAbstract {
 	/*This gets the question itself
 	 * */
 	String getQuestion() {
-		return question;
+		return this.question;
 	}
 
 	/*This gets an arraylist of answers
