@@ -40,9 +40,9 @@ if (name != null) out.println(" - " + name);
 
 <div id="navigation" style="width:100%">
 <ul>
-	<li> <a class="active" href="#home">Home</a></li>
-	<li> <a href="#quizzes">Quizzes</a></li>
-	<li> <a href="#users">Users</a></li>
+	<li> <a class="active" href="index.jsp">Home</a></li>
+	<li> <a href="#createquiz">Create Quiz</a></li>
+	<li> <a href="#browsequiz">Browse Quizzes</a></li>
 	<li> <a href="#about">About</a></li>
 	<li style="float:right">
 		<ul style="float:right; list-style-type:none;">
@@ -53,6 +53,9 @@ if (name != null) out.println(" - " + name);
 	</li>
 </ul>
 </div>
+
+<br>
+<br>
 <h1 style="color:black" align="center"> Quiz08 </h1>
 
 <div id="announcements">
