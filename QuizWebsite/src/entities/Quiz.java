@@ -1,40 +1,41 @@
 import java.util.*;
 
+import db.QuizHelper;
+
 public class Quiz {
-	//TODO: Once this class is merged with the branch with the question class, replace String with Question for list
-	String name;
-	int id;
-	User creator;
-	List<QuestionAbstract> questions;
-	String description;
-	long startTime;
-	long endTime;
-	boolean random = false; //set these defaults for what I thought make sense
-	boolean onePage = true;
-	boolean immediateCorrection = false;
-	boolean practiceMode = false;
-	int score = -1;//sentinel value
+	private String name;
+	private int id;
+	private String link;
+	private User creator;
+	private List<QuestionAbstract> questions;
+	private String description;
+	private long startTime;
+	private long endTime;
+	private boolean random = false; //set these defaults for what I thought make sense
+	private boolean onePage = true;
+	private boolean immediateCorrection = false;
+	private boolean practiceMode = false;
+	private int score = -1;//sentinel value
 	
 	//constructor without other options being set
-	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user){
+	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link){
 		this.name = nameInput;
+		this.link = link;
 		this.description = descInput;
 		this.questions = new ArrayList<QuestionAbstract>();
 		questions.addAll(questionInput);
 		this.creator = user;
-		this.id = getDBid()//TODO integrate this with kims database shit
 		this.startTime = System.currentTimeMillis();
-		
 	}
 	
 	//constructor with all options set
-	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, boolean rand, boolean page, boolean correction, boolean practice){//constructor 
+	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link, boolean rand, boolean page, boolean correction, boolean practice){//constructor 
 		this.name = nameInput;
+		this.link = link;
 		this.description = descInput;
 		this.questions = new ArrayList<QuestionAbstract>();
 		questions.addAll(questionInput);
 		this.creator = user;
-		this.id = getDBid()//TODO integrate this with kims database shit
 		this.random = rand;
 		if(random) randomize();
 		this.onePage = page;
@@ -43,9 +44,9 @@ public class Quiz {
 		this.startTime = System.currentTimeMillis();
 	}
 	
-	public void addQuestion(QuestionAbstract question){
+	public void addQuestion(QuestionAbstract question, DBConnection conn){
+		QuizHelper.addQuizQuestion(conn, this, question);
 		questions.add(question);
-		//TODO: update database
 	}
 	
 	//to randomize the thing
@@ -58,5 +59,71 @@ public class Quiz {
 	public long getQuizTime(){
 		endTime = System.currentTimeMillis();
 		return endTime - startTime;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int val){
+		id = val;
+	}
+
+	public User getCreator() {
+		return creator;
+	}
+
+	public List<QuestionAbstract> getQuestions() {
+		return questions;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public long getStartTime() {
+		return startTime;
+	}
+
+	public long getEndTime() {
+		return endTime;
+	}
+
+	public boolean isRandom() {
+		return random;
+	}
+
+	public boolean isOnePage() {
+		return onePage;
+	}
+
+	public boolean isImmediateCorrection() {
+		return immediateCorrection;
+	}
+
+	public boolean isPracticeMode() {
+		return practiceMode;
+	}
+
+	public int getScore() {
+		return score;
+	}
+	
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		Quiz q = (Quiz)o;
+		return (q.getId() == this.getId());
 	}
 }

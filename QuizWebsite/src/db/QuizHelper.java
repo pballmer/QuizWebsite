@@ -307,8 +307,8 @@ public class QuizHelper
 	
 	public static void addQuiz(DBConnection conn, Quiz quiz)
 	{
-		int QuizID = quiz.getQuizID();
-		String QuizName = quiz.getQuizname();
+		int QuizID = quiz.getId();
+		String QuizName = quiz.getName();
 		String Description = quiz.getDescription();
 		String command = "INSERT INTO Quiz VALUES(" + QuizID + ",'" 
 						+ QuizName + "', '" + Description + "');";
@@ -321,11 +321,10 @@ public class QuizHelper
 		}
 	}
 	
-	public static void addQuizMade(DBConnection conn, Quiz quiz, String user, int Status)
+	public static void addQuizMade(DBConnection conn, Quiz quiz, String user)
 	{
-		String QuizID = quiz.getQuizID();
-		String query = "INSERT INTO QuizzesMade VALUES('" + user + "', " 
-						+ QuizID + "," + Status + ");";
+		int QuizID = quiz.getId();
+		String query = "INSERT INTO QuizzesMade VALUES(\"" + user + "\", " + QuizID + ");";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
@@ -340,8 +339,8 @@ public class QuizHelper
 	
 	public static void addQuizTaken(DBConnection conn, Quiz quiz, String user, double score, String start, String end)
 	{
-		int QuizID = quiz.getQuizID();
-		String query = "INSERT INTO QuizzesTaken VALUES('" + user + "'," + QuizID + ", " + score + ", '" + start + "', '" + end + "');"; 
+		int QuizID = quiz.getId();
+		String query = "INSERT INTO QuizzesTaken VALUES(\"" + user + "\"," + QuizID + ", " + score + ", \"" + start + "\", \"" + end + "\");"; 
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
@@ -354,9 +353,9 @@ public class QuizHelper
 		}
 	}
 	
-	public static void addQuizQuestion(DBConnection conn, Quiz quiz, Question question)
+	public static void addQuizQuestion(DBConnection conn, Quiz quiz, QuestionAbstract question)
 	{
-		int QuizID = quiz.getQuizID();
+		int QuizID = quiz.getId();
 		String questionID = question.getQuestionID();
 		String query = "INSERT INTO QuizQuestion VALUES(" + QuizID + ", " + questionID + ");";
 		try

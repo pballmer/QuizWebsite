@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import db.DBConnection;
 
 public abstract class QuestionAbstract {
+	
 
 	/*Per Peter's seemingly nonsensical request, instead of String, types will be in int
 	 * 0: Multiple Choice (MC)
