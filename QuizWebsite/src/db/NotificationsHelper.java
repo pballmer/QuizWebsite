@@ -330,7 +330,7 @@ public class NotificationsHelper
 		String sender = challenge.getSender();
 		String recipient = challenge.getRecipient();
 		int QuizID = challenge.getQuizID();
-		String link = challenge.getLink();
+		String link = challenge.getQuizLink();
 		double score = challenge.getScore();
 		
 		addNotification(conn, CHALLENGE, false);
@@ -377,7 +377,7 @@ public class NotificationsHelper
 		int id = note.getID();
 		String sender = note.getSender();
 		String recipient = note.getRecipient();
-		String message = note.getStatus();
+		String message = note.getText();
 		
 		addNotification(conn, NOTE_TYPE, false);
 		
