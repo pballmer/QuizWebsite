@@ -1,7 +1,7 @@
+package src.db;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
-
-import MyDBInfo;
 
 
 public class DBConnection 

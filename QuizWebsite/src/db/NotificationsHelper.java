@@ -1,4 +1,9 @@
+package db;
+
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 public class NotificationsHelper 
@@ -21,6 +26,12 @@ public class NotificationsHelper
 	private static final int ACCEPTED = 1;
 	private static final int REJECTED = 2;
 	
+	private static final int FRIEND_REQUEST = 0;
+	private static final int CHALLENGE = 1;
+	private static final int NOTE_TYPE = 2;
+	
+
+	/*
 	private static Notification getNotificationFromRecord(ResultSet rs, int row)
 	{
 		Notification notification = null;
@@ -39,7 +50,7 @@ public class NotificationsHelper
 		}
 		return notification;
 	}
-	
+	*/
 	private static FriendRequest getFriendRequestFromRecord(ResultSet rs, int row)
 	{
 		FriendRequest request = null;
@@ -106,41 +117,63 @@ public class NotificationsHelper
 	
 	public static Notification getNotification(DBConnection conn, int NotificationID)
 	{
-		String query = "SELECT * FROM Notifications WHERE NotificationID = " + NotificationID + ";";
-		PreparedStatement ps = conn.prepareStatement(query);
-		ResultSet results = ps.executeQuery();
-		
-		if (results.isBeforeFirst())
+		try
 		{
-			return getNotificationFromRecord(results, 1);
+			String query = "SELECT * FROM Notifications WHERE NotificationID = " + NotificationID + ";";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				return getNotificationFromRecord(results, 1);
+			}
 		}
-		
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
 		return null;
 	}
 	
 	public static Note getNote(DBConnection conn, int NotificationID)
 	{
-		String query = "SELECT * FROM Notes WHERE NotificationID = " + NotificationID + ";";
-		PreparedStatement ps = conn.prepareStatement(query);
-		ResultSet results = ps.executeQuery();
-		
-		if (results.isBeforeFirst()))
+		try
 		{
-			return getNoteFromRecord(results, 1);
+			String query = "SELECT * FROM Notes WHERE NotificationID = " + NotificationID + ";";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				return getNoteFromRecord(results, 1);
+			}
 		}
-		
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
 		return null;
 	}
 	
 	public static Challenge getChallenge(DBConnection conn, int NotificationID)
 	{
-		String query = "SELECT * FROM Challenge WHERE NotificationID = " + NotificationID + ";";
-		preparedStatement ps = conn.prepareStatement(query);
-		ResultSet results = ps.executeQuery();
-		
-		if (results.isBeforeFirst())
+		try 
 		{
-			return getChallengeFromRecord(results, 1);
+			String query = "SELECT * FROM Challenge WHERE NotificationID = " + NotificationID + ";";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				return getChallengeFromRecord(results, 1);
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
 		}
 		
 		return null;
@@ -148,24 +181,32 @@ public class NotificationsHelper
 	
 	public static FriendRequest getFriendRequest(DBConnection conn, int NotificationID)
 	{
-		String query = "SELECT * FROM Friends WHERE NotificationID = " + NotificationID + ";";
-		PreparedStatement ps = conn.prepareStatement(query);
-		ResultSet results = ps.executeQuery();
-		
-		if (results.isBeforeFirst())
+		try
 		{
-			return getFriendRequestFromRecord(results, 1);
+			String query = "SELECT * FROM Friends WHERE NotificationID = " + NotificationID + ";";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				return getFriendRequestFromRecord(results, 1);
+			}
 		}
-		
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
 		return null;
 	}
 	
 	public static ArrayList<FriendRequest> getPendingFrendRequests(DBConnection conn, String username)
 	{
+		ArrayList<FriendRequest> friends = new ArrayList<FriendRequest>();
 		String query = "SELECT * FROM Friends WHERE (Sender = '" + username + "' OR Recipient = '" + username + "') AND Status = " + PENDING + ";";
 		PreparedStatement ps = conn.prepareStatement(query);
 		ResultSet results = ps.executeQuery();
-		ArrayList<FriendRequest> friends = new ArrayList<FriendRequest>();
+
 		
 		if (results.isBeforeFirst())
 		{
@@ -265,4 +306,92 @@ public class NotificationsHelper
 		}
 		return challenges;	
 	}
+	
+	public static void addNotification(DBConnection conn, int type, boolean checked)
+	{
+		String query = "INSERT INTO Notifications VALUES(NULL," + type + "," + checked + ");";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.executeQuery();
+		}
+		catch (SQLException ex)
+		{
+			System.err.println("Error occured when inserting user into database.");
+			ex.printStackTrace();	
+		}
+	}
+	
+	public static void addChallenge(DBConnection conn, Challenge challenge)
+	{
+		int id = challenge.getID();
+		String sender = challenge.getSender();
+		String recipient = challenge.getRecipient();
+		int QuizID = challenge.getQuizID();
+		String link = challenge.getLink();
+		double score = challenge.getScore();
+		
+		addNotification(conn, CHALLENGE, false);
+		
+		String query = "INSERT INTO Challenge VALUES(" + id + ", \"" + sender + "\", \"" + recipient +"\"," +
+							QuizID + ", \"" + link +"\", " + score + ");";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.executeQuery();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();	
+		}
+	}
+	
+	public static void addChallenge(DBConnection conn, Friend friend)
+	{
+		int id = friend.getID();
+		String sender = friend.getSender();
+		String recipient = friend.getRecipient();
+		int status = friend.getStatus();
+		
+		addNotification(conn, FRIEND_REQUEST, false);
+		
+		String query = "INSERT INTO Friends VALUES(" + id + ", \"" + sender + "\", \"" + recipient +"\"," +
+							status + ");";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.executeQuery();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();	
+		}
+	}
+	
+	public static void addNote(DBConnection conn, Note note)
+	{
+		int id = note.getID();
+		String sender = note.getSender();
+		String recipient = note.getRecipient();
+		String message = note.getStatus();
+		
+		addNotification(conn, NOTE_TYPE, false);
+		
+		String query = "INSERT INTO Notes VALUES(" + id + ", \"" + sender + "\", \"" + recipient +"\", \"" +
+							message + "\");";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.executeQuery();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();	
+		}
+	}
+	
+	public void acceptFriendRequest(DBConnection conn, )
 }
