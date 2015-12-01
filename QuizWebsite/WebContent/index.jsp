@@ -20,7 +20,6 @@ if (name != null) out.println(" - " + name);
 		jQuery('.tab-nav a').on('click', function(e)
 		{
 			var link = jQuery(this).attr('href');
-			var contentID = link.substring(1);
 			jQuery('.tabs ' + link).show();
 			jQuery('.tabs ' + link).siblings().hide();
 			
@@ -31,6 +30,14 @@ if (name != null) out.println(" - " + name);
 			jQuery('.tab-content ' + link).siblings().removeClass('active');
 			e.preventDefault();
 		});	
+		
+		jQuery('#navigation li a').on('click', function(e)
+				{
+					var link = jQuery(this).attr('href');
+					jQuery('#navigation li a').removeClass('active');
+					jQuery(this).addClass('active');
+				});
+		
 	});
 	
 </script>
@@ -47,7 +54,7 @@ if (name != null) out.println(" - " + name);
 	<li style="float:right">
 		<ul style="float:right; list-style-type:none;">
 			<li> <a href="login.html">Login</a></li>
-			<li> <a href="createaccount.html">Sign up</a></li>
+			<li> <a href="createaccount.html">Make an Account</a></li>
 			<li> <a href="#signout">Log out</a></li>
 		</ul>
 	</li>
