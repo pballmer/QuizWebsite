@@ -28,15 +28,21 @@ public abstract class QuestionAbstract {
 		this.questionID =  questionID;
 		this.type = type;
 		DBConnection dbConn = new DBConnection();
-		//Question helper will return int, Kim to change this later
+		//Question helper will return int, Kim to change this later, then this will be correct
 		this.quizID = QuestionHelper.addQuestion(dbConn, this.type);
 		this.question = question;
 		this.answers = answers;	
 	}
 	
+	/* This will add the question into the correct table and add it's answers as well, regardless of type, however you must insert type
+	 * */
+	public void addQuestionAbstract(String question, ArrayList<String> answers, DBConnection conn, int type)
+	
+	
 	/*This gets the question itself
 	 * */
 	public String getQuestion() {
+		//this is a change
 		return question;
 	}
 
