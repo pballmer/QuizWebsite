@@ -1,4 +1,3 @@
-package src.entities;
 import java.util.*;
 
 public class Quiz {

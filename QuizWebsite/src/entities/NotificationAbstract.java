@@ -1,4 +1,3 @@
-package entities;
 
 public abstract class NotificationAbstract {
 	//0 is friend request, 1 is challenge, 2 is note
