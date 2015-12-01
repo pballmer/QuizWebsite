@@ -310,8 +310,8 @@ public class QuizHelper
 		int QuizID = quiz.getQuizID();
 		String QuizName = quiz.getQuizname();
 		String Description = quiz.getDescription();
-		String command = "INSERT INTO Quiz VALUES(" + QuizID + ",\"" 
-						+ QuizName + "\", \"" + Description + "\");";
+		String command = "INSERT INTO Quiz VALUES(" + QuizID + ",'" 
+						+ QuizName + "', '" + Description + "');";
 		try {
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
 			ps.executeQuery(); // TODO is this right?
@@ -324,7 +324,7 @@ public class QuizHelper
 	public static void addQuizMade(DBConnection conn, Quiz quiz, String user, int Status)
 	{
 		String QuizID = quiz.getQuizID();
-		String query = "INSERT INTO QuizzesMade VALUES(\"" + user + "\", " 
+		String query = "INSERT INTO QuizzesMade VALUES('" + user + "', " 
 						+ QuizID + "," + Status + ");";
 		try
 		{
@@ -341,7 +341,7 @@ public class QuizHelper
 	public static void addQuizTaken(DBConnection conn, Quiz quiz, String user, double score, String start, String end)
 	{
 		int QuizID = quiz.getQuizID();
-		String query = "INSERT INTO QuizzesTaken VALUES(\"" + user + "\"," + QuizID + ", " + score + ", \"" + start + "\", \"" + end + "\");"; 
+		String query = "INSERT INTO QuizzesTaken VALUES('" + user + "'," + QuizID + ", " + score + ", '" + start + "', '" + end + "');"; 
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
