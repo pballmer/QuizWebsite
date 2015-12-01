@@ -22,7 +22,7 @@ Navigation?
 if (name == null) {
 	out.println("<a href=\"login.html\">Log in</a>");
 } else {
-	out.println("<a href=\"createquiz.html\">Make a New Quiz</a>");
+	out.println("<a href=\"createquiz.jsp\">Make a New Quiz</a>");
 }
 %>
 
