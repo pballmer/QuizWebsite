@@ -1,6 +1,7 @@
-package src.entities;
+package entities;
 import java.util.*;
 
+import db.DBConnection;
 import db.QuizHelper;
 
 public class Quiz {
@@ -16,7 +17,6 @@ public class Quiz {
 	private boolean onePage = true;
 	private boolean immediateCorrection = false;
 	private boolean practiceMode = false;
-	private int score = -1;//sentinel value
 	
 	//constructor without other options being set
 	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link){
@@ -108,10 +108,6 @@ public class Quiz {
 
 	public boolean isPracticeMode() {
 		return practiceMode;
-	}
-
-	public int getScore() {
-		return score;
 	}
 	
 	public String getLink() {
