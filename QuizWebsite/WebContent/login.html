@@ -8,32 +8,54 @@
 <body>
 
 
-<div id="navigation" style="width:100%">
-<ul>
-	<li> <a class="active" href="index.jsp">Home</a></li>
-	<li> <a href="#createquiz">Create Quiz</a></li>
-	<li> <a href="#browsequiz">Browse Quizzes</a></li>
-	<li> <a href="#about">About</a></li>
-	<li style="float:right">
-		<ul style="float:right; list-style-type:none;">
-			<li> <a href="login.html">Login</a></li>
-			<li> <a href="createaccount.html">Make an Account</a></li>
-			<li> <a href="#signout">Log out</a></li>
-		</ul>
-	</li>
-</ul>
-</div>
 
-<h1>Please log in to view your profile</h1>
-<div id="form">
-	<form action="LoginServlet" method="post">
-	<p>User Name:
-	<input type="text" name="name" />
-	<p>Password:
-	<input type="password" name="pass" />
-	<input type="submit" value="Login"/></p>
-	</form>
-	<a href="createaccount.html">Create New Account</a>
-</div>
+	<div id = "container">
+	
+	<div id = "sidebar">
+		<p style="color: white; margin: 0;"> No account? <a href="createaccount.html">Sign up. </a></p>
+		<div id = "profpic">
+		</div>
+		<div id = "sidebar-content">
+		
+			<%if (name != null)
+				{
+				out.println("<h1>Welcome, " + name + ".</h1>");
+				}
+				else{
+					out.println("<h1>Welcome, " + "stranger. </h1>");
+					out.println("<h3> Please <a href=\"login.html\" class=\"reg-button\"> login.</a></h3>");
+				}
+			%>
+			
+			<a href="#createQuiz" class="reg-button">Create Quiz</a>
+			<a href="#browseQuiz" class="reg-button"> Browse Quiz</a>
+			<br>
+			<a href ="#browseUser" class = "reg-button"> Browse Users</a>
+			<a href ="#history" class = "reg-button"> Quiz History</a>
+			<br>
+			<a href = "#logout" class ="big-button"> Log out</a>
+		</div>
+			
+	<div id = "logo">
+		<h1> Quiz08 </h1>
+	</div>
+	</div>
+
+	
+	<div id = "filler">
+	</div>"
+	<div id ="content">
+		<h1>Please log in to view your profile</h1>
+			<div id="form">
+				<form action="LoginServlet" method="post">
+				<p>User Name:
+				<input type="text" name="name" />
+				<p>Password:
+				<input type="password" name="pass" />
+				<input type="submit" value="Login"/></p>
+				</form>
+				<a href="createaccount.html">Create New Account</a>
+			</div>
+	</div>
 </body>
 </html>

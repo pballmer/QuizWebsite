@@ -49,7 +49,7 @@ if (name != null) out.println(" - " + name);
 	<div id = "container">
 	
 	<div id = "sidebar">
-		<p style="color: white; margin: 0;"> No account? <a href="createaccount.jsp">Sign up. </a></p>
+		<p style="color: white; margin: 0;"> No account? <a href="createaccount.html">Sign up. </a></p>
 		<div id = "profpic">
 		</div>
 		<div id = "sidebar-content">
@@ -57,21 +57,20 @@ if (name != null) out.println(" - " + name);
 			<%if (name != null)
 				{
 				out.println("<h1>Welcome, " + name + ".</h1>");
-				out.println("<a href=\"#createQuiz\" class=\"reg-button\">Create Quiz</a>");
-				out.println("<a href=\"#browseQuiz\" class=\"reg-button\"> Browse Quiz</a>");
-				out.println("<br>");
-				out.println("<a href =\"#browseUser\" class = \"reg-button\"> Browse Users</a>");
-				out.println("<a href =\"#history\" class = \"reg-button\"> Quiz History</a>");
-				out.println("<br>");
-				out.println("<a href = \"#logout\" class =\"big-button\"> Log out</a>");
 				}
 				else{
 					out.println("<h1>Welcome, " + "stranger. </h1>");
-					out.println("<h3> Please <a href=\"login.jsp\" class=\"reg-button\"> login.</a></h3>");
+					out.println("<h3> Please <a href=\"login.html\" class=\"reg-button\"> login.</a></h3>");
 				}
 			%>
 			
-
+			<a href="#createQuiz" class="reg-button">Create Quiz</a>
+			<a href="#browseQuiz" class="reg-button"> Browse Quiz</a>
+			<br>
+			<a href ="#browseUser" class = "reg-button"> Browse Users</a>
+			<a href ="#history" class = "reg-button"> Quiz History</a>
+			<br>
+			<a href = "#logout" class ="big-button"> Log out</a>
 		</div>
 		
 	</div>
@@ -197,17 +196,6 @@ if (name != null) out.println(" - " + name);
 				<ul>
 					<li> Achievement 1</li>
 					<li> Achievement 2</li>
-					<li> Achievement 2</li>
-					<li> Achievement 2</li>
-					<li> Achievement 2</li>
-					<li> Achievement 2</li>
-					<li> Achievement 2</li>
-					<li> Achievement 2</li>
-					<li> Achievement 2</li>
-					<li> Achievement 2</li>
-					<li> Achievement 2</li>
-					<li> Achievement 2</li>
-					
 				</ul>
 			 </td>
 			<td> 
@@ -222,14 +210,6 @@ if (name != null) out.println(" - " + name);
 					<li>Activity of Friend 1</li>
 					<li>Activity of Friend 2</li>
 					<li>Activity of Friend 3</li>
-					<li>Activity of Friend 3</li>
-					<li>Activity of Friend 3</li>
-					<li>Activity of Friend 3</li>
-					<li>Activity of Friend 3</li>
-					<li>Activity of Friend 3</li>
-					<li>Activity of Friend 3</li>
-					<li>Activity of Friend 3</li>
-					
 				</ul>
 			</td>
 		</tr>	

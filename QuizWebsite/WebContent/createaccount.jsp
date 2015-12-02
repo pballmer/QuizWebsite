@@ -7,6 +7,7 @@
 <title>Create Account </title>
 <% String name =(String)session.getAttribute("name"); %>
 <link rel="stylesheet" type="text/css" href="main.css">
+
 </head>
 <body>
 
@@ -50,19 +51,20 @@
 	
 	<div id = "filler">
 	</div>
-	<div id ="content">
-		<div id="form">
-		<h1>The Name <%= request.getParameter("name") %> is Already In Use</h1>
-			<p>Please enter another username and password.</p>
-			<form action="CreationServlet" method="post">
-			<p>User Name:
-			<input type="text" name="name" />
-			<p>Password:
-			<input type="password" name="pass" />
-			<input type="submit" value="Create account"/></p>
-			</form>
-			</div>
-	</div>
+	
+	<div id = "content">
+	<h1>Create New Account</h1>
+
+<div id="form">
+	<p>Please enter a proposed username and password.</p>
+	<form action="AccountCreationServlet" method="post">
+	<p>User Name:
+	<input type="text" name="name" />
+	<p>Password:
+	<input type="password" name="pass" />
+	<input type="submit" value="Create account"/></p>
+	</form>
+</div>
 	</div>
 </body>
 </html>
