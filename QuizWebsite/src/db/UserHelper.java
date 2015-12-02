@@ -43,15 +43,13 @@ public class UserHelper
 		return user;
 	}
 	
-	private static Achievement getAchievementFromRecord(ResultSet rs, int row)
+	private static String getAchievementFromRecord(ResultSet rs, int row)
 	{
-		Achievement achievement = null;
+		String achievement = "";
 		try 
 		{
 			rs.absolute(row);
-			String username = rs.getString(USERNAME);
-			String achieve = rs.getString(ACHIEVEMENT);
-			achievement = new Achievement(username, achieve);
+			achievement = rs.getString(ACHIEVEMENT);
 		}
 		catch (SQLException ex)
 		{
@@ -218,7 +216,7 @@ public class UserHelper
 	//AL<String>?
 	public static ArrayList<String> getAllUserIDs(DBConnection conn)
 	{
-		ArrayList<User> userList = new ArrayList<User>();
+		ArrayList<String> userList = new ArrayList<String>();
 		try
 		{
 			String query = queryBuilder("", "", "true");
@@ -246,9 +244,9 @@ public class UserHelper
 		return userList;
 	}
 	
-	public static ArrayList<Achievements> getAchievements(DBConnection conn, String username)
+	public static ArrayList<String> getAchievements(DBConnection conn, String username)
 	{
-		ArrayList<Achievement> achList = new ArrayList<Achievement>();
+		ArrayList<String> achList = new ArrayList<String>();
 		try
 		{
 			String query = "SELECT * FROM Achievements WHERE Username='" + username + "';";
@@ -262,7 +260,7 @@ public class UserHelper
 				int numRows = temp.getRow();
 				for (int i = 1; i <= numRows; i++)
 				{
-					Achievement achievement = getAchievementFromRecord(results, i);
+					String achievement = getAchievementFromRecord(results, i);
 					achList.add(achievement);
 				}
 			}
@@ -308,12 +306,12 @@ public class UserHelper
 		return map;
 	}
 	
-	public static Set<User> getFriends(DBConnection conn, String Username)
+	public static ArrayList<String> getFriends(DBConnection conn, String Username)
 	{
-		Set<User> friends = new HashSet<User>();
+		ArrayList<String> friends = new ArrayList<String>();
 		try
 		{
-			String query = "SELECT * FROM Notifications WHERE (Sender = '" + Username + "' OR Recipient = '" + Username + "') AND Status = " + ACCEPTED + ";";
+			String query = "SELECT * FROM Friends WHERE (Sender = '" + Username + "' OR Recipient = '" + Username + "') AND Status = " + ACCEPTED + ";";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			
 			ResultSet results = ps.executeQuery();
@@ -329,8 +327,7 @@ public class UserHelper
 					String sender = results.getString(SENDER);
 					String recipient = results.getString(RECIPIENT);
 					String friendname = (Username.equals(sender)) ? recipient : sender;
-					User friend = getUserByID(conn, friendname);
-					friends.add(friend);
+					friends.add(friendname);
 				}
 			}
 		}
@@ -342,7 +339,7 @@ public class UserHelper
 		return friends;
 	}
 	
-	public static void addUser(DBConnection conn, User user) {
+	public static int addUser(DBConnection conn, User user) {
 		String name = user.getUsername();
 		String pass = user.getPassword();
 		boolean admin = user.isAdmin();
@@ -354,7 +351,10 @@ public class UserHelper
 		} catch (SQLException e) {
 			System.err.println("Error occured when inserting user into database.");
 			e.printStackTrace();
+			return -1;
 		}
+		
+		return 1;
 	}
 	
 	

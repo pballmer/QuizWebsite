@@ -43,6 +43,8 @@ public class LoginServlet extends HttpServlet {
 		AccountManager manager = (AccountManager) context.getAttribute("Account Manager"); 
 		String name = request.getParameter("name");
 		String pass = request.getParameter("pass");
+		
+		/*
 		if (manager.passwordMatches(name, pass)) {
 			HttpSession session = request.getSession();
 	        session.setAttribute("name", name);
@@ -52,6 +54,11 @@ public class LoginServlet extends HttpServlet {
 			RequestDispatcher dispatch = request.getRequestDispatcher("loginfailure.jsp");
 			dispatch.forward(request, response);
 		}
+		*/
+		HttpSession session = request.getSession();
+        session.setAttribute("name", name);
+        RequestDispatcher dispatch = request.getRequestDispatcher("index.jsp");
+		dispatch.forward(request, response);
 	}
 
 }
