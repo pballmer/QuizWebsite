@@ -1,4 +1,8 @@
 package entities;
+<<<<<<< HEAD
+=======
+
+>>>>>>> c2810250b226b7a492ee424b37bc683ffc2adb8b
 import java.util.*;
 
 import db.DBConnection;
@@ -18,6 +22,12 @@ public class Quiz {
 	private boolean immediateCorrection = false;
 	private boolean practiceMode = false;
 	
+	public Quiz(int quizid, String quizname, String desc)
+	{
+		this.id = quizid;
+		this.name = quizname;
+		this.description = desc;
+	}
 	//constructor without other options being set
 	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link){
 		this.name = nameInput;

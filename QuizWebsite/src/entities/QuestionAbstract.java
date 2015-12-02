@@ -1,6 +1,10 @@
-package src.entities;
+package entities;
 
+import db.QuestionHelper;
 
+import java.util.ArrayList;
+
+import db.DBConnection;
 
 public abstract class QuestionAbstract {
 	
@@ -11,45 +15,61 @@ public abstract class QuestionAbstract {
 	 * 2:Picture Response (PR)
 	 * 3:Question Response (QR)
 	 * */
-	public static final int[] questionTypes = new int[]{0, 1, 2, 3};
+	static final int MULTIPLE_CHOICE = 0;
+	protected static final int QUESTION_RESPONSE = 1;
+	static final int FILL_IN_BLANK = 2;
+	static final int PICTURE_RESPONSE = 3;	
 	private int questionID;
 	private int quizID;
 	public int type;
 	public String question;
-	public Set<ArrayList<String>> answers = new HashSet<ArrayList<String>>(); 
+	public ArrayList<String> answers = new ArrayList<String>(); 
 	
 	
-	public QuestionAbstract(int questionID, int quizID, String question, Set<ArrayList<String>> answers){
+	public QuestionAbstract(int questionID, int quizID, String question, ArrayList<String> answers, int  type){
 		this.questionID =  questionID;
-		this.quizID = quizID;
+		this.type = type;
+		DBConnection dbConn = new DBConnection();
+		//Question helper will return int, Kim to change this later, then this will be correct
+		this.quizID = QuestionHelper.addQuestion(dbConn, this.type);
 		this.question = question;
-		this.answers = answers;
+		this.answers = answers;	
 	}
+	
+	/* This will add the question into the correct table and add it's answers as well, regardless of type, however you must insert type
+	 * */
+	public void addQuestionAbstract(String question, ArrayList<String> answers, DBConnection conn, int type)
+	
 	
 	/*This gets the question itself
 	 * */
-	String getQuestion() {
+	public String getQuestion() {
+		//this is a change
 		return question;
 	}
 
 	/*This gets an arraylist of answers
 	 * */
-	Set<ArrayList<String>> getAnswers() {
+	public ArrayList<String> getAnswers() {
 		return answers;
 	}
 
+	//check answer
+	public boolean checkAnswer(String answer){
+		return this.answers.contains(answer);
+	}
 	
-	int getQuizID() {
+	public int getQuizID() {
 		return quizID;
 	}
 	
-	int getQuestionID() {
+	public int getQuestionID() {
 		return questionID;
 	}
 	
 	public boolean checkAnswer(ArrayList<String> answer){
-		for(ArrayList<String> curr: answers){
-			if(curr.equals(answer))
+		for(int i = 0; i < answers.size();i ++){
+			if(answers.get(i).equals(answer))
 				return true;
 		}
 		return false;

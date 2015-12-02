@@ -1,9 +1,11 @@
-package db;
+package src.db;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import db.DBConnection;
 
 import entities.*;
 
@@ -195,7 +197,7 @@ public class QuestionHelper
 		}
 		return options;
 	}
-	
+	//will return int later
 	public static void addQuestion(DBConnection conn, int type)
 	{
 		String query = "INSERT INTO Question VALUES(NULL," + type + ");";
@@ -217,7 +219,7 @@ public class QuestionHelper
 		{
 			for (int i = 0; i < answers.size(); i++)
 			{
-				String query = "INSERT INTO Answers VALUES(" + id + ", \"" + answers.get(i) + "\");";
+				String query = "INSERT INTO Answers VALUES(" + id + ", '" + answers.get(i) + "');";
 				PreparedStatement ps = conn.getConnection().prepareStatement(query);
 				ps.executeQuery();
 			}
@@ -232,8 +234,8 @@ public class QuestionHelper
 	public static void addFillBlank(DBConnection conn, FillBlank question)
 	{
 
-		int id = question.getID();
-		String text = question.getText();
+		int id = question.getQuestionID();
+		String text = question.getQuestion();
 		ArrayList<String> answers = question.getAnswers();
 		
 		addQuestion(conn, FILL_IN_BLANK);
@@ -241,7 +243,7 @@ public class QuestionHelper
 
 		try
 		{
-			String query = "INSERT INTO FillInBlank VALUES(" + id + ", \"" + text + "\");";
+			String query = "INSERT INTO FillInBlank VALUES(" + id + ", '" + text + "');";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ps.executeQuery();
 		}
@@ -255,7 +257,7 @@ public class QuestionHelper
 	public static void addMultipleChoice(DBConnection conn, MultipleChoice question)
 	{
 		addQuestion(conn, MULTIPLE_CHOICE);
-		int id = question.getID();
+		int id = question.getQuestionID();
 		ArrayList<String> options = question.getOptions();
 		ArrayList<String> answers = question.getAnswers();
 		addAnswers(conn, id, answers);
@@ -264,7 +266,7 @@ public class QuestionHelper
 		{
 			for (int i = 0; i < options.size(); i++)
 			{
-				String query = "INSERT INTO FillInBlank VALUES(" + id + ", \"" + options.get(i) + "\");";
+				String query = "INSERT INTO FillInBlank|MultipleChoice VALUES(" + id + ", '" + options.get(i) + "');";
 				PreparedStatement ps = conn.getConnection().prepareStatement(query);
 				ps.executeQuery();				
 			}
@@ -280,7 +282,7 @@ public class QuestionHelper
 	public static void addPictureResponse(DBConnection conn, PictureResponse question)
 	{
 		addQuestion(conn, PICTURE_RESPONSE);
-		int id = question.getID();
+		int id = question.getQuestionID();
 		ArrayList<String> options = question.getOptions();
 		ArrayList<String> answers = question.getAnswers();
 		addAnswers(conn, id, answers);
@@ -288,7 +290,7 @@ public class QuestionHelper
 		{
 			for (int i = 0; i < options.size(); i++)
 			{
-				String query = "INSERT INTO PictureResponse VALUES(" + id + ", \"" + options.get(i) + "\");";
+				String query = "INSERT INTO PictureResponse VALUES(" + id + ", '" + options.get(i) + "');";
 				PreparedStatement ps = conn.getConnection().prepareStatement(query);
 				ps.executeQuery();				
 			}
@@ -304,14 +306,14 @@ public class QuestionHelper
 	public static void addQuestionResponse(DBConnection conn, QuestionResponse question)
 	{
 		addQuestion(conn, QUESTION_RESPONSE);
-		int id = question.getID();
+		int id = question.getQuestionID();
 		String text = question.getText();
 		ArrayList<String> answers = question.getAnswers();
 		addAnswers(conn, id, answers);
 		
 		try
 		{
-			String query = "INSERT INTO PictureResponse VALUES(" + id + ", \"" + text + "\");";
+			String query = "INSERT INTO QuestionResponse VALUES(" + id + ", '" + text + "');";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ps.executeQuery();				
 		}
