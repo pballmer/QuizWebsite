@@ -1,5 +1,8 @@
 package entities;
+<<<<<<< HEAD
+=======
 
+>>>>>>> 73d0fc4dd17bfd56dc0181ffee8764b562982853
 import java.util.*;
 
 import db.QuizHelper;

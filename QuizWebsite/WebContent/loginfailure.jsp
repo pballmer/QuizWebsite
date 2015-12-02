@@ -4,9 +4,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Create Account </title>
+<title>Information Incorrect</title>
 <% String name =(String)session.getAttribute("name"); %>
 <link rel="stylesheet" type="text/css" href="main.css">
+
 </head>
 <body>
 
@@ -26,7 +27,7 @@
 				out.println("<a href=\"#createQuiz\" class=\"reg-button\">Create Quiz</a>");
 				out.println("<a href=\"#browseQuiz\" class=\"reg-button\"> Browse Quiz</a>");
 				out.println("<br>");
-				out.println("<a href =\"#browseUser\" class = \"reg-button\"> BrowseUsers</a>");
+				out.println("<a href =\"#browseUser\" class = \"reg-button\"> Browse Users</a>");
 				out.println("<a href =\"#history\" class = \"reg-button\"> Quiz History</a>");
 				out.println("<br>");
 				out.println("<a href = \"#logout\" class =\"big-button\"> Log out</a>");
@@ -45,23 +46,27 @@
 	<div id = "logo">
 		<h1> Quiz08 </h1>
 	</div>
+	</div>
 
 	
 	<div id = "filler">
 	</div>
+	
+	<br>
+	
 	<div id ="content">
-		<div id="form">
-		<h1>The Name <%= request.getParameter("name") %> is Already In Use</h1>
-			<p>Please enter another username and password.</p>
-			<form action="CreationServlet" method="post">
-			<p>User Name:
-			<input type="text" name="name" />
-			<p>Password:
-			<input type="password" name="pass" />
-			<input type="submit" value="Create account"/></p>
-			</form>
-		</div>
-	</div>
+		<div id = "form">
+			<h1>Please Try Again</h1>
+				<p>Either your user name or password is incorrect. Please try again.</p>
+				<form action="LoginServlet" method="post">
+				<p>User Name:
+				<input type="text" name="name" />
+				<p>Password:
+				<input type="text" name="pass" />
+				<input type="submit" value="Login"/></p>
+				</form>
+				<a href="createaccount.jsp">Create New Account</a>
+			</div>
 	</div>
 </body>
 </html>
