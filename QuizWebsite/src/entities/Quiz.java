@@ -1,5 +1,8 @@
+package entities;
+
 import java.util.*;
 
+import db.DBConnection;
 import db.QuizHelper;
 
 public class Quiz {
@@ -17,6 +20,12 @@ public class Quiz {
 	private boolean practiceMode = false;
 	private int score = -1;//sentinel value
 	
+	public Quiz(int quizid, String quizname, String desc)
+	{
+		this.id = quizid;
+		this.name = quizname;
+		this.description = desc;
+	}
 	//constructor without other options being set
 	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link){
 		this.name = nameInput;

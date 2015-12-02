@@ -202,12 +202,12 @@ public class NotificationsHelper
 		return null;
 	}
 	
-	public static ArrayList<FriendRequest> getPendingFrendRequests(DBConnection conn, String username)
+	public static ArrayList<String> getPendingFrendRequests(DBConnection conn, String username)
 	{
-		ArrayList<FriendRequest> friends = new ArrayList<FriendRequest>();
+		ArrayList<String> friends = new ArrayList<String>();
 		try
 		{
-			String query = "SELECT * FROM Friends WHERE (Sender = '" + username + "' OR Recipient = '" + username + "') AND Status = " + PENDING + ";";
+			String query = "SELECT * FROM Friends WHERE (Recipient = '" + username + "') AND Status = " + PENDING + ";";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ResultSet results = ps.executeQuery();
 	
@@ -219,8 +219,9 @@ public class NotificationsHelper
 				int numRows = temp.getRow();
 				for (int i = 1; i <= numRows; i++)
 				{
-					FriendRequest req = getFriendRequestFromRecord(results, i);
-					friends.add(req);
+					results.absolute(i);
+					String friend = results.getString(2);
+					friends.add(friend);
 				}
 			}
 		}
@@ -235,17 +236,18 @@ public class NotificationsHelper
 	
 	public static ArrayList<Note> getNotesBySender(DBConnection conn, String username)
 	{
+		ArrayList<Note> notes = new ArrayList<Note>();
 		String query = "SELECT * FROM Notes WHERE Sender = '" + username + "';";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ResultSet results = ps.executeQuery();
-			ArrayList<Note> notes = new ArrayList<Note>();
+
 			
 			if (results.isBeforeFirst())
 			{
 				ResultSet temp = results;
-				temp.last());
+				temp.last();
 				int numRows = temp.getRow();
 				for (int i = 1; i <= numRows; i++)
 				{
@@ -265,16 +267,17 @@ public class NotificationsHelper
 	public static ArrayList<Note> getNotesByRecipient(DBConnection conn, String username)
 	{
 		String query = "SELECT * FROM Notes WHERE Recipient = '" + username + "';";
+		ArrayList<Note> notes = new ArrayList<Note>();
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ResultSet results = ps.executeQuery();
-			ArrayList<Note> notes = new ArrayList<Note>();
+
 			
 			if (results.isBeforeFirst())
 			{
 				ResultSet temp = results;
-				temp.last());
+				temp.last();
 				int numRows = temp.getRow();
 				for (int i = 1; i <= numRows; i++)
 				{
@@ -294,16 +297,17 @@ public class NotificationsHelper
 	public static ArrayList<Challenge> getChallengeBySender(DBConnection conn, String username)
 	{
 		String query = "SELECT * FROM Challenge WHERE Sender = '" + username + "';";
+		ArrayList<Challenge> challenges = new ArrayList<Challenge>();
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ResultSet results = ps.executeQuery();
-			ArrayList<Challenge> challenges = new ArrayList<Challenge>();
+
 			
 			if (results.isBeforeFirst())
 			{
 				ResultSet temp = results;
-				temp.last());
+				temp.last();
 				int numRows = temp.getRow();
 				for (int i = 1; i <= numRows; i++)
 				{
@@ -323,11 +327,12 @@ public class NotificationsHelper
 	public static ArrayList<Challenge> getChallengeByRecipient(DBConnection conn, String username)
 	{
 		String query = "SELECT * FROM Challenge WHERE Recipient = '" + username + "';";
+		ArrayList<Challenge> challenges = new ArrayList<Challenge>();
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ResultSet results = ps.executeQuery();
-			ArrayList<Challenge> challenges = new ArrayList<Challenge>();
+
 			
 			if (results.isBeforeFirst())
 			{

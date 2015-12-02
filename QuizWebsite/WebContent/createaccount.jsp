@@ -7,6 +7,7 @@
 <title>Create Account </title>
 <% String name =(String)session.getAttribute("name"); %>
 <link rel="stylesheet" type="text/css" href="main.css">
+
 </head>
 <body>
 
@@ -26,7 +27,7 @@
 				out.println("<a href=\"#createQuiz\" class=\"reg-button\">Create Quiz</a>");
 				out.println("<a href=\"browseQuiz.jsp\" class=\"reg-button\"> Browse Quiz</a>");
 				out.println("<br>");
-				out.println("<a href =\"allusers.jsp\" class = \"reg-button\"> BrowseUsers</a>");
+				out.println("<a href =\"allusers.jsp\" class = \"reg-button\"> Browse Users</a>");
 				out.println("<a href =\"quizHistory.jsp\" class = \"reg-button\"> Quiz History</a>");
 				out.println("<br>");
 				out.println("<a href = \"logout.jsp\" class =\"big-button\"> Log out</a>");
@@ -36,8 +37,8 @@
 					out.println("<h3> Please <a href=\"login.jsp\" class=\"reg-button\"> login.</a></h3>");
 				}
 			%>
-			<br>
-			<a href ="index.jsp" class ="big-button"> Home </a>
+					<br>
+			<a href ="index.jsp" class ="big-button"> Home </a>a>
 
 		</div>
 		
@@ -46,23 +47,25 @@
 	<div id = "logo">
 		<h1> Quiz08 </h1>
 	</div>
+	</div>
 
 	
 	<div id = "filler">
 	</div>
-	<div id ="content">
-		<div id="form">
-		<h1>The Name <%= request.getParameter("name") %> is Already In Use</h1>
-			<p>Please enter another username and password.</p>
-			<form action="CreationServlet" method="post">
-			<p>User Name:
-			<input type="text" name="name" />
-			<p>Password:
-			<input type="password" name="pass" />
-			<input type="submit" value="Create account"/></p>
-			</form>
-		</div>
-	</div>
+	
+	<div id = "content">
+	<h1>Create New Account</h1>
+
+<div id="form">
+	<p>Please enter a proposed username and password.</p>
+	<form action="AccountCreationServlet" method="post">
+	<p>User Name:
+	<input type="text" name="name" />
+	<p>Password:
+	<input type="password" name="pass" />
+	<input type="submit" value="Create account"/></p>
+	</form>
+</div>
 	</div>
 </body>
 </html>
