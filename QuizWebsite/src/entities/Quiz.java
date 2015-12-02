@@ -1,5 +1,8 @@
 package entities;
+<<<<<<< HEAD
+=======
 
+>>>>>>> c2810250b226b7a492ee424b37bc683ffc2adb8b
 import java.util.*;
 
 import db.DBConnection;
@@ -18,7 +21,6 @@ public class Quiz {
 	private boolean onePage = true;
 	private boolean immediateCorrection = false;
 	private boolean practiceMode = false;
-	private int score = -1;//sentinel value
 	
 	public Quiz(int quizid, String quizname, String desc)
 	{
@@ -116,10 +118,6 @@ public class Quiz {
 
 	public boolean isPracticeMode() {
 		return practiceMode;
-	}
-
-	public int getScore() {
-		return score;
 	}
 	
 	public String getLink() {
