@@ -236,7 +236,6 @@ if (name != null) out.println(" - " + name);
 	</table>
 </div>
 		
-		
 	</div>
 	
 	

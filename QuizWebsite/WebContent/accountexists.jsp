@@ -3,6 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
+<<<<<<< HEAD
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Create Account </title>
 <% String name =(String)session.getAttribute("name"); %>
@@ -64,5 +65,24 @@
 			</div>
 	</div>
 	</div>
+=======
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Create Account</title>
+<link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+<h1>The Name <%= request.getParameter("name") %> is Already In Use</h1>
+<p>Please enter another username and password.</p>
+<form action="CreationServlet" method="post">
+<fieldset>
+<legend>Account Information</legend>
+<p>Username:</p>
+<p><input type="text" name="name" /></p>
+<p>Password:</p>
+<p><input type="password" name="pass" /></p>
+<p><input type="submit" value="Create account"/></p>
+</fieldset>
+</form>
+>>>>>>> 73d0fc4dd17bfd56dc0181ffee8764b562982853
 </body>
 </html>

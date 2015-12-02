@@ -3,7 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Information Incorrect</title>
-	<link href="main.css" rel="stylesheet" type="text/css">
+<link rel="stylesheet" type="text/css" href="main.css">
+
 </head>
 <body>
 
@@ -27,11 +28,14 @@
 <h1>Please Try Again</h1>
 <p>Either your user name or password is incorrect. Please try again.</p>
 <form action="LoginServlet" method="post">
-<p>User Name:
-<input type="text" name="name" />
-<p>Password:
-<input type="text" name="pass" />
-<input type="submit" value="Login"/></p>
+<fieldset>
+<legend>Account Information</legend>
+<p>Username:</p>
+<p><input type="text" name="name" /></p>
+<p>Password:</p>
+<p><input type="password" name="pass" /></p>
+<p><input type="submit" value="Login"/></p>
+</fieldset>
 </form>
 <a href="createaccount.html">Create New Account</a>
 </body>
