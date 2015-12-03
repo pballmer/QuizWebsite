@@ -33,7 +33,7 @@ public class UserHelper
 			String username = rs.getString(USERNAME);
 			String password = rs.getString(PASSWORD);
 			boolean admin = rs.getBoolean(ADMIN);
-			user = new User(username, password, admin);
+			user = new User(username, password, admin, true);
 		}
 		catch (SQLException ex)
 		{
@@ -107,7 +107,7 @@ public class UserHelper
 	{
 		try
 		{
-			String query = "SELECT * From Users WHERE UserID='" + UserID + "';";
+			String query = "SELECT * From Users WHERE Username='" + UserID + "';";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			
 			ResultSet results = ps.executeQuery();

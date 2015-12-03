@@ -26,6 +26,7 @@ public class SiteListener implements ServletContextListener {
 	/**
      * @see ServletContextListener#contextInitialized(ServletContextEvent)
      */
+    @Override
     public void contextInitialized(ServletContextEvent event) {
         AccountManager manager = new AccountManager();
         DBConnection db = new DBConnection();
@@ -37,6 +38,7 @@ public class SiteListener implements ServletContextListener {
 	/**
      * @see ServletContextListener#contextDestroyed(ServletContextEvent)
      */
+    @Override
     public void contextDestroyed(ServletContextEvent event) {
     	ServletContext context = event.getServletContext();
         DBConnection db = (DBConnection) context.getAttribute("Database Connection");
