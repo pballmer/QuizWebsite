@@ -43,6 +43,29 @@ public class UserHelper
 		return user;
 	}
 	
+	public static int getTotalNumUsers(DBConnection conn)
+	{
+		int num = 0; 
+		try
+		{
+			String query = "SELECT COUNT(*) FROM Users";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);		
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				results.absolute(1);
+				num = results.getInt(1);
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return num;
+	}
+	
 	private static String getAchievementFromRecord(ResultSet rs, int row)
 	{
 		String achievement = "";
@@ -355,6 +378,40 @@ public class UserHelper
 		}
 		
 		return 1;
+	}
+	
+	public static int makeAdmin(DBConnection conn, String username)
+	{
+		String query = "UPDATE Users SET Admin=1 WHERE Username='" + username + "';";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+		}
+		catch (SQLException e) {
+			System.err.println("Error occured when updating user in database.");
+			e.printStackTrace();
+			return -1;
+		}
+	
+	return 1;	
+		
+	}
+	public static int removeUser(DBConnection conn, String username)
+	{
+		String query = "DELETE FROM Users WHERE Username='" + username + "';";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+		}
+		catch (SQLException e) {
+			System.err.println("Error occured when deleting user into database.");
+			e.printStackTrace();
+			return -1;
+		}
+	
+	return 1;
 	}
 	
 	

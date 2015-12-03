@@ -343,6 +343,48 @@ public class QuizHelper
 		return num;
 	}
 	
+	public static int removeQuizHistory(DBConnection conn, int id)
+	{
+		String query = "DELETE FROM Quiz WHERE QuizId=" + id + ";";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+			
+			query = "DELETE FROM QuizzesTaken WHERE QuizID=" + id + ";";
+			ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+			
+			query = "DELETE FROM QuizzesMade WHERE QuizID=" + id + ";";
+			ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+		}
+		catch (SQLException e) {
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();
+			return -1;
+		}
+	
+		return 1;
+	}
+	
+	public static int removeQuiz(DBConnection conn, int id)
+	{
+		String query = "DELETE FROM Quiz WHERE QuizId=" + id + ";";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+		}
+		catch (SQLException e) {
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();
+			return -1;
+		}
+	
+	return 1;
+	}
+	
 	public static ArrayList<Quiz> getQuizzesMade(DBConnection conn, String Username, int num)
 	{
 		ArrayList<Quiz> quizList = new ArrayList<Quiz>();

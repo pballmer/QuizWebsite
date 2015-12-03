@@ -36,7 +36,7 @@ public class User {
 	
 	public User(String un, String pw, boolean admin, boolean encrypted){//pw is not encrypted
 		this.username = un;
-		this.admin = false;
+		this.admin = admin;
 		this.friends = new ArrayList<User>();
 		this.quizzesMade = new ArrayList<Quiz>();
 		this.quizzesTaken = new HashMap<Integer, Integer>();
