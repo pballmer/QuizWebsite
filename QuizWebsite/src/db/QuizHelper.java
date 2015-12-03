@@ -3,6 +3,7 @@ package db;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import entities.*;
@@ -382,7 +383,7 @@ public class QuizHelper
 				{
 					results.absolute(i);
 					String questionID = results.getString(QUESTION_ID);
-					Question question = QuestionHelper.getQuestion(conn, questionID);
+					QuestionAbstract question = QuestionHelper.getQuestion(conn, questionID);
 					questionList.add(question);
 				}
 			}
@@ -459,7 +460,7 @@ public class QuizHelper
 		return quizList;
 	}
 	
-	public static void addQuiz(DBConnection conn, Quiz quiz)
+	public static int addQuiz(DBConnection conn, Quiz quiz)
 	{
 		String QuizName = quiz.getName();
 		String Description = quiz.getDescription();
@@ -468,10 +469,18 @@ public class QuizHelper
 		try {
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
 			ps.executeQuery(); // TODO is this right?
+			// Use below to do rs.last(), increment and it should be the last question added according to TA
+			Statement stmt = conn.getConnection().createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM Quiz");
+			rs.last();
+			int lastID = Integer.parseInt(rs.getString("QuizID"));
+			return lastID;
 		} catch (SQLException e) {
 			System.err.println("Error occured when inserting user into database.");
 			e.printStackTrace();
 		}
+		//this is so it can compile
+		return -1;
 	}
 	
 	public static void addQuizMade(DBConnection conn, Quiz quiz, String user)
@@ -509,7 +518,7 @@ public class QuizHelper
 	public static void addQuizQuestion(DBConnection conn, Quiz quiz, QuestionAbstract question)
 	{
 		int QuizID = quiz.getId();
-		String questionID = question.getQuestionID();
+		String questionID = Integer.toString(question.getQuestionID());
 		String query = "INSERT INTO QuizQuestion VALUES(" + QuizID + ", " + questionID + ");";
 		try
 		{

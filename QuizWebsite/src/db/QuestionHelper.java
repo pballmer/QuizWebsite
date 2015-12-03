@@ -216,28 +216,27 @@ public class QuestionHelper
 		return options;
 	}
 	//will return int later OR we will change it so it takes the ID as a parameter
-	public static void addQuestion(DBConnection conn, int type)
+	public static int addQuestion(DBConnection conn, int type)
 	{
 		String query = "INSERT INTO Question VALUES(NULL," + type + ");";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ps.executeQuery();
-			/* Use below to do rs.last(), increment and it should be the last question added according to TA
-			Class.forName("com.mysql.jdbc.Driver");
-			con = DriverManager.getConnection
-					( "jdbc:mysql://" + server, account ,password);
-
-			Statement stmt = con.createStatement();
-			stmt.executeQuery("USE " + database);
-			ResultSet rs = stmt.executeQuery("SELECT * FROM metropolises");
-			*/
+			// Use below to do rs.last(), increment and it should be the last question added according to TA
+			Statement stmt = conn.getConnection().createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM Question");
+			rs.last();
+			int lastID = Integer.parseInt(rs.getString("QuestionID"));
+			return lastID;
 		}
 		catch (SQLException ex)
 		{
 			System.err.println("Error occured when inserting user into database.");
 			ex.printStackTrace();	
 		}
+		//last ID was not gotten
+		return -1;
 	}
 	
 	//adds the arraylist of answers to the question
