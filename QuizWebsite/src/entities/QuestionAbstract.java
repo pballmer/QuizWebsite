@@ -68,12 +68,4 @@ public abstract class QuestionAbstract {
 	public int getQuestionID() {
 		return questionID;
 	}
-	
-	public boolean checkAnswer(ArrayList<String> answer){
-		for(int i = 0; i < answers.size();i ++){
-			if(answers.get(i).equals(answer))
-				return true;
-		}
-		return false;
-	}
 }
