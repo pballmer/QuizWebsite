@@ -343,17 +343,59 @@ public class QuizHelper
 		return num;
 	}
 	
+	public static int removeQuizHistory(DBConnection conn, int id)
+	{
+		String query = "DELETE FROM Quiz WHERE QuizId=" + id + ";";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+			
+			query = "DELETE FROM QuizzesTaken WHERE QuizID=" + id + ";";
+			ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+			
+			query = "DELETE FROM QuizzesMade WHERE QuizID=" + id + ";";
+			ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+		}
+		catch (SQLException e) {
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();
+			return -1;
+		}
+	
+		return 1;
+	}
+	
+	public static int removeQuiz(DBConnection conn, int id)
+	{
+		String query = "DELETE FROM Quiz WHERE QuizId=" + id + ";";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+		}
+		catch (SQLException e) {
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();
+			return -1;
+		}
+	
+	return 1;
+	}
+	
 	public static ArrayList<Quiz> getQuizzesMade(DBConnection conn, String Username, int num)
 	{
 		ArrayList<Quiz> quizList = new ArrayList<Quiz>();
+		ArrayList<Integer> idList = new ArrayList<Integer>();
 		try
 		{
-			String query = "SELECT M.QuizID, QuizName, Description FROM Quiz Q JOIN QuizzesMade M ON M.Username='" + Username +"' GROUP BY QuizID;";
-
+			String query = "SELECT M.QuizID FROM Quiz Q JOIN QuizzesMade M ON M.Username='" + Username +"' GROUP BY QuizID;";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			
 			ResultSet results = ps.executeQuery();
-			
+	
 			if (results.isBeforeFirst())
 			{
 				ResultSet temp = results;
@@ -363,7 +405,20 @@ public class QuizHelper
 				for (int i = 1; i <= total; i++)
 				{
 					results.absolute(i);
-					Quiz quiz = getQuizFromRecord(results, i);
+					idList.add(results.getInt(1));
+				}
+			}
+			
+			for (int i = 0; i < idList.size(); i++)
+			{
+				String second_query = "SELECT * FROM Quiz WHERE QuizID = " + idList.get(i) + ";";
+				ps = conn.getConnection().prepareStatement(second_query);
+				
+				ResultSet quizzes = ps.executeQuery();
+				if (quizzes.isBeforeFirst())
+				{
+					quizzes.absolute(1);
+					Quiz quiz = getQuizFromRecord(quizzes, 1);
 					quizList.add(quiz);
 				}
 			}
@@ -442,14 +497,14 @@ public class QuizHelper
 	
 	public static ArrayList<Quiz> getQuizzesTaken(DBConnection conn, String Username, int num)
 	{
+		ArrayList<Integer> idList = new ArrayList<Integer>();
 		ArrayList<Quiz> quizList = new ArrayList<Quiz>();
 		try {
-			String query = "SELECT T.QuizID, QuizName, Description FROM Quiz Q JOIN QuizzesTaken T ON T.Username='" + Username + "' GROUP BY QuizID;";
+			String query = "SELECT T.QuizID FROM Quiz Q JOIN QuizzesTaken T ON T.Username='" + Username + "' GROUP BY QuizID;";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			
 			ResultSet results = ps.executeQuery();
 	
-			
 			if (results.isBeforeFirst())
 			{
 				ResultSet temp = results;
@@ -459,10 +514,24 @@ public class QuizHelper
 				for (int i = 1; i <= total; i++)
 				{
 					results.absolute(i);
-					Quiz quiz = getQuizFromRecord(results, i);
+					idList.add(results.getInt(1));
+				}
+			}
+			
+			for (int i = 0; i < idList.size(); i++)
+			{
+				String second_query = "SELECT * FROM Quiz WHERE QuizID = " + idList.get(i) + ";";
+				ps = conn.getConnection().prepareStatement(second_query);
+				
+				ResultSet quizzes = ps.executeQuery();
+				if (quizzes.isBeforeFirst())
+				{
+					quizzes.absolute(1);
+					Quiz quiz = getQuizFromRecord(quizzes, 1);
 					quizList.add(quiz);
 				}
 			}
+			
 		}
 		catch (SQLException ex)
 		{

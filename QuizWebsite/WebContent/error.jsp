@@ -1,22 +1,22 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"
     import="db.*"
-    import="java.util.*"
     import="entities.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Login </title>
 <% String name =(String)session.getAttribute("name");
-String user = (String)request.getParameter("id");
-ServletContext context = pageContext.getServletContext();
-DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
-%>
-<title><%= name %>'s Quiz History</title>
+	ServletContext context = pageContext.getServletContext();
+	DBConnection conn = (DBConnection) context.getAttribute("Database Connection");%>
 <link rel="stylesheet" type="text/css" href="main.css">
 
 </head>
 <body>
+
+
+
 	<div id = "container">
 	
 	<div id = "sidebar">
@@ -24,7 +24,8 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 		<div id = "profpic">
 		</div>
 		<div id = "sidebar-content">
-			<%if (name != null)
+		
+		<%if (name != null)
 				{
 				out.println("<h1>Welcome, " + name + ".</h1>");
 				out.println("<a href=\"#createQuiz\" class=\"reg-button\">Create Quiz</a>");
@@ -52,7 +53,6 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 			%>
 			<br>
 			<a href ="index.jsp" class ="big-button"> Home </a>
-
 		</div>
 		
 	</div>
@@ -65,36 +65,11 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 	
 	<div id = "filler">
 	</div>
-	
-	<br>
-	
 	<div id ="content">
-		<h1> Your quiz history. </h1>
-		<div id="form">
-			<%
-				ArrayList<Quiz> quizzesTaken = QuizHelper.getQuizzesTaken(conn, name, -1);
-				for (int i = 0; i < quizzesTaken.size(); i++)
-				{
-					Quiz quiz = quizzesTaken.get(i);
-					int id = quiz.getId();
-					String QuizName = quiz.getName();
-					String Description = quiz.getDescription();
-					double score = QuizHelper.getScore(conn, id, name);
-					String start = QuizHelper.getStartTime(conn, id, name);
-					String end = QuizHelper.getEndTime(conn, id, name);
-					
-					out.println("<ul>");
-					out.println("<li><h3>" + QuizName + "</h3></li>");
-					out.println("<li style=\"list-style-type:none\"><ul>");
-						out.println("<li style =\"color: black\"> Description: " + Description + " </li>");
-						out.println("<li>Score: " + score + "</li>");
-						out.println("<li>Start Time: " + start + "</li>");
-						out.println("<li>End Time: " + end + "</li>");
-					out.println("</ul></li>");
-					out.println("</ul>");
-				}
-			%>
-		</div>
+		<h1> An error occurred. </h1>
+			<div id="form">
+				<h3> It's not you...it's us.</h3>
+			</div>
 	</div>
 </body>
 </html>

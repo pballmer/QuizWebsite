@@ -54,8 +54,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 		<div id = "profpic">
 		</div>
 		<div id = "sidebar-content">
-		
-			<%if (name != null)
+					<%if (name != null)
 				{
 				out.println("<h1>Welcome, " + name + ".</h1>");
 				out.println("<a href=\"#createQuiz\" class=\"reg-button\">Create Quiz</a>");
@@ -63,13 +62,23 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 				out.println("<br>");
 				out.println("<a href =\"allusers.jsp\" class = \"reg-button\"> Browse Users</a>");
 				out.println("<a href =\"quizHistory.jsp\" class = \"reg-button\"> Quiz History</a>");
+				
+				User check = UserHelper.getUserByID(conn, name);
+				if (check.isAdmin())
+				{
+					out.println("<br>");
+					out.println("<a href=\"admin.jsp\" class =\"big-button\"> Admin Settings </a>");
+				}
 				out.println("<br>");
 				out.println("<a href = \"logout.jsp\" class =\"big-button\"> Log out</a>");
+				
 				}
 				else{
 					out.println("<h1>Welcome, " + "stranger. </h1>");
 					out.println("<h3> Please <a href=\"login.jsp\" class=\"reg-button\"> login.</a></h3>");
 				}
+			
+
 			%>
 			<br>
 			<a href ="index.jsp" class ="big-button"> Home </a>
@@ -85,8 +94,27 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 	
 	<div id = "filler">
 	</div>
+
 	<div id ="content">
 		<h1 style="text-align: center"> <%= user %>'s Profile Page </h1>
+		<center>
+		<div id = "form">
+		<center>
+		<% 
+			if (!name.equals(user) && !UserHelper.getFriends(conn, name).contains(user))
+			{
+					out.println("<a href=\"friendreq.jsp?id=" + user + "&type=pending\" class = \"reg-button\"> Add Friend</a>");
+			}
+			else
+			{
+				out.println("<a href=\"friendreq.jsp?id=" + user + "&type=reject\" class = \"reg-button\"> Remove</a>");
+			}
+			out.println("<a href =\"note.jsp?to=" + user + "&type=send\" class = \"reg-button\"> Send Note </a>");
+			out.println("<a href =\"challenge.jsp?to=" + user + "&type=send\" class = \"reg-button\"> Challenge </a>");
+		%>
+		</center>
+		</div>
+		</center>
 		<% out.println("<h2> " + user + "'s Quiz Activity</h2>");
 		out.println("<div id=\"tabs\">");
 		out.println("<div class=\"tab-nav\">");

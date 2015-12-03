@@ -17,6 +17,7 @@ if (name != null) out.println(" - " + name);
 <% 
 	ServletContext context = pageContext.getServletContext();
 	DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
+	int blah = 0;
 %>
 
 
@@ -69,13 +70,23 @@ if (name != null) out.println(" - " + name);
 				out.println("<br>");
 				out.println("<a href =\"allusers.jsp\" class = \"reg-button\"> Browse Users</a>");
 				out.println("<a href =\"quizHistory.jsp\" class = \"reg-button\"> Quiz History</a>");
+				
+				User user = UserHelper.getUserByID(conn, name);
+				if (user.isAdmin())
+				{
+					out.println("<br>");
+					out.println("<a href=\"admin.jsp\" class =\"big-button\"> Admin Settings </a>");
+				}
 				out.println("<br>");
 				out.println("<a href = \"logout.jsp\" class =\"big-button\"> Log out</a>");
+				
 				}
 				else{
 					out.println("<h1>Welcome, " + "stranger. </h1>");
 					out.println("<h3> Please <a href=\"login.jsp\" class=\"reg-button\"> login.</a></h3>");
 				}
+			
+
 			%>
 			<br>
 			<a href ="index.jsp" class ="big-button"> Home </a>
@@ -105,216 +116,216 @@ if (name != null) out.println(" - " + name);
 		</div>
 		
 		
-<h2> Sitewide Quiz Activity </h2>
-
-
-<div id="tabs">
-	<div class="tab-nav">
-		<ul>
-			<li class = "active"><a href="#popularquiz"> Popular Quizzes </a></li>
-			<li><a href="#recentquiz"> Recent Quizzes </a> </li>
-		</ul>	
-	</div>
-	<div class="tab-content">
-		<div id="popularquiz" class = "tab active">
-			<%
-				ArrayList<Quiz> popularQuizzes = QuizHelper.getPopularQuizzes(conn, 10);
-				for (int i= 0; i < popularQuizzes.size(); i++)
-				{
-					Quiz quiz = popularQuizzes.get(i);
-					String quizName = quiz.getName();
-					int quizID = quiz.getId();
-					String description = quiz.getDescription();
-					
-					out.println("<h5>" + quizName + "</h5>");
-					out.println("<p>" + description + "</p>");
-					out.println("<br>");
-				}
-			%>
-		</div>
+		<h2> Sitewide Quiz Activity </h2>
 		
-		<div id ="recentquiz" class ="tab">
-			<%
-				ArrayList<Quiz> recentQuizzes = QuizHelper.getRecentQuizzes(conn, 10);
-				for (int i= 0; i < recentQuizzes.size(); i++)
-				{
-					Quiz quiz = recentQuizzes.get(i);
-					String quizName = quiz.getName();
-					int quizID = quiz.getId();
-					String description = quiz.getDescription();
-					
-					out.println("<h5>" + quizName + "</h5>");
-					out.println("<p>" + description + "</p>");
-					out.println("<br>");
-				}
-			%>
-		</div>
-	</div>
-</div>
-
-<%if (name != null)
-	{
-		out.println("<h2>Your Quiz Activity</h2>");
-		out.println("<div id=\"tabs\">");
-		out.println("<div class=\"tab-nav\">");
-		out.println("<ul>");
-		out.println("<li class = \"active\"><a href=\"#yourquizcreated\"> Your Recently Created Quizzes</a></li>");
-		out.println("<li><a href=\"#yourquiztaken\">Your Recently Taken Quizzes</a> </li>");
-		out.println("</ul>");
-		out.println("</div>");
 		
-		out.println("<div class=\"tab-content\">");
-			out.println("<div id=\"yourquizcreated\" class = \"tab active\">");
-				ArrayList<Quiz> quizzesMade = QuizHelper.getQuizzesMade(conn, name, -1);
-				for (int i = 0; i < quizzesMade.size(); i++)
-				{
-					Quiz quiz = quizzesMade.get(i);
-					String quizName = quiz.getName();
-					int quizID = quiz.getId();
-					String description = quiz.getDescription();
-					
-					out.println("<h5>" + quizName + "</h5>");
-					out.println("<p>" + description + "</p>");
-					out.println("<br>");
-				}
-			out.println("</div>");
-			
-			out.println("<div id =\"yourquiztaken\" class =\"tab\">");
-			ArrayList<Quiz> quizzesTaken = QuizHelper.getQuizzesTaken(conn, name, -1);
-				for (int i = 0; i < quizzesTaken.size(); i++)
-				{
-					Quiz quiz = quizzesTaken.get(i);
-					String quizName = quiz.getName();
-					int quizID = quiz.getId();
-					String description = quiz.getDescription();
-					double score = QuizHelper.getScore(conn, quizID, name);
-					
-					out.println("<h5>" + quizName + "</h5>");
-					out.println("<p>" + description + "</p>");
-					out.println("<p>Score: " + score + "</p>");
-					out.println("<br>");
-				}
-			out.println("</div>");
-
-		out.println("</div>");
-	out.println("</div>");
-
-	out.println("<br> <br>");
-	out.println("<div id=\"miscinfo\">");
-		out.println("<table style=\"width:100%\">");
-			out.println("<tr>");
-				String[] headerNames = {"Achievements", "Messages", "Friend Activity"};
-				for (int i = 0; i < headerNames.length; i++)
-				{
-					out.println("<td class = \"header\">");
-					out.println("<h3 align=\"center\">" + headerNames[i] + "</h3>");
-					out.println("</td>");
-				}
-			out.println("</tr>");	
-			out.println("<tr>");
-				out.println("<td>");
-					out.println("<ul>");
-					ArrayList<String> achievements = UserHelper.getAchievements(conn, name);
-					for (int i = 0; i < achievements.size(); i++)
+		<div id="tabs">
+			<div class="tab-nav">
+				<ul>
+					<li class = "active"><a href="#popularquiz"> Popular Quizzes </a></li>
+					<li><a href="#recentquiz"> Recent Quizzes </a> </li>
+				</ul>	
+			</div>
+			<div class="tab-content">
+				<div id="popularquiz" class = "tab active">
+					<%
+					ArrayList<Quiz> popularQuizzes = QuizHelper.getPopularQuizzes(conn, 10);
+					for (int i= 0; i < popularQuizzes.size(); i++)
 					{
-						out.println("<li>" + achievements.get(i) + "</li>");
+						Quiz quiz = popularQuizzes.get(i);
+						String quizName = quiz.getName();
+						int quizID = quiz.getId();
+						String description = quiz.getDescription();
+						
+						out.println("<h5>" + quizName + "</h5>");
+						out.println("<p>" + description + "</p>");
+						out.println("<br>");
 					}
-				out.println("</ul>");
-				out.println("</td>");
-				out.println("<td>");
-						ArrayList<Challenge> challenges = NotificationsHelper.getChallengeByRecipient(conn, name);
-						ArrayList<Note> notes = NotificationsHelper.getNotesByRecipient(conn, name);
-						ArrayList<String> friends = NotificationsHelper.getPendingFrendRequests(conn, name);
-						
-						out.println("<h5> You have " + friends.size() + " NEW Friend Requests </h5>");
-						for (int i = 0; i < friends.size(); i++)
-						{
-							out.println("<p><a href = \"user.jsp?id=" + friends.get(i) + "\">" + friends.get(i) + "</a> <a href=\"addedFriend.jsp?id=" + friends.get(i) + "\">Accept.</a> <a href=\"rejectedFriend.jsp?id=" + friends.get(i) + "\">Reject.</a>");
-							out.println("<br>");
-						}
-						
-						out.println("<h5> You have " + challenges.size() + " NEW Challenges </h5>");
-						
-						for (int i = 0; i < challenges.size(); i++)
-						{
-							Challenge challenge = challenges.get(i);
-							String sender = challenge.getSenderName();
-							String link = challenge.getQuizLink();
-							double score = challenge.getScore();
-							Quiz quiz = QuizHelper.getQuizByID(conn, challenge.getQuizID());
-							out.println("<p><a href=\"user.jsp?id=" + sender + "></a>" + sender + "</p> has challenged you to take " + "<a href=\"" + link + "\">" + quiz.getName() + ". You need to get a score greater than <b>" + score + "</b> to win.");	
-							out.println("<br>");
-						}
-						
-						out.println("<h5> You have " + notes.size() + " NEW Notes </h5>");
-						
-						for (int i = 0; i < notes.size(); i++)
-						{
-							Note note = notes.get(i);
-							String text = note.getText();
-							String sender = note.getSenderName();
-							out.println("<p><a href=\"user.jsp?id=" + sender + ">" + sender + "</a></p> has sent you a note saying: </p>");
-							out.println("<p>" + text + "</p>");
-							out.println("<br>");
-						}
-				out.println("</td>");
-				out.println("<td>");
-					out.println("<ul>");
-						ArrayList<String> friendNames = UserHelper.getFriends(conn, name);
-						for (int i = 0; i < friendNames.size(); i++)
-						{
-							String friendName = friendNames.get(i);
-							ArrayList<Quiz> recentQuizTaken = QuizHelper.getQuizzesMade(conn, friendName, 3);
-							ArrayList<Quiz> recentQuizMade = QuizHelper.getQuizzesTaken(conn, friendName, 3);
-							ArrayList<String> recAchieves = UserHelper.getAchievements(conn, friendName);
-							
-							out.println("<b><p> Your friend <a href=\"user.jsp?id=" + friendName + "\">" + friendName + "</a> has</p></b>");
-							
-							out.println("<p>Taken the following quizzes: </p>");
-							out.println("<ul>");
-							for (int j = 0; i < recentQuizTaken.size(); i++)
-							{
-								Quiz quiz = recentQuizTaken.get(j);
-								String quizName = quiz.getName();
-								int quizID = quiz.getId();
-								String description = quiz.getDescription();
-								
-								out.println("<li><a href=\"#quizwebsite\">" + quizName + "</a></li>");
-							}
-							out.println("</ul>");
-							
-							out.println("<p>Made the following quizzes: </p>");
-							out.println("<ul>");
-							for (int j = 0; i < recentQuizMade.size(); i++)
-							{
-								Quiz quiz = recentQuizMade.get(j);
-								String quizName = quiz.getName();
-								int quizID = quiz.getId();
-								String description = quiz.getDescription();
-								
-								out.println("<li><a href=\"#quizwebsite\">" + quizName + "</a></li>");
-							}
-							out.println("</ul>");
-							
-							out.println("<p>Got the following achievements: </p>");
-							out.println("<ul>");
-							for (int j = 0; i < recAchieves.size(); i++)
-							{
-								out.println("<li>" + recAchieves.get(j) + "</li>");
-							}
-							out.println("</ul>");
-						}	
-					out.println("</ul>");
-				out.println("</td>");
-			out.println("</tr>");	
-		out.println("</table>");
-	out.println("</div>");
+				%>
+			</div>
 			
+			<div id ="recentquiz" class ="tab">
+				<%
+					ArrayList<Quiz> recentQuizzes = QuizHelper.getRecentQuizzes(conn, 10);
+					for (int i= 0; i < recentQuizzes.size(); i++)
+					{
+						Quiz quiz = recentQuizzes.get(i);
+						String quizName = quiz.getName();
+						int quizID = quiz.getId();
+						String description = quiz.getDescription();
+						
+						out.println("<h5>" + quizName + "</h5>");
+						out.println("<p>" + description + "</p>");
+						out.println("<br>");
+					}
+				%>
+				</div>
+			</div>
+		</div>
+		
+		<%if (name != null)
+		{
+			out.println("<h2>Your Quiz Activity</h2>");
+			out.println("<div id=\"tabs\">");
+			out.println("<div class=\"tab-nav\">");
+			out.println("<ul>");
+			out.println("<li class = \"active\"><a href=\"#yourquizcreated\"> Your Recently Created Quizzes</a></li>");
+			out.println("<li><a href=\"#yourquiztaken\">Your Recently Taken Quizzes</a> </li>");
+			out.println("</ul>");
+			out.println("</div>");
+			
+			out.println("<div class=\"tab-content\">");
+				out.println("<div id=\"yourquizcreated\" class = \"tab active\">");
+					ArrayList<Quiz> quizzesMade = QuizHelper.getQuizzesMade(conn, name, -1);
+					for (int i = 0; i < quizzesMade.size(); i++)
+					{
+						Quiz quiz = quizzesMade.get(i);
+						String quizName = quizzesMade.get(i).getName();
+						int quizID = quizzesMade.get(i).getId();
+						String description = quizzesMade.get(i).getDescription();
+						
+						out.println("<h5>" + quizzesMade.get(i).getName() + "</h5>");
+						out.println("<p>" + quizzesMade.get(i).getDescription()  + "</p>");
+						out.println("<br>");
+					}
+				out.println("</div>");
+				
+				out.println("<div id =\"yourquiztaken\" class =\"tab\">");
+				ArrayList<Quiz> quizzesTaken = QuizHelper.getQuizzesTaken(conn, name, -1);
+					for (int i = 0; i < quizzesTaken.size(); i++)
+					{
+						Quiz quiz = quizzesTaken.get(i);
+						String quizName = quiz.getName();
+						int quizID = quiz.getId();
+						String description = quiz.getDescription();
+						double score = QuizHelper.getScore(conn, quizID, name);
+						
+						out.println("<h5>" + quizName + "</h5>");
+						out.println("<p>" + description + "</p>");
+						out.println("<p>Score: " + score + "</p>");
+						out.println("<br>");
+					}
+				out.println("</div>");
+		
+			out.println("</div>");
 		out.println("</div>");
 		
-	}%>
-
-	</div>
-</div>
+		out.println("<br> <br>");
+		out.println("<div id=\"miscinfo\">");
+			out.println("<table style=\"width:100%\">");
+				out.println("<tr>");
+					String[] headerNames = {"Achievements", "Messages", "Friend Activity"};
+					for (int i = 0; i < headerNames.length; i++)
+					{
+						out.println("<td class = \"header\">");
+						out.println("<h3 align=\"center\">" + headerNames[i] + "</h3>");
+						out.println("</td>");
+					}
+				out.println("</tr>");	
+				out.println("<tr>");
+					out.println("<td>");
+						out.println("<ul>");
+						ArrayList<String> achievements = UserHelper.getAchievements(conn, name);
+						for (int i = 0; i < achievements.size(); i++)
+						{
+							out.println("<li>" + achievements.get(i) + "</li>");
+						}
+					out.println("</ul>");
+					out.println("</td>");
+					out.println("<td>");
+							ArrayList<Challenge> challenges = NotificationsHelper.getChallengeByRecipient(conn, name);
+							ArrayList<Note> notes = NotificationsHelper.getNotesByRecipient(conn, name);
+							ArrayList<String> friends = NotificationsHelper.getPendingFrendRequests(conn, name);
+							
+							out.println("<h5> You have " + friends.size() + " NEW Friend Requests </h5>");
+							for (int i = 0; i < friends.size(); i++)
+							{
+								out.println("<p><a href = \"user.jsp?id=" + friends.get(i) + "\">" + friends.get(i) + "</a> <a href=\"friendreq.jsp?id=" + friends.get(i) + "&type=accept\">Accept.</a> <a href=\"friendreq.jsp?id=" + friends.get(i) + "&type=reject\">Reject.</a>");
+								out.println("<br>");
+							}
+							
+							out.println("<h5> You have " + challenges.size() + " NEW Challenges </h5>");
+							
+							for (int i = 0; i < challenges.size(); i++)
+							{
+								Challenge challenge = challenges.get(i);
+								String sender = challenge.getSenderName();
+								String link = challenge.getQuizLink();
+								double score = challenge.getScore();
+								Quiz quiz = QuizHelper.getQuizByID(conn, challenge.getQuizID());
+								out.println("<p><a href=\"user.jsp?id=" + sender + "></a>" + sender + "</p> has challenged you to take " + "<a href=\"" + link + "\">" + quiz.getName() + ". You need to get a score greater than <b>" + score + "</b> to win.");	
+								out.println("<br>");
+							}
+							
+							out.println("<h5> You have " + notes.size() + " NEW Notes </h5>");
+							
+							for (int i = 0; i < notes.size(); i++)
+							{
+								Note note = notes.get(i);
+								String text = note.getText();
+								String sender = note.getSenderName();
+								out.println("<p><a href=\"user.jsp?id=" + sender + ">" + sender + "</a></p> has sent you a note saying: </p>");
+								out.println("<p>" + text + "</p>");
+								out.println("<br>");
+							}
+					out.println("</td>");
+					out.println("<td>");
+						out.println("<ul>");
+							ArrayList<String> friendNames = UserHelper.getFriends(conn, name);
+							for (int i = 0; i < friendNames.size(); i++)
+							{
+								String friendName = friendNames.get(i);
+								ArrayList<Quiz> recentQuizTaken = QuizHelper.getQuizzesMade(conn, friendName, 3);
+								ArrayList<Quiz> recentQuizMade = QuizHelper.getQuizzesTaken(conn, friendName, 3);
+								ArrayList<String> recAchieves = UserHelper.getAchievements(conn, friendName);
+								
+								out.println("<b><p> Your friend <a href=\"user.jsp?id=" + friendName + "\">" + friendName + "</a> has</p></b>");
+								
+								out.println("<p>Taken the following quizzes: </p>");
+								out.println("<ul>");
+								for (int j = 0; i < recentQuizTaken.size(); i++)
+								{
+									Quiz quiz = recentQuizTaken.get(j);
+									String quizName = quiz.getName();
+									int quizID = quiz.getId();
+									String description = quiz.getDescription();
+									
+									out.println("<li><a href=\"#quizwebsite\">" + quizName + "</a></li>");
+								}
+								out.println("</ul>");
+								
+								out.println("<p>Made the following quizzes: </p>");
+								out.println("<ul>");
+								for (int j = 0; i < recentQuizMade.size(); i++)
+								{
+									Quiz quiz = recentQuizMade.get(j);
+									String quizName = quiz.getName();
+									int quizID = quiz.getId();
+									String description = quiz.getDescription();
+									
+									out.println("<li><a href=\"#quizwebsite\">" + quizName + "</a></li>");
+								}
+								out.println("</ul>");
+								
+								out.println("<p>Got the following achievements: </p>");
+								out.println("<ul>");
+								for (int j = 0; i < recAchieves.size(); i++)
+								{
+									out.println("<li>" + recAchieves.get(j) + "</li>");
+								}
+								out.println("</ul>");
+							}	
+						out.println("</ul>");
+					out.println("</td>");
+				out.println("</tr>");	
+			out.println("</table>");
+		out.println("</div>");
+				
+			out.println("</div>");
+			
+		}%>
+		
+			</div>
+		</div>
 </body>
 </html>

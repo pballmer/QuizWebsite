@@ -1,13 +1,13 @@
 package entities;
 
 public class Challenge extends NotificationAbstract{
-	private String text;
 	private Quiz quiz;
+	private String link;
 	
-	public Challenge(int type, int id, User from, User to, String text, Quiz q){
+	public Challenge(int type, int id, User from, User to, Quiz q, String link){
 		super(type, id, from, to);
-		this.text = text;
 		this.quiz = q;
+		this.link = link;
 	}
 
 	public String getText(){
@@ -19,10 +19,12 @@ public class Challenge extends NotificationAbstract{
 	}
 	
 	public String getQuizLink(){
-		return quiz.getLink();
+		return link;
 	}
 	
 	public int getScore(){
-		return from.getQuizzesTaken().get(quiz.getId());
+		//return from.getQuizzesTaken().get(quiz.getId());
+		return 10;
 	}
+
 }
