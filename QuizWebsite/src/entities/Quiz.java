@@ -80,6 +80,10 @@ public class Quiz {
 	public String getName() {
 		return name;
 	}
+	
+	public void setName(String n){
+		
+	}
 
 	public int getId() {
 		return id;
