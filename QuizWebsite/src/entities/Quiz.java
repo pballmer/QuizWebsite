@@ -75,6 +75,7 @@ public class Quiz {
 	
 	public void addTag(String tag, DBConnection conn){
 		tags.add(tag);
+		QuizHelper.addTag(conn, this, tag);
 	}
 	
 	public void addQuestion(QuestionAbstract question, DBConnection conn){
