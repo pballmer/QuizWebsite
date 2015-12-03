@@ -289,6 +289,29 @@ public class QuizHelper
 		return quizList;
 	}
 	
+	public static double getTopScore(DBConnection conn, int id){
+		String query = "SELECT * FROM QuizzesTaken WHERE QuizID = " + id + ";";
+		double currScore = -1;//sentinel
+		try {
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if(results.isBeforeFirst()){
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				for(int i = 1; i <= numRows; i++){
+					results.absolute(i);
+					if(results.getInt(3) > currScore) currScore = results.getInt(3);
+				}
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing top score.");
+		}
+		return currScore;
+	}
+	
 	public static ArrayList<Quiz> getRecentQuizzes(DBConnection conn, int num)
 	{
 		ArrayList<Quiz> quizList = new ArrayList<Quiz>();
