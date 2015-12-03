@@ -32,6 +32,7 @@ public class Quiz {
 		this.id = quizid;
 		this.name = quizname;
 		this.description = desc;
+		questions = new ArrayList<QuestionAbstract>();
 	}
 	//constructor without other options being set
 	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link){

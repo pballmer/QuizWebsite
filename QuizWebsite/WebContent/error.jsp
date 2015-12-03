@@ -6,8 +6,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Create Account </title>
-<% String name =(String)session.getAttribute("name"); 
+<title>Login </title>
+<% String name =(String)session.getAttribute("name");
 	ServletContext context = pageContext.getServletContext();
 	DBConnection conn = (DBConnection) context.getAttribute("Database Connection");%>
 <link rel="stylesheet" type="text/css" href="main.css">
@@ -25,7 +25,7 @@
 		</div>
 		<div id = "sidebar-content">
 		
-			<%if (name != null)
+		<%if (name != null)
 				{
 				out.println("<h1>Welcome, " + name + ".</h1>");
 				out.println("<a href=\"createquiz.jsp\" class=\"reg-button\">Create Quiz</a>");
@@ -51,9 +51,8 @@
 			
 
 			%>
-					<br>
-			<a href ="index.jsp" class ="big-button"> Home </a>a>
-
+			<br>
+			<a href ="index.jsp" class ="big-button"> Home </a>
 		</div>
 		
 	</div>
@@ -66,20 +65,11 @@
 	
 	<div id = "filler">
 	</div>
-	
-	<div id = "content">
-	<h1>Create New Account</h1>
-
-<div id="form">
-	<p>Please enter a proposed username and password.</p>
-	<form action="AccountCreationServlet" method="post">
-	<p>User Name:
-	<input type="text" name="name" />
-	<p>Password:
-	<input type="password" name="pass" />
-	<input type="submit" value="Create account"/></p>
-	</form>
-</div>
+	<div id ="content">
+		<h1> An error occurred. </h1>
+			<div id="form">
+				<h3> It's not you...it's us.</h3>
+			</div>
 	</div>
 </body>
 </html>

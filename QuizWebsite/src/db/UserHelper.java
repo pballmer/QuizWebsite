@@ -33,7 +33,7 @@ public class UserHelper
 			String username = rs.getString(USERNAME);
 			String password = rs.getString(PASSWORD);
 			boolean admin = rs.getBoolean(ADMIN);
-			user = new User(username, password, admin);
+			user = new User(username, password, admin, true);
 		}
 		catch (SQLException ex)
 		{
@@ -41,6 +41,29 @@ public class UserHelper
 			System.err.println("Error occured when accessing database.");
 		}
 		return user;
+	}
+	
+	public static int getTotalNumUsers(DBConnection conn)
+	{
+		int num = 0; 
+		try
+		{
+			String query = "SELECT COUNT(*) FROM Users";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);		
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				results.absolute(1);
+				num = results.getInt(1);
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return num;
 	}
 	
 	private static String getAchievementFromRecord(ResultSet rs, int row)
@@ -107,7 +130,7 @@ public class UserHelper
 	{
 		try
 		{
-			String query = "SELECT * From Users WHERE UserID='" + UserID + "';";
+			String query = "SELECT * From Users WHERE Username='" + UserID + "';";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			
 			ResultSet results = ps.executeQuery();
@@ -273,6 +296,18 @@ public class UserHelper
 		return achList;
 	}
 	
+	public static void addAchievement(DBConnection conn, String ach, String username){
+		String command = "INSERT INTO Achievements VALUES(\"" + username + "\",\"" + ach + "\");";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(command);
+			ps.execute();
+		} catch (SQLException e) {
+			System.err.println("Error occured when inserting achievement into database.");
+			e.printStackTrace();
+		}
+	}
+	
 	public static HashMap<String, Double> getPastQuizPerformances(DBConnection conn, String Username)
 	{
 		HashMap<String, Double> map = new HashMap<String, Double>();
@@ -355,6 +390,40 @@ public class UserHelper
 		}
 		
 		return 1;
+	}
+	
+	public static int makeAdmin(DBConnection conn, String username)
+	{
+		String query = "UPDATE Users SET Admin=1 WHERE Username='" + username + "';";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+		}
+		catch (SQLException e) {
+			System.err.println("Error occured when updating user in database.");
+			e.printStackTrace();
+			return -1;
+		}
+	
+	return 1;	
+		
+	}
+	public static int removeUser(DBConnection conn, String username)
+	{
+		String query = "DELETE FROM Users WHERE Username='" + username + "';";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+		}
+		catch (SQLException e) {
+			System.err.println("Error occured when deleting user into database.");
+			e.printStackTrace();
+			return -1;
+		}
+	
+	return 1;
 	}
 	
 	

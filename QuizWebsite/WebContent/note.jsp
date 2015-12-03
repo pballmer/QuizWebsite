@@ -2,19 +2,23 @@
     pageEncoding="ISO-8859-1"
     import="db.*"
     import="java.util.*"
-    import="entities.*"%>
+    import="entities.*"
+    %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Note</title>
 <% String name =(String)session.getAttribute("name");
-String user = (String)request.getParameter("id");
+String NoteID = (String)request.getParameter("id");
+String type = (String)request.getParameter("type");
+String user = (String)request.getParameter("to");
 ServletContext context = pageContext.getServletContext();
 DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
-%>
-<title><%= name %>'s Quiz History</title>
-<link rel="stylesheet" type="text/css" href="main.css">
 
+
+%>
+<link rel="stylesheet" type="text/css" href="main.css">
 </head>
 <body>
 	<div id = "container">
@@ -52,7 +56,6 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 			%>
 			<br>
 			<a href ="index.jsp" class ="big-button"> Home </a>
-
 		</div>
 		
 	</div>
@@ -65,36 +68,40 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 	
 	<div id = "filler">
 	</div>
-	
-	<br>
-	
 	<div id ="content">
-		<h1> Your quiz history. </h1>
-		<div id="form">
+		<div id ="form">
 			<%
-				ArrayList<Quiz> quizzesTaken = QuizHelper.getQuizzesTaken(conn, name, -1);
-				for (int i = 0; i < quizzesTaken.size(); i++)
+				if (type != null)
 				{
-					Quiz quiz = quizzesTaken.get(i);
-					int id = quiz.getId();
-					String QuizName = quiz.getName();
-					String Description = quiz.getDescription();
-					double score = QuizHelper.getScore(conn, id, name);
-					String start = QuizHelper.getStartTime(conn, id, name);
-					String end = QuizHelper.getEndTime(conn, id, name);
-					
-					out.println("<ul>");
-					out.println("<li><h3>" + QuizName + "</h3></li>");
-					out.println("<li style=\"list-style-type:none\"><ul>");
-						out.println("<li style =\"color: black\"> Description: " + Description + " </li>");
-						out.println("<li>Score: " + score + "</li>");
-						out.println("<li>Start Time: " + start + "</li>");
-						out.println("<li>End Time: " + end + "</li>");
-					out.println("</ul></li>");
-					out.println("</ul>");
+					if (type.equals("send"))
+					{
+						out.println("<h1>You are sending a note to " + user + "</h4>");
+						out.println("<form action=\"NotificationServlet\" method=\"post\">");
+							out.println("<p>Note:");
+							out.println("<textarea name=\"text\" rows=\"30\" cols=\"50\"/>");
+							out.println("</textarea>");
+							out.println("</p>");
+							out.println("<input type=\"hidden\" name=\"type\" value=\"note\"/>");
+							out.println("<input type=\"hidden\" name=\"recipient\" value=\"" + user + "\"/>");
+							out.println("<input type=\"hidden\" name=\"sender\" value=\"" + name + "\"/>");
+							out.println("<input type=\"submit\" value=\"Send!\"/>");
+						out.println("</form>");				
+					}
+					else if (type.equals("read"))
+					{
+						out.println("<h2>" + user + " has sent you this note: </h2>");
+						Note note = NotificationsHelper.getNote(conn, Integer.parseInt(NoteID));
+						out.println("<p>" + note.getText() + "</p>");
+						out.println("<a href=\"note.jsp?type=send&to=" + user + "\"> Reply? </a>");			
+					}
+					else if (type.equals("submit"))
+					{
+						out.println("<h1> Your note has been sent to " + user + "</h1>");
+					}
 				}
 			%>
-		</div>
+
+		</div>	
 	</div>
 </body>
 </html>

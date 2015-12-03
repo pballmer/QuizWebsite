@@ -22,5 +22,10 @@ public abstract class NotificationAbstract {
 	public String getSenderName() {
 		return from.getUsername();
 	}
+	
+	public String getRecipient()
+	{
+		return to.getUsername();
+	}
 
 }

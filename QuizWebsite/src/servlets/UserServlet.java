@@ -12,19 +12,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import db.DBConnection;
-import db.QuizHelper;
+import db.UserHelper;
+import entities.User;
 
 /**
- * Servlet implementation class AddQuestionServlet
+ * Servlet implementation class UserServlet
  */
-@WebServlet("/AddQuestionServlet")
-public class AddQuestionServlet extends HttpServlet {
+@WebServlet("/UserServlet")
+public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public AddQuestionServlet() {
+    public UserServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -32,6 +33,7 @@ public class AddQuestionServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+    @Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
@@ -39,17 +41,21 @@ public class AddQuestionServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String qType = request.getParameter("qtype");        
-		HttpSession session = request.getSession();
 		ServletContext context = getServletContext();
 		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
-        //session.setAttribute("quizDesc", quizDesc);
-		// create question, which adds it to the questions list and its specific list
-		// add that question to the quiz
-        QuizHelper.
-        RequestDispatcher dispatch = request.getRequestDispatcher("createquiz.jsp");
-		dispatch.forward(request, response);
+		String name = request.getParameter("name");
+
+		User user = UserHelper.getUserByID(conn, name);
+		if (user != null)
+		{
+	        RequestDispatcher dispatch = request.getRequestDispatcher("user.jsp?id=" + name);
+			dispatch.forward(request, response);
+		}else {
+			RequestDispatcher dispatch = request.getRequestDispatcher("allusers.jsp?message=Error");
+			dispatch.forward(request, response);
+		}
 	}
 
 }
