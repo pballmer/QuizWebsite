@@ -58,6 +58,13 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 	<br>
 	
 	<div id ="content">
+			<%//get Quiz title, list of quiz quesitons, 
+				
+				
+			%>
+	
+		<h2>Quiz Name You're Taking!</h2>
+	
 	</div>
 </body>
 </html>
