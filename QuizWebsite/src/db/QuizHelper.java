@@ -248,7 +248,20 @@ public class QuizHelper
 	public static void setQuizName(DBConnection conn, int QuizID, String newName)
 	{
 		try {
-			String query = "UPDATE QuizzesMade SET QuizName = '" + newName + "' WHERE QuizID = " + QuizID + ";";
+			String query = "UPDATE Quiz SET QuizName = '" + newName + "' WHERE QuizID = " + QuizID + ";";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+			
+		} catch (SQLException ex) {
+				ex.printStackTrace();
+				System.err.println("Error occured when accessing database.");
+			}
+	}
+	
+	public static void setQuizDesc(DBConnection conn, int QuizID, String newDesc)
+	{
+		try {
+			String query = "UPDATE Quiz SET Description = '" + newDesc + "' WHERE QuizID = " + QuizID + ";";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ps.execute();
 			
@@ -481,7 +494,7 @@ public class QuizHelper
 						+ QuizName + "', '" + Description + "');";
 		try {
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
-			ps.executeQuery(); // TODO is this right?
+			ps.execute();
 			// Use below to do rs.last(), increment and it should be the last question added according to TA
 			Statement stmt = conn.getConnection().createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM Quiz");

@@ -24,10 +24,10 @@ public class QuestionHelper
 		MULTIPLE_CHOICE, QUESTION_RESPONSE, FILL_IN_BLANK, PICTURE_RESPONSE
 	}
 	
-	private static final int MULTIPLE_CHOICE = 0;
+	/*private static final int MULTIPLE_CHOICE = 0;
 	private static final int QUESTION_RESPONSE = 1;
 	private static final int FILL_IN_BLANK = 2;
-	private static final int PICTURE_RESPONSE = 3;
+	private static final int PICTURE_RESPONSE = 3;*/
 	
 	
 	//NOTE: THIS SETS THE QUIZ ID TO -1 (assuming client will have Quiz ID/will not be needed
@@ -40,13 +40,13 @@ public class QuestionHelper
 			rs.absolute(row);
 			
 			//changes from QUIZ_NAME to QUestion_ID etc.
-			String QuestionID = rs.getString("QUESTION_ID");
-			String QuestionType = rs.getString("QUESTION_TYPE");
-			ArrayList<String> answers = getAnswers(conn, QuestionID);
-			ArrayList<String> options = getQuestionOptions(conn, QuestionID);
+			String questionID = rs.getString("QUESTION_ID");
+			String questionType = rs.getString("QUESTION_TYPE");
+			ArrayList<String> answers = getAnswers(conn, questionID);
+			ArrayList<String> options = getQuestionOptions(conn, questionID);
 			//where is above quiz ID coming from and need to get question string
 			//this is 
-			question = new QuestionAbstract(Integer.parseInt(QuestionID), -1, options.get(0), answers, Integer.parseInt(QuestionType), options);
+			question = new QuestionAbstract(Integer.parseInt(questionID), -1, options.get(0), answers, QuestionTypes.valueOf(questionType), options);
 
 		}
 		catch (SQLException ex)
@@ -163,8 +163,8 @@ public class QuestionHelper
 			
 			if (question != null)
 			{
-				int QuestionType = question.getType();
-				switch (QuestionType)
+				QuestionTypes type = question.getType();
+				switch (type)
 				{
 					case MULTIPLE_CHOICE:
 						String multQuery = "SELECT * FROM MultipleChoice WHERE QuestionID = " + QuestionID + ";";
@@ -220,28 +220,112 @@ public class QuestionHelper
 		return options;
 	}
 	//will return int later OR we will change it so it takes the ID as a parameter
-	public static int addQuestion(DBConnection conn, int type)
+	public static int addQuestion(DBConnection conn, QuestionTypes type)
 	{
 		String query = "INSERT INTO Question VALUES(NULL," + type + ");";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ps.executeQuery();
+			ps.execute();
 			// Use below to do rs.last(), increment and it should be the last question added according to TA
 			Statement stmt = conn.getConnection().createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM Question");
 			rs.last();
 			int lastID = Integer.parseInt(rs.getString("QuestionID"));
+			switch (type) {
+				case MULTIPLE_CHOICE:
+					// intentionally not adding an entry into the MC table. ask colin for explanation
+					break;
+				case QUESTION_RESPONSE:
+					addQuestionResponse(conn, lastID);
+					break;
+				case FILL_IN_BLANK:
+					addFillBlank(conn, lastID);
+					break;
+				case PICTURE_RESPONSE:
+					addPictureResponse(conn, lastID);
+					break;
+				default: break;
+			}
+
 			return lastID;
 		}
 		catch (SQLException ex)
 		{
-			System.err.println("Error occured when inserting user into database.");
+			System.err.println("Error occured when inserting question into database.");
 			ex.printStackTrace();	
 		}
 		//last ID was not gotten
 		return -1;
 	}
+	
+//	public static void addMultipleChoice(DBConnection conn, int questionID)
+//	{
+//		String query = "INSERT INTO MultipleChoice VALUES(" + questionID + ", '');";
+//		PreparedStatement ps = conn.getConnection().prepareStatement(query);
+//		ps.execute();
+//		
+//		
+//		addQuestion(conn, QuestionTypes.MULTIPLE_CHOICE);
+//		int id = question.getQuestionID();
+//		//the first option here is the question
+//		ArrayList<String> options = question.getOptions();
+//		ArrayList<String> answers = question.getAnswers();
+//		addAnswers(conn, id, answers);
+//		
+//		try
+//		{
+//			
+//			for (int i = 0; i < options.size(); i++)
+//			{
+//				String query = "INSERT INTO FillInBlank|MultipleChoice VALUES(" + id + ", '" + options.get(i) + "');";
+//				PreparedStatement ps = conn.getConnection().prepareStatement(query);
+//				ps.executeQuery();				
+//			}
+//
+//		}
+//		catch (SQLException ex)
+//		{
+//			System.err.println("Error occured when inserting user into database.");
+//			ex.printStackTrace();	
+//		}
+//	}
+	
+	public static void addQuestionResponse(DBConnection conn, int questionID) {
+		try {
+			String query = "INSERT INTO QuestionResponse VALUES(" + questionID + ", '');";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();			
+		}
+		catch (SQLException ex) {
+			System.err.println("Error occured when inserting user into database.");
+			ex.printStackTrace();	
+		}
+	}
+	
+	public static void addFillBlank(DBConnection conn, int questionID) {
+		try {
+			String query = "INSERT INTO FillInBlank VALUES(" + questionID + ", '');";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();			
+		}
+		catch (SQLException ex) {
+			System.err.println("Error occured when inserting user into database.");
+			ex.printStackTrace();	
+		}
+	}
+	
+	public static void addPictureResponse(DBConnection conn, int questionID) {
+		try {
+			String query = "INSERT INTO PictureResponse VALUES(" + questionID + ", '');";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();			
+		}
+		catch (SQLException ex) {
+			System.err.println("Error occured when inserting user into database.");
+			ex.printStackTrace();	
+		}
+	}	
 	
 	//adds the arraylist of answers to the question
 	public static void addAnswers(DBConnection conn, int id, ArrayList<String> answers)
@@ -261,98 +345,98 @@ public class QuestionHelper
 			ex.printStackTrace();	
 		}
 	}
-
-	public static void addFillBlank(DBConnection conn, FillBlank question)
-	{
-
-		int id = question.getQuestionID();
-		String text = question.getQuestion();
-		ArrayList<String> answers = question.getAnswers();
-		
-		addQuestion(conn, FILL_IN_BLANK);
-		addAnswers(conn, id, answers);
-
-		try
-		{
-			String query = "INSERT INTO FillInBlank VALUES(" + id + ", '" + text + "');";
-			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ps.executeQuery();
-		}
-		catch (SQLException ex)
-		{
-			System.err.println("Error occured when inserting user into database.");
-			ex.printStackTrace();	
-		}
-	}
 	
-	public static void addMultipleChoice(DBConnection conn, MultipleChoice question)
-	{
-		addQuestion(conn, MULTIPLE_CHOICE);
-		int id = question.getQuestionID();
-		//the first option here is the question
-		ArrayList<String> options = question.getOptions();
-		ArrayList<String> answers = question.getAnswers();
-		addAnswers(conn, id, answers);
-		
-		try
-		{
-			
-			for (int i = 0; i < options.size(); i++)
-			{
-				String query = "INSERT INTO FillInBlank|MultipleChoice VALUES(" + id + ", '" + options.get(i) + "');";
-				PreparedStatement ps = conn.getConnection().prepareStatement(query);
-				ps.executeQuery();				
-			}
-
-		}
-		catch (SQLException ex)
-		{
-			System.err.println("Error occured when inserting user into database.");
-			ex.printStackTrace();	
-		}
-	}
-	
-	public static void addPictureResponse(DBConnection conn, PictureResponse question)
-	{
-		addQuestion(conn, PICTURE_RESPONSE);
-		int id = question.getQuestionID();
-		String text = question.getQuestion();
-		ArrayList<String> answers = question.getAnswers();
-		addAnswers(conn, id, answers);
-		try
-		{
-			
-			String query = "INSERT INTO PictureResponse VALUES(" + id + ", '" + text + "');";
-			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ps.executeQuery();	
-
-
-		}
-		catch (SQLException ex)
-		{
-			System.err.println("Error occured when inserting user into database.");
-			ex.printStackTrace();	
-		}
-	}	
-	
-	public static void addQuestionResponse(DBConnection conn, QuestionResponse question)
-	{
-		addQuestion(conn, QUESTION_RESPONSE);
-		int id = question.getQuestionID();
-		String text = question.getQuestion();
-		ArrayList<String> answers = question.getAnswers();
-		addAnswers(conn, id, answers);
-		
-		try
-		{
-			String query = "INSERT INTO QuestionResponse VALUES(" + id + ", '" + text + "');";
-			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ps.executeQuery();				
-		}
-		catch (SQLException ex)
-		{
-			System.err.println("Error occured when inserting user into database.");
-			ex.printStackTrace();	
-		}
-	}	
+//	public static void addFillBlank(DBConnection conn, FillBlank question)
+//	{
+//
+//		int id = question.getQuestionID();
+//		String text = question.getQuestion();
+//		ArrayList<String> answers = question.getAnswers();
+//		
+//		addQuestion(conn, QuestionTypes.FILL_IN_BLANK);
+//		addAnswers(conn, id, answers);
+//
+//		try
+//		{
+//			String query = "INSERT INTO FillInBlank VALUES(" + id + ", '" + text + "');";
+//			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+//			ps.executeQuery();
+//		}
+//		catch (SQLException ex)
+//		{
+//			System.err.println("Error occured when inserting user into database.");
+//			ex.printStackTrace();	
+//		}
+//	}
+//	
+//	public static void addMultipleChoice(DBConnection conn, MultipleChoice question)
+//	{
+//		addQuestion(conn, QuestionTypes.MULTIPLE_CHOICE);
+//		int id = question.getQuestionID();
+//		//the first option here is the question
+//		ArrayList<String> options = question.getOptions();
+//		ArrayList<String> answers = question.getAnswers();
+//		addAnswers(conn, id, answers);
+//		
+//		try
+//		{
+//			
+//			for (int i = 0; i < options.size(); i++)
+//			{
+//				String query = "INSERT INTO FillInBlank|MultipleChoice VALUES(" + id + ", '" + options.get(i) + "');";
+//				PreparedStatement ps = conn.getConnection().prepareStatement(query);
+//				ps.executeQuery();				
+//			}
+//
+//		}
+//		catch (SQLException ex)
+//		{
+//			System.err.println("Error occured when inserting user into database.");
+//			ex.printStackTrace();	
+//		}
+//	}
+//	
+//	public static void addPictureResponse(DBConnection conn, PictureResponse question)
+//	{
+//		addQuestion(conn, QuestionTypes.PICTURE_RESPONSE);
+//		int id = question.getQuestionID();
+//		String text = question.getQuestion();
+//		ArrayList<String> answers = question.getAnswers();
+//		addAnswers(conn, id, answers);
+//		try
+//		{
+//			
+//			String query = "INSERT INTO PictureResponse VALUES(" + id + ", '" + text + "');";
+//			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+//			ps.executeQuery();	
+//
+//
+//		}
+//		catch (SQLException ex)
+//		{
+//			System.err.println("Error occured when inserting user into database.");
+//			ex.printStackTrace();	
+//		}
+//	}	
+//	
+//	public static void addQuestionResponse(DBConnection conn, QuestionResponse question)
+//	{
+//		addQuestion(conn, QuestionTypes.QUESTION_RESPONSE);
+//		int id = question.getQuestionID();
+//		String text = question.getQuestion();
+//		ArrayList<String> answers = question.getAnswers();
+//		addAnswers(conn, id, answers);
+//		
+//		try
+//		{
+//			String query = "INSERT INTO QuestionResponse VALUES(" + id + ", '" + text + "');";
+//			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+//			ps.executeQuery();				
+//		}
+//		catch (SQLException ex)
+//		{
+//			System.err.println("Error occured when inserting user into database.");
+//			ex.printStackTrace();	
+//		}
+//	}	
 }

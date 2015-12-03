@@ -16,7 +16,7 @@ public class QuestionAbstract {
 	static final int PICTURE_RESPONSE = 3;	
 	private int questionID;
 	private int quizID;
-	private int type;
+	private QuestionHelper.QuestionTypes type;
 	private String question;
 	private ArrayList<String> answers = new ArrayList<String>(); 
 	private ArrayList<String> options = new ArrayList<String>();
@@ -24,7 +24,7 @@ public class QuestionAbstract {
 	/*Constructor for QuestionAbstract
 	 * NOTE** IF QUIZ ID == -1 Then the question was not created with knowledge of it's quiz id. Just a heads up
 	 * */
-	public QuestionAbstract(int questionID, int quizID, String question, ArrayList<String> answers, int  type, ArrayList<String> options){
+	public QuestionAbstract(int questionID, int quizID, String question, ArrayList<String> answers, QuestionHelper.QuestionTypes type, ArrayList<String> options){
 		this.questionID =  questionID;
 		this.type = type;
 		DBConnection dbConn = new DBConnection();
@@ -62,7 +62,7 @@ public class QuestionAbstract {
 	public ArrayList<String> getOptions(){	
 		return this.options;
 	}
-	public int getType(){
+	public QuestionHelper.QuestionTypes getType(){
 		return this.type;
 	}
 	

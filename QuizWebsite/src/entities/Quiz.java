@@ -19,6 +19,14 @@ public class Quiz {
 	private boolean immediateCorrection = false;
 	private boolean practiceMode = false;
 	
+	// default constructor used when creating a new quiz with no info yet
+	public Quiz()
+	{
+		this.id = -1;
+		this.name = "";
+		this.description = "";
+	}
+	
 	public Quiz(int quizid, String quizname, String desc)
 	{
 		this.id = quizid;
