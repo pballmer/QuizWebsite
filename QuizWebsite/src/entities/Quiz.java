@@ -12,8 +12,8 @@ public class Quiz {
 	private User creator;
 	private List<QuestionAbstract> questions;
 	private String description;
-	private long startTime;
-	private long endTime;
+	private Date startTime;
+	private Date endTime;
 	private boolean random = false; //set these defaults for what I thought make sense
 	private boolean onePage = true;
 	private boolean immediateCorrection = false;
@@ -43,7 +43,7 @@ public class Quiz {
 		this.questions = new ArrayList<QuestionAbstract>();
 		questions.addAll(questionInput);
 		this.creator = user;
-		this.startTime = System.currentTimeMillis();
+		this.startTime = new Date();
 		tags = new ArrayList<String>();
 	}
 	
@@ -59,7 +59,7 @@ public class Quiz {
 		if(random) randomize();
 		this.onePage = page;
 		this.immediateCorrection = correction;
-		this.startTime = System.currentTimeMillis();
+		this.startTime = new Date();
 		tags = new ArrayList<String>();
 	}
 	
@@ -86,11 +86,6 @@ public class Quiz {
 		long seed = System.nanoTime();
 		Collections.shuffle(questions, new Random(seed));
 		//TODO: update BE
-	}
-	
-	public long getQuizTime(){
-		endTime = System.currentTimeMillis();
-		return endTime - startTime;
 	}
 	
 	public String getName() {
@@ -121,11 +116,15 @@ public class Quiz {
 		return description;
 	}
 
-	public long getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
+	
+	public void setEndTime(){
+		endTime = new Date();
+	}
 
-	public long getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
