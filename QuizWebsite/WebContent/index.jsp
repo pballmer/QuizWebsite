@@ -238,7 +238,7 @@ if (name != null) out.println(" - " + name);
 						for (int i = 0; i < challenges.size(); i++)
 						{
 							Challenge challenge = challenges.get(i);
-							String sender = challenge.getSender();
+							String sender = challenge.getSenderName();
 							String link = challenge.getQuizLink();
 							double score = challenge.getScore();
 							Quiz quiz = QuizHelper.getQuizByID(conn, challenge.getQuizID());
@@ -252,8 +252,7 @@ if (name != null) out.println(" - " + name);
 						{
 							Note note = notes.get(i);
 							String text = note.getText();
-							String sender = note.getSender();
-							
+							String sender = note.getSenderName();
 							out.println("<p><a href=\"user.jsp?id=" + sender + ">" + sender + "</a></p> has sent you a note saying: </p>");
 							out.println("<p>" + text + "</p>");
 							out.println("<br>");

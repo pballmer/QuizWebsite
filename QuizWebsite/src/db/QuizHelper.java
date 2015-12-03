@@ -1,4 +1,3 @@
-//
 package db;
 
 import java.sql.PreparedStatement;

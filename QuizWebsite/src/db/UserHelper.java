@@ -347,7 +347,7 @@ public class UserHelper
 						+ pass + "\"," + admin + ");";
 		try {
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
-			ps.execute(); // TODO is this right?
+			ps.execute();
 		} catch (SQLException e) {
 			System.err.println("Error occured when inserting user into database.");
 			e.printStackTrace();

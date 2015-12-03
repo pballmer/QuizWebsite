@@ -13,7 +13,7 @@
 <p>Name:</p>
 <p><input type="text" name="name" form="submit" /></p> <!-- TODO Can I use form? -->
 <p>Description:</p>
-<textarea name="desc" form="submit" placeholder="Quiz Description"></textarea>
+<textarea name="desc" form="submit" placeholder="Quiz Description" rows=5></textarea>
 <!-- <p><input type="text" name="desc" /></p> <!-- TODO Make this field bigger --> 
 </div>
 

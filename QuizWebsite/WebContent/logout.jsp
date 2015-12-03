@@ -56,6 +56,7 @@
 	<div id ="content">
 		<div id = "form">
 			<h1> We'll miss you.</h1>
+		</div>
 	</div>
 </body>
 </html>
