@@ -1,10 +1,8 @@
 package entities;
 
-import java.util.ArrayList;
-
 public class Challenge extends NotificationAbstract{
-	public String text;
-	public Quiz quiz;
+	private String text;
+	private Quiz quiz;
 	
 	public Challenge(int type, int id, User from, User to, String text, Quiz q){
 		super(type, id, from, to);
