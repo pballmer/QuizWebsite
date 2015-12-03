@@ -18,6 +18,7 @@ public class Quiz {
 	private boolean onePage = true;
 	private boolean immediateCorrection = false;
 	private boolean practiceMode = false;
+	private List<String> tags;
 	
 	// default constructor used when creating a new quiz with no info yet
 	public Quiz()
@@ -33,6 +34,7 @@ public class Quiz {
 		this.name = quizname;
 		this.description = desc;
 		questions = new ArrayList<QuestionAbstract>();
+		tags = new ArrayList<String>();
 	}
 	//constructor without other options being set
 	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link){
@@ -43,6 +45,7 @@ public class Quiz {
 		questions.addAll(questionInput);
 		this.creator = user;
 		this.startTime = System.currentTimeMillis();
+		tags = new ArrayList<String>();
 	}
 	
 	//constructor with all options set
@@ -59,6 +62,7 @@ public class Quiz {
 		this.immediateCorrection = correction;
 		this.practiceMode = practice;
 		this.startTime = System.currentTimeMillis();
+		tags = new ArrayList<String>();
 	}
 	
 	public double doScore(ArrayList<String> responses){
@@ -67,6 +71,10 @@ public class Quiz {
 			if(questions.get(i).checkAnswer(responses.get(i))) score++;
 		}
 		return (score/questions.size());//returns score as a percentage where each question is worth 1
+	}
+	
+	public void addTag(String tag, DBConnection conn){
+		tags.add(tag);
 	}
 	
 	public void addQuestion(QuestionAbstract question, DBConnection conn){
