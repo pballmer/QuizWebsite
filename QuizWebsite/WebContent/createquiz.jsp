@@ -10,19 +10,33 @@
 <body>
 <div id="main">
 <div class="panel">
-<p>Name:</p>
-<p><input type="text" name="name" form="submit" /></p> <!-- TODO Can I use form? -->
+<form action="QuizNameSaveServlet" method="post">
+<p>Quiz Name:</p>
+<p><input type="text" name="name" placeholder="New Quiz" /></p>
+<p><input type="submit" value="Save"/></p>
+</form>
+<form action="QuizDescSaveServlet" method="post" id="descform">
 <p>Description:</p>
-<textarea name="desc" form="submit" placeholder="Quiz Description" rows=5></textarea>
-<!-- <p><input type="text" name="desc" /></p> <!-- TODO Make this field bigger --> 
+<!--<textarea name="desc" form="descform" placeholder="Quiz Description" rows=5></textarea> Might not need the form thing -->
+<textarea name="desc" placeholder="Quiz Description" rows=5></textarea>
+<p><input type="submit" value="Save"/></p>
+</form>
 </div>
 
 <div class="panel">
-<select>
+<form action="AddQuestionServlet" method="post">
+<p>Add a new question:</p>
+<select name="qtype">
+<option value="Multiple Choice">Multiple Choice</option>
+<option value="Question-Response">Question-Response</option>
+<option value="Fill in the Blank">Fill in the Blank</option>
+<option value="Picture-Response">Picture-Response</option>
 </select>
+<p><input type="submit" value="Add"/></p>
+</form>
 </div>
 
-<form action="QuizCreationServlet" method="post" id="submit">
+<form action="QuizCreationServlet" method="post">
 <p><input type="submit" value="Finish!"/></p>
 </form>
 </div>

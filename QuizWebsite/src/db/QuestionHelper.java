@@ -20,6 +20,10 @@ public class QuestionHelper
 	private static final int ANSWER = 2;
 	private static final int OPTIONS = 2;
 	
+	public static enum QuestionTypes {
+		MULTIPLE_CHOICE, QUESTION_RESPONSE, FILL_IN_BLANK, PICTURE_RESPONSE
+	}
+	
 	private static final int MULTIPLE_CHOICE = 0;
 	private static final int QUESTION_RESPONSE = 1;
 	private static final int FILL_IN_BLANK = 2;
