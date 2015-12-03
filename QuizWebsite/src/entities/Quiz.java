@@ -1,8 +1,4 @@
 package entities;
-<<<<<<< HEAD
-=======
-
->>>>>>> c2810250b226b7a492ee424b37bc683ffc2adb8b
 import java.util.*;
 
 import db.DBConnection;
@@ -53,6 +49,14 @@ public class Quiz {
 		this.immediateCorrection = correction;
 		this.practiceMode = practice;
 		this.startTime = System.currentTimeMillis();
+	}
+	
+	public double doScore(ArrayList<String> responses){
+		double score = 0;
+		for(int i = 0; i < responses.size(); i++){
+			if(questions.get(i).checkAnswer(responses.get(i))) score++;
+		}
+		return (score/questions.size());//returns score as a percentage where each question is worth 1
 	}
 	
 	public void addQuestion(QuestionAbstract question, DBConnection conn){
