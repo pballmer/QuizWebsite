@@ -54,7 +54,12 @@ public class AccountCreationServlet extends HttpServlet {
 			HttpSession session = request.getSession();
 	        session.setAttribute("name", name);
 	        DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
-	        UserHelper.addUser(conn, newUser);
+	        int status = UserHelper.addUser(conn, newUser);
+	        if (status == -1) // TODO kind of weird that we go to accountexists if there was a DB error but okay
+	        {
+	        	RequestDispatcher dispatch = request.getRequestDispatcher("accountexists.jsp");
+	        	dispatch.forward(request, response);
+	        }
 			RequestDispatcher dispatch = request.getRequestDispatcher("index.jsp");
 			dispatch.forward(request, response);
 		}	

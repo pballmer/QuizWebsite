@@ -16,7 +16,7 @@
 	<div id = "container">
 	
 	<div id = "sidebar">
-		<p style="color: white; margin: 0;"> No account? <a href="createaccount.jsp">Sign up. </a></p>
+		<%if (name == null) out.println("<p style=\"color: white; margin: 0;\"> No account? <a href=\"createaccount.jsp\">Sign up. </a></p>");%>
 		<div id = "profpic">
 		</div>
 		<div id = "sidebar-content">
@@ -25,20 +25,20 @@
 				{
 				out.println("<h1>Welcome, " + name + ".</h1>");
 				out.println("<a href=\"#createQuiz\" class=\"reg-button\">Create Quiz</a>");
-				out.println("<a href=\"#browseQuiz\" class=\"reg-button\"> Browse Quiz</a>");
+				out.println("<a href=\"browseQuiz.jsp\" class=\"reg-button\"> Browse Quiz</a>");
 				out.println("<br>");
-				out.println("<a href =\"#browseUser\" class = \"reg-button\"> Browse Users</a>");
-				out.println("<a href =\"#history\" class = \"reg-button\"> Quiz History</a>");
+				out.println("<a href =\"allusers.jsp\" class = \"reg-button\"> Browse Users</a>");
+				out.println("<a href =\"quizHistory.jsp\" class = \"reg-button\"> Quiz History</a>");
 				out.println("<br>");
-				out.println("<a href = \"#logout\" class =\"big-button\"> Log out</a>");
+				out.println("<a href = \"logout.jsp\" class =\"big-button\"> Log out</a>");
 				}
 				else{
 					out.println("<h1>Welcome, " + "stranger. </h1>");
 					out.println("<h3> Please <a href=\"login.jsp\" class=\"reg-button\"> login.</a></h3>");
 				}
 			%>
-			
-
+			<br>
+			<a href ="index.jsp" class ="big-button"> Home </a>
 		</div>
 		
 	</div>

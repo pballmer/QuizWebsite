@@ -2,6 +2,7 @@ package entities;
 
 import java.util.*;
 
+import db.DBConnection;
 import db.QuizHelper;
 
 public class Quiz {
@@ -17,8 +18,13 @@ public class Quiz {
 	private boolean onePage = true;
 	private boolean immediateCorrection = false;
 	private boolean practiceMode = false;
-	private int score = -1;//sentinel value
 	
+	public Quiz(int quizid, String quizname, String desc)
+	{
+		this.id = quizid;
+		this.name = quizname;
+		this.description = desc;
+	}
 	//constructor without other options being set
 	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link){
 		this.name = nameInput;
@@ -44,6 +50,14 @@ public class Quiz {
 		this.immediateCorrection = correction;
 		this.practiceMode = practice;
 		this.startTime = System.currentTimeMillis();
+	}
+	
+	public double doScore(ArrayList<String> responses){
+		double score = 0;
+		for(int i = 0; i < responses.size(); i++){
+			if(questions.get(i).checkAnswer(responses.get(i))) score++;
+		}
+		return (score/questions.size());//returns score as a percentage where each question is worth 1
 	}
 	
 	public void addQuestion(QuestionAbstract question, DBConnection conn){
@@ -109,10 +123,6 @@ public class Quiz {
 
 	public boolean isPracticeMode() {
 		return practiceMode;
-	}
-
-	public int getScore() {
-		return score;
 	}
 	
 	public String getLink() {

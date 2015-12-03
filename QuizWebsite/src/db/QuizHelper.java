@@ -12,7 +12,7 @@ public class QuizHelper
 {
 	private static final int QUIZID = 1;
 	private static final int QUESTION_ID = 2;
-	private static final int QUIZ_TAKEN_ID = 1;
+	private static final int QUIZ_TAKEN_ID = 2;
 	private static final int QUIZ_NAME = 2;
 	private static final int DESCRIPTION = 3;
 	private static final int USER_ID = 1;
@@ -24,7 +24,7 @@ public class QuizHelper
 		try 
 		{
 			rs.absolute(row);
-			String QuizID = rs.getString(QUIZID);
+			int QuizID = rs.getInt(QUIZID);
 			String QuizName = rs.getString(QUIZ_NAME);
 			String Description = rs.getString(DESCRIPTION);
 			quiz = new Quiz(QuizID, QuizName, Description);
@@ -37,12 +37,12 @@ public class QuizHelper
 		return quiz;
 	}
 	
-	private static String queryBuilder(String QuizID, String QuizName, String Description)
+	private static String queryBuilder(int QuizID, String QuizName, String Description)
 	{
 		String query = "SELECT * FROM Quiz";
 		boolean needAnd = false;
 		
-		if (!QuizID.isEmpty())
+		if (QuizID != -1)
 		{
 			needAnd = true;	
 			query += " WHERE QuizID=" + QuizID; 
@@ -81,7 +81,76 @@ public class QuizHelper
 		return query;
 	}
 	
-	public static Quiz getQuizByID(DBConnection conn, String QuizID)
+	public static double getScore(DBConnection conn, int QuizID, String Username)
+	{
+		double result = 0;
+		try
+		{
+			String query = "SELECT Score FROM QuizzesTaken WHERE QuizID = " + QuizID + " AND Username='" + Username + "';";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				results.absolute(1);
+				result = results.getDouble(1);
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return result;
+	}
+	
+	public static String getStartTime(DBConnection conn, int QuizID, String Username)
+	{
+		String result = "";
+		try
+		{
+			String query = "SELECT StartTime FROM QuizzesTaken WHERE QuizID = " + QuizID + " AND Username='" + Username + "';";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				results.absolute(1);
+				result = results.getString(1);
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return result;
+	}
+	
+	public static String getEndTime(DBConnection conn, int QuizID, String Username)
+	{
+		String result = "";
+		try
+		{
+			String query = "SELECT EndTime FROM QuizzesTaken WHERE QuizID = " + QuizID + " AND Username='" + Username + "';";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				results.absolute(1);
+				result = results.getString(1);
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return result;
+	}
+	
+	public static Quiz getQuizByID(DBConnection conn, int QuizID)
 	{
 		try 
 		{
@@ -102,7 +171,7 @@ public class QuizHelper
 		return null;
 	}
 	
-	public static Quiz getQuiz(DBConnection conn, String QuizID, String QuizName, String Description)
+	public static Quiz getQuiz(DBConnection conn, int QuizID, String QuizName, String Description)
 	{
 		try 
 		{
@@ -123,7 +192,7 @@ public class QuizHelper
 		return null;
 	}
 	
-	public static ArrayList<Quiz> getQuizzes(DBConnection conn, String QuizID, String QuizName, String Description)
+	public static ArrayList<Quiz> getQuizzes(DBConnection conn, int QuizID, String QuizName, String Description)
 	{
 		ArrayList<Quiz> quizList = new ArrayList<Quiz>();
 		try 
@@ -152,7 +221,7 @@ public class QuizHelper
 		return quizList;
 	}
 	
-	public static User getQuizMaker(DBConnection conn, String QuizID)
+	public static User getQuizMaker(DBConnection conn, int QuizID)
 	{
 		User user = null;
 		try {
@@ -175,26 +244,111 @@ public class QuizHelper
 		return user;
 	}
 	
-	public static ArrayList<Quiz> getQuizzesMade(DBConnection conn, String Username)
+	public static ArrayList<Quiz> getPopularQuizzes(DBConnection conn, int num)
 	{
 		ArrayList<Quiz> quizList = new ArrayList<Quiz>();
 		try
 		{
-			String query = "SELECT * FROM QuizzesMade WHERE Username = '" + Username + "';";
-			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			
+			String query = "SELECT Q.QuizID, QuizName, Description FROM Quiz Q JOIN QuizzesTaken T ON T.QuizID = Q.QuizID GROUP BY Q.QuizID ORDER BY COUNT(*) DESC;";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);		
 			ResultSet results = ps.executeQuery();
-			ArrayList<Quiz> quizList = new ArrayList<Quiz>();
 			
 			if (results.isBeforeFirst())
 			{
 				ResultSet temp = results;
 				temp.last();
 				int numRows = temp.getRow();
-				for (int i = 1; i <= numRows; i++)
+				int total = (numRows > num) ? num: numRows;
+				for (int i = 1; i <= total; i++)
 				{
 					results.absolute(i);
-					String QuizID = results.getString(QUIZ_TAKEN_ID);
+					Quiz quiz = getQuizFromRecord(results, i);
+					quizList.add(quiz);
+				}
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return quizList;
+	}
+	
+	public static ArrayList<Quiz> getRecentQuizzes(DBConnection conn, int num)
+	{
+		ArrayList<Quiz> quizList = new ArrayList<Quiz>();
+		try
+		{
+			String query = "SELECT * FROM Quiz ORDER BY QuizID DESC;";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);		
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				int total = (numRows > num) ? num: numRows;
+				for (int i = 1; i <= total; i++)
+				{
+					results.absolute(i);
+					Quiz quiz = getQuizFromRecord(results, i);
+					quizList.add(quiz);
+				}
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return quizList;
+	}
+	
+	public static int getTotalNumQuizzes(DBConnection conn)
+	{
+		int num = 0; 
+		try
+		{
+			String query = "SELECT COUNT(*) FROM Quiz";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);		
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				results.absolute(1);
+				num = results.getInt(1);
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return num;
+	}
+	
+	public static ArrayList<Quiz> getQuizzesMade(DBConnection conn, String Username, int num)
+	{
+		ArrayList<Quiz> quizList = new ArrayList<Quiz>();
+		try
+		{
+			String query = "SELECT M.QuizID, QuizName, Description FROM Quiz Q JOIN QuizzesMade M ON M.Username='" + Username +"' GROUP BY QuizID;";
+
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				int total = (numRows > num && num != -1) ? num: numRows;
+				for (int i = 1; i <= total; i++)
+				{
+					results.absolute(i);
 					Quiz quiz = getQuizFromRecord(results, i);
 					quizList.add(quiz);
 				}
@@ -209,7 +363,7 @@ public class QuizHelper
 		return quizList;
 	}
 	
-	public static ArrayList<Question> getQuizQuestions(DBConnection conn, String QuizID)
+	public static ArrayList<Question> getQuizQuestions(DBConnection conn, int QuizID)
 	{
 		ArrayList<Question> questionList = new ArrayList<Question>();
 		try
@@ -241,11 +395,11 @@ public class QuizHelper
 		return questionList;
 	}
 	
-	public static HashMap<String, Double> getTopScorers(DBConnection conn, String QuizID)
+	public static HashMap<String, Double> getTopScorers(DBConnection conn, int QuizID)
 	{
 		HashMap<String, Double> map = new HashMap<String, Double>();
 		try {
-			String query = "SELECT * FROM QuizzesTaken WHERE QuizID = " + QuizID + " ORDER BY Score LIMIT 10;";
+			String query = "SELECT * FROM QuizzesTaken WHERE QuizID = " + QuizID + " ORDER BY Score;";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			
 			ResultSet results = ps.executeQuery();
@@ -254,7 +408,8 @@ public class QuizHelper
 				ResultSet temp = results;
 				temp.last();
 				int numRows = temp.getRow();
-				for (int i = 1; i <= numRows; i++)
+				int total = (numRows > 10) ? 10 : numRows;
+				for (int i = 1; i <= total; i++)
 				{
 					results.absolute(i);
 					double score = results.getDouble(SCORE);
@@ -271,11 +426,11 @@ public class QuizHelper
 		return map;
 	}
 	
-	public static ArrayList<Quiz> getQuizzesTaken(DBConnection conn, String Username)
+	public static ArrayList<Quiz> getQuizzesTaken(DBConnection conn, String Username, int num)
 	{
 		ArrayList<Quiz> quizList = new ArrayList<Quiz>();
 		try {
-			String query = "SELECT * FROM QuizzesTaken WHERE Username = '" + Username + "';";
+			String query = "SELECT T.QuizID, QuizName, Description FROM Quiz Q JOIN QuizzesTaken T ON T.Username='" + Username + "' GROUP BY QuizID;";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			
 			ResultSet results = ps.executeQuery();
@@ -286,10 +441,10 @@ public class QuizHelper
 				ResultSet temp = results;
 				temp.last();
 				int numRows = temp.getRow();
-				for (int i = 1; i <= numRows; i++)
+				int total = (numRows > num && num != -1) ? num: numRows;
+				for (int i = 1; i <= total; i++)
 				{
 					results.absolute(i);
-					String QuizID = results.getString(QUIZ_TAKEN_ID);
 					Quiz quiz = getQuizFromRecord(results, i);
 					quizList.add(quiz);
 				}
@@ -306,7 +461,7 @@ public class QuizHelper
 	
 	public static void addQuiz(DBConnection conn, Quiz quiz)
 	{
-		String QuizName = quiz.getQuizname();
+		String QuizName = quiz.getName();
 		String Description = quiz.getDescription();
 		String command = "INSERT INTO Quiz VALUES(NULL,'" 
 						+ QuizName + "', '" + Description + "');";
