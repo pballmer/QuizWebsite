@@ -17,6 +17,7 @@ if (name != null) out.println(" - " + name);
 <% 
 	ServletContext context = pageContext.getServletContext();
 	DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
+	//
 %>
 
 
