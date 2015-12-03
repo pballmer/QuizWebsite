@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class QuizNameSaveServlet
+ * Servlet implementation class QuizDescSaveServlet
  */
-@WebServlet("/QuizNameSaveServlet")
+@WebServlet("/QuizDescSaveServlet")
 public class QuizDescSaveServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
