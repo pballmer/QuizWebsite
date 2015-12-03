@@ -518,6 +518,53 @@ public class QuizHelper
 		return map;
 	}
 	
+	public ArrayList<String> getTagsForQuiz(DBConnection conn, Quiz quiz){
+		int QuizID = quiz.getId();
+		ArrayList<String> tags = new ArrayList<String>();
+		String query = "SELECT * FROM Tags WHERE QuizID = " + QuizID + ";";
+		try {
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if(results.isBeforeFirst()){
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				for(int i = 1; i <= numRows; i++){
+					results.absolute(i);
+					tags.add(results.getString(2));
+				}
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			System.err.println("Error occured when getting tags.");
+		}
+		return tags;
+	}
+	
+	public ArrayList<Integer> getQuizIDsFromTag(DBConnection conn, String tag){
+		ArrayList<Integer> quizIDs = new ArrayList<Integer>();
+		String query = "SELECT * FROM Tags WHERE Tag = \"" + tag + "\";";
+		try {
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if(results.isBeforeFirst()){
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				for(int i = 1; i <= numRows; i++){
+					results.absolute(i);
+					quizIDs.add(results.getInt(1));
+				}
+			}
+		} catch (SQLException ex){
+			ex.printStackTrace();
+			System.err.println("Error occured when getting quizzes from tag.");
+		}
+		return quizIDs;
+	}
+	
 	public static ArrayList<Quiz> getQuizzesTaken(DBConnection conn, String Username, int num)
 	{
 		ArrayList<Integer> idList = new ArrayList<Integer>();
@@ -586,6 +633,18 @@ public class QuizHelper
 		}
 		//this is so it can compile
 		return -1;
+	}
+	
+	public static void addTag(DBConnection conn, Quiz quiz, String tag){
+		int QuizID = quiz.getId();
+		String command = "INSERT INTO Tags VALUES (\"" + QuizID + "\", " + tag + ");";
+		try {
+			PreparedStatement ps = conn.getConnection().prepareStatement(command);
+			ps.execute();
+		} catch (SQLException e){
+			System.err.println("Error occured when inserting tag into database.");
+			e.printStackTrace();
+		}
 	}
 	
 	public static void addQuizMade(DBConnection conn, Quiz quiz, String user)
