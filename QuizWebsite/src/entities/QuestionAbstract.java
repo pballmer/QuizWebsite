@@ -10,10 +10,10 @@ public class QuestionAbstract {
 	
 
 
-	static final int MULTIPLE_CHOICE = 0;
-	protected static final int QUESTION_RESPONSE = 1;
-	static final int FILL_IN_BLANK = 2;
-	static final int PICTURE_RESPONSE = 3;	
+	public static final int MULTIPLE_CHOICE = 0;
+	public static final int QUESTION_RESPONSE = 1;
+	public static final int FILL_IN_BLANK = 2;
+	public static final int PICTURE_RESPONSE = 3;	
 	private int questionID;
 	private int quizID;
 	private int type;
@@ -32,6 +32,7 @@ public class QuestionAbstract {
 		this.quizID = QuestionHelper.addQuestion(dbConn, this.type);
 		this.question = question;
 		this.answers = answers;	
+		this.options = options;
 		//add answers
 		QuestionHelper.addAnswers(dbConn, this.questionID, this.answers);
 	}
