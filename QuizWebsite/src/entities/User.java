@@ -17,7 +17,6 @@ public class User {
 	private Map<Integer, Integer> quizzesTaken;//maps quiz id to score
 	private List<NotificationAbstract> notifications;
 	private List<String> achievements;
-	private boolean hasPracticed;
 	
 	// TODO should only initialize this once
 	public static MessageDigest md;
@@ -30,7 +29,6 @@ public class User {
 		this.quizzesTaken = new HashMap<Integer, Integer>();
 		this.notifications = new ArrayList<NotificationAbstract>();
 		this.achievements = new ArrayList<String>();
-		this.hasPracticed = false;
 		try {
 			md = MessageDigest.getInstance("SHA");
 		} catch (NoSuchAlgorithmException e) {
@@ -46,7 +44,6 @@ public class User {
 		this.quizzesMade = new ArrayList<Quiz>();
 		this.quizzesTaken = new HashMap<Integer, Integer>();
 		this.notifications = new ArrayList<NotificationAbstract>();
-		this.hasPracticed = false;
 		try {
 			md = MessageDigest.getInstance("SHA");
 		} catch (NoSuchAlgorithmException e) {
@@ -63,7 +60,6 @@ public class User {
 		this.quizzesMade = new ArrayList<Quiz>();
 		this.quizzesTaken = new HashMap<Integer, Integer>();
 		this.notifications = new ArrayList<NotificationAbstract>();
-		this.hasPracticed = false;
 		try {
 			md = MessageDigest.getInstance("SHA");
 		} catch (NoSuchAlgorithmException e) {
