@@ -30,12 +30,13 @@ public class QuestionHelper
 	private static final int PICTURE_RESPONSE = 3;
 	
 	
-	//was this meant to get a question from 
+	//NOTE: THIS SETS THE QUIZ ID TO -1 (assuming client will have Quiz ID/will not be needed
 	public static QuestionAbstract getQuestionFromRecord(ResultSet rs, int row, DBConnection conn)
 	{
 		QuestionAbstract question = null;
 		try 
 		{
+			//QuestionAbstract question = null;
 			rs.absolute(row);
 			
 			//changes from QUIZ_NAME to QUestion_ID etc.
@@ -44,8 +45,9 @@ public class QuestionHelper
 			ArrayList<String> answers = getAnswers(conn, QuestionID);
 			ArrayList<String> options = getQuestionOptions(conn, QuestionID);
 			//where is above quiz ID coming from and need to get question string
-			//why isn't this instantiating?
-			question = new QuestionAbstract(QuestionID, options.get(0), answers, QuestionType, options);
+			//this is 
+			question = new QuestionAbstract(Integer.parseInt(QuestionID), -1, options.get(0), answers, Integer.parseInt(QuestionType), options);
+
 		}
 		catch (SQLException ex)
 		{
@@ -79,39 +81,39 @@ public class QuestionHelper
 	}
 	
 	
-	//Question: do we need this function? 
-	public static ArrayList<QuestionAbstract> getAllQuestionsOfType(DBConnection conn, String QuestionType)
-	{
-		ArrayList<QuestionAbstract> questions = new ArrayList<QuestionAbstract>();
-		try 
-		{
-			String query = "SELECT * FROM Question WHERE QuestionType = " + QuestionType + ";";
-			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ResultSet results = ps.executeQuery();
-			
-			if (results.isBeforeFirst())
-			{
-				ResultSet temp = results;
-				temp.last();
-				int numRows = temp.getRow();
-				for (int i =1; i <= numRows; i++)
-				{
-					results.absolute(i);
-					String QuestionID = results.getString(QUESTION_ID);
-					ArrayList<String> answers = getAnswers(conn, QuestionID);
-					QuestionAbstract question = new QuestionAbstract(QuestionID, quizID, questionString, answers, questionType);
-					questions.add(question);
-				}
-			}
-		}
-		catch (SQLException ex)
-		{
-			ex.printStackTrace();
-			System.err.println("Error occured when accessing database.");
-		}
-		
-		return questions;
-	}
+//	//Question: do we need this function? 
+//	public static ArrayList<QuestionAbstract> getAllQuestionsOfType(DBConnection conn, String QuestionType)
+//	{
+//		ArrayList<QuestionAbstract> questions = new ArrayList<QuestionAbstract>();
+//		try 
+//		{
+//			String query = "SELECT * FROM Question WHERE QuestionType = " + QuestionType + ";";
+//			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+//			ResultSet results = ps.executeQuery();
+//			
+//			if (results.isBeforeFirst())
+//			{
+//				ResultSet temp = results;
+//				temp.last();
+//				int numRows = temp.getRow();
+//				for (int i =1; i <= numRows; i++)
+//				{
+//					results.absolute(i);
+//					String QuestionID = results.getString(QUESTION_ID);
+//					ArrayList<String> answers = getAnswers(conn, QuestionID);
+//					QuestionAbstract question = new QuestionAbstract(QuestionID, -1, questionString, answers, questionType);
+//					questions.add(question);
+//				}
+//			}
+//		}
+//		catch (SQLException ex)
+//		{
+//			ex.printStackTrace();
+//			System.err.println("Error occured when accessing database.");
+//		}
+//		
+//		return questions;
+//	}
 	
 	//returns the arraylist of the answers
 	public static ArrayList<String> getAnswers(DBConnection conn, String QuestionID)
@@ -218,28 +220,27 @@ public class QuestionHelper
 		return options;
 	}
 	//will return int later OR we will change it so it takes the ID as a parameter
-	public static void addQuestion(DBConnection conn, int type)
+	public static int addQuestion(DBConnection conn, int type)
 	{
 		String query = "INSERT INTO Question VALUES(NULL," + type + ");";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ps.executeQuery();
-			/* Use below to do rs.last(), increment and it should be the last question added according to TA
-			Class.forName("com.mysql.jdbc.Driver");
-			con = DriverManager.getConnection
-					( "jdbc:mysql://" + server, account ,password);
-
-			Statement stmt = con.createStatement();
-			stmt.executeQuery("USE " + database);
-			ResultSet rs = stmt.executeQuery("SELECT * FROM metropolises");
-			*/
+			// Use below to do rs.last(), increment and it should be the last question added according to TA
+			Statement stmt = conn.getConnection().createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT * FROM Question");
+			rs.last();
+			int lastID = Integer.parseInt(rs.getString("QuestionID"));
+			return lastID;
 		}
 		catch (SQLException ex)
 		{
 			System.err.println("Error occured when inserting user into database.");
 			ex.printStackTrace();	
 		}
+		//last ID was not gotten
+		return -1;
 	}
 	
 	//adds the arraylist of answers to the question
