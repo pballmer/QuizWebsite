@@ -1,11 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+    pageEncoding="ISO-8859-1"
+    import="db.*"
+    import="entities.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Login </title>
-<% String name =(String)session.getAttribute("name"); %>
+<% String name =(String)session.getAttribute("name");
+	ServletContext context = pageContext.getServletContext();
+	DBConnection conn = (DBConnection)context.getAttribute("Database Connection");%>
 <link rel="stylesheet" type="text/css" href="main.css">
 
 </head>
@@ -21,7 +25,7 @@
 		</div>
 		<div id = "sidebar-content">
 		
-			<%if (name != null)
+			<% if (name != null)
 				{
 				out.println("<h1>Welcome, " + name + ".</h1>");
 				out.println("<a href=\"#createQuiz\" class=\"reg-button\">Create Quiz</a>");
@@ -29,13 +33,23 @@
 				out.println("<br>");
 				out.println("<a href =\"allusers.jsp\" class = \"reg-button\"> Browse Users</a>");
 				out.println("<a href =\"quizHistory.jsp\" class = \"reg-button\"> Quiz History</a>");
+				
+				User user = UserHelper.getUserByID(conn, name);
+				if (user.isAdmin())
+				{
+					out.println("<br>");
+					out.println("<a href=\"admin.jsp\" class =\"big-button\"> Admin Settings </a>");
+				}
 				out.println("<br>");
 				out.println("<a href = \"logout.jsp\" class =\"big-button\"> Log out</a>");
+				
 				}
 				else{
 					out.println("<h1>Welcome, " + "stranger. </h1>");
 					out.println("<h3> Please <a href=\"login.jsp\" class=\"reg-button\"> login.</a></h3>");
 				}
+			
+
 			%>
 			<br>
 			<a href ="index.jsp" class ="big-button"> Home </a>

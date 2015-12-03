@@ -13,21 +13,19 @@ import javax.servlet.http.HttpSession;
 
 import db.DBConnection;
 import db.UserHelper;
-
-import entities.AccountManager;
 import entities.User;
 
 /**
- * Servlet implementation class LoginServlet
+ * Servlet implementation class UserServlet
  */
-@WebServlet("/LoginServlet")
-public class LoginServlet extends HttpServlet {
+@WebServlet("/UserServlet")
+public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public LoginServlet() {
+    public UserServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -35,6 +33,7 @@ public class LoginServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+    @Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
@@ -47,17 +46,14 @@ public class LoginServlet extends HttpServlet {
 		ServletContext context = getServletContext();
 		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 		String name = request.getParameter("name");
-		String pass = request.getParameter("pass");
 
 		User user = UserHelper.getUserByID(conn, name);
-		if (user != null && user.passMatches(pass))
+		if (user != null)
 		{
-			HttpSession session = request.getSession();
-	        session.setAttribute("name", name);
-	        RequestDispatcher dispatch = request.getRequestDispatcher("index.jsp");
+	        RequestDispatcher dispatch = request.getRequestDispatcher("user.jsp?id=" + name);
 			dispatch.forward(request, response);
 		}else {
-			RequestDispatcher dispatch = request.getRequestDispatcher("loginfailure.jsp");
+			RequestDispatcher dispatch = request.getRequestDispatcher("allusers.jsp?message=Error");
 			dispatch.forward(request, response);
 		}
 	}
