@@ -244,6 +244,19 @@ public class QuizHelper
 		return user;
 	}
 	
+	public static void setQuizName(DBConnection conn, int QuizID, String newName)
+	{
+		try {
+			String query = "UPDATE QuizzesMade SET QuizName = '" + newName + "' WHERE QuizID = " + QuizID + ";";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+			
+		} catch (SQLException ex) {
+				ex.printStackTrace();
+				System.err.println("Error occured when accessing database.");
+			}
+	}
+	
 	public static ArrayList<Quiz> getPopularQuizzes(DBConnection conn, int num)
 	{
 		ArrayList<Quiz> quizList = new ArrayList<Quiz>();
