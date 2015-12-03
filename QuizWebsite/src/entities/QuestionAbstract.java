@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import db.DBConnection;
 
-public abstract class QuestionAbstract {
+public class QuestionAbstract {
 	
 
 
@@ -21,6 +21,9 @@ public abstract class QuestionAbstract {
 	private ArrayList<String> answers = new ArrayList<String>(); 
 	private ArrayList<String> options = new ArrayList<String>();
 	
+	/*Constructor for QuestionAbstract
+	 * NOTE** IF QUIZ ID == -1 Then the question was not created with knowledge of it's quiz id. Just a heads up
+	 * */
 	public QuestionAbstract(int questionID, int quizID, String question, ArrayList<String> answers, int  type, ArrayList<String> options){
 		this.questionID =  questionID;
 		this.type = type;

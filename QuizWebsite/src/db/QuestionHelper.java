@@ -26,12 +26,13 @@ public class QuestionHelper
 	private static final int PICTURE_RESPONSE = 3;
 	
 	
-	//was this meant to get a question from 
+	//NOTE: THIS SETS THE QUIZ ID TO -1 (assuming client will have Quiz ID/will not be needed
 	public static QuestionAbstract getQuestionFromRecord(ResultSet rs, int row, DBConnection conn)
 	{
 		QuestionAbstract question = null;
 		try 
 		{
+			//QuestionAbstract question = null;
 			rs.absolute(row);
 			
 			//changes from QUIZ_NAME to QUestion_ID etc.
@@ -40,8 +41,9 @@ public class QuestionHelper
 			ArrayList<String> answers = getAnswers(conn, QuestionID);
 			ArrayList<String> options = getQuestionOptions(conn, QuestionID);
 			//where is above quiz ID coming from and need to get question string
-			//why isn't this instantiating?
-			question = new QuestionAbstract(QuestionID, options.get(0), answers, QuestionType, options);
+			//this is 
+			question = new QuestionAbstract(Integer.parseInt(QuestionID), -1, options.get(0), answers, Integer.parseInt(QuestionType), options);
+
 		}
 		catch (SQLException ex)
 		{
@@ -75,39 +77,39 @@ public class QuestionHelper
 	}
 	
 	
-	//Question: do we need this function? 
-	public static ArrayList<QuestionAbstract> getAllQuestionsOfType(DBConnection conn, String QuestionType)
-	{
-		ArrayList<QuestionAbstract> questions = new ArrayList<QuestionAbstract>();
-		try 
-		{
-			String query = "SELECT * FROM Question WHERE QuestionType = " + QuestionType + ";";
-			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ResultSet results = ps.executeQuery();
-			
-			if (results.isBeforeFirst())
-			{
-				ResultSet temp = results;
-				temp.last();
-				int numRows = temp.getRow();
-				for (int i =1; i <= numRows; i++)
-				{
-					results.absolute(i);
-					String QuestionID = results.getString(QUESTION_ID);
-					ArrayList<String> answers = getAnswers(conn, QuestionID);
-					QuestionAbstract question = new QuestionAbstract(QuestionID, quizID, questionString, answers, questionType);
-					questions.add(question);
-				}
-			}
-		}
-		catch (SQLException ex)
-		{
-			ex.printStackTrace();
-			System.err.println("Error occured when accessing database.");
-		}
-		
-		return questions;
-	}
+//	//Question: do we need this function? 
+//	public static ArrayList<QuestionAbstract> getAllQuestionsOfType(DBConnection conn, String QuestionType)
+//	{
+//		ArrayList<QuestionAbstract> questions = new ArrayList<QuestionAbstract>();
+//		try 
+//		{
+//			String query = "SELECT * FROM Question WHERE QuestionType = " + QuestionType + ";";
+//			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+//			ResultSet results = ps.executeQuery();
+//			
+//			if (results.isBeforeFirst())
+//			{
+//				ResultSet temp = results;
+//				temp.last();
+//				int numRows = temp.getRow();
+//				for (int i =1; i <= numRows; i++)
+//				{
+//					results.absolute(i);
+//					String QuestionID = results.getString(QUESTION_ID);
+//					ArrayList<String> answers = getAnswers(conn, QuestionID);
+//					QuestionAbstract question = new QuestionAbstract(QuestionID, -1, questionString, answers, questionType);
+//					questions.add(question);
+//				}
+//			}
+//		}
+//		catch (SQLException ex)
+//		{
+//			ex.printStackTrace();
+//			System.err.println("Error occured when accessing database.");
+//		}
+//		
+//		return questions;
+//	}
 	
 	//returns the arraylist of the answers
 	public static ArrayList<String> getAnswers(DBConnection conn, String QuestionID)
