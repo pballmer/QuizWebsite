@@ -51,6 +51,14 @@ public class Quiz {
 		this.startTime = System.currentTimeMillis();
 	}
 	
+	public double doScore(ArrayList<String> responses){
+		double score = 0;
+		for(int i = 0; i < responses.size(); i++){
+			if(questions.get(i).checkAnswer(responses.get(i))) score++;
+		}
+		return (score/questions.size());//returns score as a percentage where each question is worth 1
+	}
+	
 	public void addQuestion(QuestionAbstract question, DBConnection conn){
 		QuizHelper.addQuizQuestion(conn, this, question);
 		questions.add(question);
