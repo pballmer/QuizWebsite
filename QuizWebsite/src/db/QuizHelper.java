@@ -377,9 +377,9 @@ public class QuizHelper
 		return quizList;
 	}
 	
-	public static ArrayList<Question> getQuizQuestions(DBConnection conn, int QuizID)
+	public static ArrayList<QuestionAbstract> getQuizQuestions(DBConnection conn, int QuizID)
 	{
-		ArrayList<Question> questionList = new ArrayList<Question>();
+		ArrayList<QuestionAbstract> questionList = new ArrayList<QuestionAbstract>();
 		try
 		{
 			String query = "SELECT * FROM QuizQuestions WHERE QuizID = " + QuizID + ";";
