@@ -18,5 +18,9 @@ public abstract class NotificationAbstract {
 		this.from = from;
 		this.to = to;
 	}
+	
+	public String getSenderName() {
+		return from.getUsername();
+	}
 
 }
