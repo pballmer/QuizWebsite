@@ -70,7 +70,7 @@ if (name != null) out.println(" - " + name);
 			<a href ="#browseUser" class = "reg-button"> Browse Users</a>
 			<a href ="#history" class = "reg-button"> Quiz History</a>
 			<br>
-			<a href = "#logout" class ="big-button"> Log out</a>
+			<a href ="#logout" class ="big-button"> Log out</a>
 		</div>
 		
 	</div>
