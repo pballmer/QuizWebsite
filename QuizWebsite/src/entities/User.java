@@ -14,7 +14,7 @@ public class User {
 	private boolean admin;
 	private List<User> friends;
 	private List<Quiz> quizzesMade;
-	private Map<Integer, Integer> quizzesTaken;//maps quiz id to score
+	private Map<Integer, Double> quizzesTaken;//maps quiz id to score
 	private List<NotificationAbstract> notifications;
 	private List<String> achievements;
 	
@@ -26,7 +26,7 @@ public class User {
 		this.admin = false;
 		this.friends = new ArrayList<User>();
 		this.quizzesMade = new ArrayList<Quiz>();
-		this.quizzesTaken = new HashMap<Integer, Integer>();
+		this.quizzesTaken = new HashMap<Integer, Double>();
 		this.notifications = new ArrayList<NotificationAbstract>();
 		this.achievements = new ArrayList<String>();
 		try {
@@ -42,7 +42,7 @@ public class User {
 		this.admin = admin;
 		this.friends = new ArrayList<User>();
 		this.quizzesMade = new ArrayList<Quiz>();
-		this.quizzesTaken = new HashMap<Integer, Integer>();
+		this.quizzesTaken = new HashMap<Integer, Double>();
 		this.notifications = new ArrayList<NotificationAbstract>();
 		try {
 			md = MessageDigest.getInstance("SHA");
@@ -58,7 +58,7 @@ public class User {
 		this.admin = admin;
 		this.friends = new ArrayList<User>();
 		this.quizzesMade = new ArrayList<Quiz>();
-		this.quizzesTaken = new HashMap<Integer, Integer>();
+		this.quizzesTaken = new HashMap<Integer, Double>();
 		this.notifications = new ArrayList<NotificationAbstract>();
 		try {
 			md = MessageDigest.getInstance("SHA");
@@ -68,12 +68,9 @@ public class User {
 		password = encryptPass(pw);
 	}
 	
-	public void addQuizTaken(Quiz quiz, DBConnection conn, int score){
+	public void addQuizTaken(Quiz quiz, DBConnection conn, double score){
 		quizzesTaken.put(quiz.getId(), score);
 		QuizHelper.addQuizTaken(conn, quiz, this.getUsername(), score, String.valueOf(quiz.getStartTime()), String.valueOf(quiz.getEndTime()));
-		if(quiz.isPracticeMode() && !achievements.contains("Practice Makes Perfect")){
-			this.addAchievement("Practice Makes Perfect", conn);
-		}
 		if(quizzesTaken.size() == 10){
 			this.addAchievement("Quiz Machine", conn);
 		}
@@ -124,12 +121,11 @@ public class User {
 		return admin;
 	}
 	
-	public Map<Integer, Integer> getQuizzesTaken() {
-		return quizzesTaken;
+	public double getScore(int QuizID){
+		return quizzesTaken.get(QuizID);
 	}
 
 	public void addFriend(User friend){
-		
 		friends.add(friend);
 	}
 	

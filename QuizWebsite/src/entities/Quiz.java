@@ -17,7 +17,6 @@ public class Quiz {
 	private boolean random = false; //set these defaults for what I thought make sense
 	private boolean onePage = true;
 	private boolean immediateCorrection = false;
-	private boolean practiceMode = false;
 	private List<String> tags;
 	
 	// default constructor used when creating a new quiz with no info yet
@@ -49,7 +48,7 @@ public class Quiz {
 	}
 	
 	//constructor with all options set
-	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link, boolean rand, boolean page, boolean correction, boolean practice){//constructor 
+	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link, boolean rand, boolean page, boolean correction){//constructor 
 		this.name = nameInput;
 		this.link = link;
 		this.description = descInput;
@@ -60,7 +59,6 @@ public class Quiz {
 		if(random) randomize();
 		this.onePage = page;
 		this.immediateCorrection = correction;
-		this.practiceMode = practice;
 		this.startTime = System.currentTimeMillis();
 		tags = new ArrayList<String>();
 	}
@@ -141,10 +139,6 @@ public class Quiz {
 
 	public boolean isImmediateCorrection() {
 		return immediateCorrection;
-	}
-
-	public boolean isPracticeMode() {
-		return practiceMode;
 	}
 	
 	public String getLink() {
