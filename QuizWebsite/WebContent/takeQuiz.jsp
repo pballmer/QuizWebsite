@@ -68,10 +68,11 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 	
 	<br>
 				<% //get Quiz title, list of quiz quesitons, 
-					System.out.println("This is the URL " + request.getRequestURL());
+					//System.out.println("This is the URL " + request.getRequestURL());
 					String id = request.getParameter("id").toString();
 					DBConnection dbconn = new DBConnection();
 					Quiz quiz = QuizHelper.getQuizByID(conn, Integer.parseInt(id));
+					List<QuestionAbstract> questions = quiz.getQuestions();
 					//QuizHelper.addQuizToTake(conn, quiz, name);
 					//System.out.println(quiz.getQuestions().size());
 				%>
@@ -80,7 +81,8 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 
 	
 		<h1> You're Taking <%=quiz.getName() %></h1>
-		<form action="quizResults.jsp">
+		<form action="ScoreServlet.jsp">
+			<input type="hidden" name="quizID" value="<%=id%>" />
 		
 			<%
 /* 			ArrayList<String> mcArray = new ArrayList<String>();
@@ -107,7 +109,8 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 			questions.add(fb1);
 			questions.add(qr1); */
 			
-			for(int i = 0 ; i < quiz.getQuestions().size(); i++){
+			for(int i = 0 ; i < questions.size(); i++){
+				QuestionAbstract curr = questions.get(i);
 				/*
 				for(int i = 0 ; i < questions.size(); i++){
 					
@@ -139,33 +142,32 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 							out.println("Answer: <input type=\"text\" id= "+ pr.getQuestionID()  +" alt=\"PictureResponse\" height=\"100\" width=\"100\"><br>");
 							continue;*/
 
-				switch (quiz.getQuestions().get(i).getType())
+				switch (curr.getType())
 					{
 						case QuestionHelper.MULTIPLE_CHOICE:
-							MultipleChoice mc = (MultipleChoice) quiz.getQuestions().get(i);
+							MultipleChoice mc = (MultipleChoice) curr;
 							out.println("<h2>" + mc.getText() + "<h2/>"); 
 							for(int j = 0; j < mc.getOptions().size(); j++){
-								out.println("<input type=\"radio\" id=\""+ mc.getQuestionID() +  "" +"\">" + mc.getOptions().get(j) +"<br>"); 
-								System.out.println("j is " + j);
+								out.println("<input type=\"radio\" name=\"question"+ i + "" +"\" />" + mc.getOptions().get(j) +"<br>"); 
+								//System.out.println("j is " + j);
 							}
 							continue;
 						case QuestionHelper.QUESTION_RESPONSE:
-							QuestionResponse questionResponse = (QuestionResponse)quiz.getQuestions().get(i);
+							QuestionResponse questionResponse = (QuestionResponse) curr;
 							out.println("<h2>" + questionResponse.getText() + "<h2/>");
-							out.println("Answer: <input type=\"text\" id= "+questionResponse.getQuestionID()  +"><br>");	
+							out.println("Answer: <input type=\"text\" name= \"question"+ i +"\" /><br>");	
 							continue;
 						case QuestionHelper.FILL_IN_BLANK:
-							FillBlank fillBlank = (FillBlank)quiz.getQuestions().get(i);
+							FillBlank fillBlank = (FillBlank) curr;
 							out.print("<h2>" +  fillBlank.getTextBefore() + "<h2>");
-							out.print("<input type=\"text\" id= "+ fillBlank.getQuestionID()  +">");
+							out.print("<input type=\"text\" name= \"question"+ i +"\" />");
 							out.print("<h2>" +  fillBlank.getTextAfter() + "</h2>");	
 							continue;
 						case QuestionHelper.PICTURE_RESPONSE:
-							PictureResponse pr = (PictureResponse)quiz.getQuestions().get(i);
+							PictureResponse pr = (PictureResponse) curr;
 							out.println("<img src="+ pr.getText() +"><br>");
-							out.println("Answer: <input type=\"text\" id= "+ pr.getQuestionID()  +" alt=\"PictureResponse\" height=\"100\" width=\"100\"><br>");
+							out.println("Answer: <input type=\"text\" name= \"question"+ i +"\" alt=\"PictureResponse\" height=\"100\" width=\"100\" /><br>");
 							continue;
-						
 					}					
 				}
 			%>

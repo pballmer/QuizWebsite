@@ -82,7 +82,6 @@ public class User {
 	}
 	
 	public void addQuizMade(Quiz quiz, DBConnection conn){
-		QuizHelper.addQuiz(conn, quiz);
 		QuizHelper.addQuizMade(conn, quiz, username);
 		quizzesMade.add(quiz);
 		if(quizzesMade.size() == 1) {
