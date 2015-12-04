@@ -1,5 +1,9 @@
 /db/
 /entities/
+<<<<<<< HEAD
 /listeners/
 /servlets/
 /src/
+=======
+/servlets/
+>>>>>>> stephen-branch
