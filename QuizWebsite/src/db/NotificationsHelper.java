@@ -33,25 +33,38 @@ public class NotificationsHelper
 	
 
 	
-	private static Notification getNotificationFromRecord(ResultSet rs, int row)
-	{
-		Notification notification = null;
-		try 
-		{
-			rs.absolute(row);
-			int NotificationID = rs.getInt(NOTIFICATION_ID);
-			boolean Checked = rs.getBoolean(CHECKED);
-			int NotificationType = rs.getInt(NOTIFICATION_TYPE);
-			notification = new Notification(NotificationID, Checked, NotificationType);
-		}
-		catch (SQLException ex)
-		{
-			ex.printStackTrace();
-			System.err.println("Error occured when accessing database.");
-		}
-		return notification;
-	}
+//	private static NotificationAbstract getNotificationFromRecord(ResultSet rs, int row)
+//	{
+//		NotificationAbstract notification = null;
+//		try 
+//		{
+//			rs.absolute(row);
+//			int NotificationID = rs.getInt(NOTIFICATION_ID);
+//			boolean Checked = rs.getBoolean(CHECKED);
+//			int NotificationType = rs.getInt(NOTIFICATION_TYPE);
+//			switch(NotificationType){
+//				case CHALLENGE:
+//					// intentionally not adding an entry into the MC table. ask colin for explanation
+//					break;
+//				case FRIEND_REQUEST:
+//					addQuestionResponse(conn, lastID);
+//					break;
+//				case FILL_IN_BLANK:
+//					addFillBlank(conn, lastID);
+//					break;
+//				default: break;
+//			}
+//			notification = new (NotificationID, Checked, NotificationType);
+//		}
+//		catch (SQLException ex)
+//		{
+//			ex.printStackTrace();
+//			System.err.println("Error occured when accessing database.");
+//		}
+//		return notification;
+//	}
 	
+<<<<<<< HEAD
 	/*
 	private static FriendRequest getFriendRequestFromRecord(DBConnection conn, ResultSet rs, int row)
 	{
@@ -76,7 +89,28 @@ public class NotificationsHelper
 		
 	}
 	*/
-	private static Challenge getChallengeFromRecord(DBConnection conn, ResultSet rs, int row)
+//	private static FriendRequest getFriendRequestFromRecord(ResultSet rs, int row)
+//	{
+//		FriendRequest request = null;
+//		try 
+//		{
+//			rs.absolute(row);
+//			int NotificationID = rs.getInt(NOTIFICATION_ID);
+//			boolean Sender = rs.getBoolean(SENDER);
+//			int Recipient = rs.getInt(RECIPIENT);
+//			int Status = rs.getInt(STATUS);
+//			request = new FriendRequest(Status, NotificationID, Sender, Recipient);
+//		}
+//		catch (SQLException ex)
+//		{
+//			ex.printStackTrace();
+//			System.err.println("Error occured when accessing database.");
+//		}
+//		return request;
+//		
+//	}
+	
+	private static Challenge getChallengeFromRecord(ResultSet rs, int row)
 	{
 		Challenge request = null;
 		try 
@@ -88,10 +122,7 @@ public class NotificationsHelper
 			int QuizID = rs.getInt(QUIZ_ID);
 			String link = rs.getString(LINK);
 			double score = rs.getDouble(SCORE);
-			User sender = UserHelper.getUserByID(conn, Sender);
-			User recipient = UserHelper.getUserByID(conn, Recipient);
-			Quiz quiz = QuizHelper.getQuizByID(conn, QuizID);
-			request = new Challenge(CHALLENGE, NotificationID, sender, recipient, quiz, link);
+			request = new Challenge(CHALLENGE, NotificationID, Sender, Recipient, QuizID, link, score);
 		}
 		catch (SQLException ex)
 		{
@@ -101,7 +132,7 @@ public class NotificationsHelper
 		return request;
 	}
 	
-	private static Note getNoteFromRecord(DBConnection conn, ResultSet rs, int row)
+	private static Note getNoteFromRecord(ResultSet rs, int row)
 	{
 		Note request = null;
 		try 
@@ -111,9 +142,7 @@ public class NotificationsHelper
 			String Sender = rs.getString(SENDER);
 			String Recipient = rs.getString(RECIPIENT);
 			String note = rs.getString(NOTE);
-			User sender = UserHelper.getUserByID(conn, Sender);
-			User recipient = UserHelper.getUserByID(conn, Recipient);
-			request = new Note(NOTE_TYPE, NotificationID, sender, recipient, note);
+			request = new Note(NOTE, NotificationID, Sender, Recipient, note);
 		}
 		catch (SQLException ex)
 		{
@@ -124,26 +153,26 @@ public class NotificationsHelper
 	}
 	
 	
-	public static Notification getNotification(DBConnection conn, int NotificationID)
-	{
-		try
-		{
-			String query = "SELECT * FROM Notifications WHERE NotificationID = " + NotificationID + ";";
-			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ResultSet results = ps.executeQuery();
-			
-			if (results.isBeforeFirst())
-			{
-				return getNotificationFromRecord(results, 1);
-			}
-		}
-		catch (SQLException ex)
-		{
-			ex.printStackTrace();
-			System.err.println("Error occured when accessing database.");
-		}
-		return null;
-	}
+//	public static Notification getNotification(DBConnection conn, int NotificationID)
+//	{
+//		try
+//		{
+//			String query = "SELECT * FROM Notifications WHERE NotificationID = " + NotificationID + ";";
+//			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+//			ResultSet results = ps.executeQuery();
+//			
+//			if (results.isBeforeFirst())
+//			{
+//				return getNotificationFromRecord(results, 1);
+//			}
+//		}
+//		catch (SQLException ex)
+//		{
+//			ex.printStackTrace();
+//			System.err.println("Error occured when accessing database.");
+//		}
+//		return null;
+//	}
 	
 	public static Note getNote(DBConnection conn, int NotificationID)
 	{
@@ -155,7 +184,7 @@ public class NotificationsHelper
 			
 			if (results.isBeforeFirst())
 			{
-				return getNoteFromRecord(conn, results, 1);
+				return getNoteFromRecord(results, 1);
 			}
 		}
 		catch (SQLException ex)
@@ -249,7 +278,7 @@ public class NotificationsHelper
 				for (int j = 1; j <= numRows; j++)
 				{
 					results.absolute(j);
-					notes.add(getNoteFromRecord(conn, results, j));
+					notes.add(getNoteFromRecord(results, j));
 				}
 			}
 		}
@@ -271,7 +300,7 @@ public class NotificationsHelper
 			
 			if (results.isBeforeFirst())
 			{
-				return getChallengeFromRecord(conn, results, 1);
+				return getChallengeFromRecord(results, 1);
 			}
 		}
 		catch (SQLException ex)
@@ -333,7 +362,7 @@ public class NotificationsHelper
 				int numRows = temp.getRow();
 				for (int i = 1; i <= numRows; i++)
 				{
-					Note note = getNoteFromRecord(conn, results, i);
+					Note note = getNoteFromRecord(results, i);
 					notes.add(note);
 				}
 			}
@@ -363,7 +392,7 @@ public class NotificationsHelper
 				int numRows = temp.getRow();
 				for (int i = 1; i <= numRows; i++)
 				{
-					Note note = getNoteFromRecord(conn, results, i);
+					Note note = getNoteFromRecord(results, i);
 					notes.add(note);
 				}
 			}
@@ -393,7 +422,7 @@ public class NotificationsHelper
 				int numRows = temp.getRow();
 				for (int i = 1; i <= numRows; i++)
 				{
-					Challenge note = getChallengeFromRecord(conn, results, i);
+					Challenge note = getChallengeFromRecord(results, i);
 					challenges.add(note);
 				}
 			}
@@ -423,7 +452,7 @@ public class NotificationsHelper
 				int numRows = temp.getRow();
 				for (int i = 1; i <= numRows; i++)
 				{
-					Challenge note = getChallengeFromRecord(conn, results, i);
+					Challenge note = getChallengeFromRecord(results, i);
 					challenges.add(note);
 				}
 			}	
@@ -521,7 +550,7 @@ public class NotificationsHelper
 				for (int i = 1; i <= numRows; i++)
 				{
 					results.absolute(i);
-					challenges.add(getChallengeFromRecord(conn, results, i));
+					challenges.add(getChallengeFromRecord(results, i));
 				}
 			}
 		}

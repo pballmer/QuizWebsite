@@ -71,29 +71,18 @@ if (quizID == null) {
 	<div id = "filler">
 	</div>
 	<div id ="content">
+		<div id ="form">
 		<form action="QuizNameSaveServlet" method="post">
-<<<<<<< HEAD
-		<p style="color:white">Quiz Name:</p>
-		<p><input type="text" name="name" placeholder="New Quiz" /></p>
-		<p><input type="submit" value="Save"/></p>
-=======
-		<p>
 		Quiz Name:
 		<br>
 		<input type="text" name="name" placeholder="New Quiz" <%out.print("value=\"" + quizName + "\"");%> />
 		<br>
 		<input type="submit" value="Save"/>
 		</p>
->>>>>>> 5cbec62c57b5dbc6869ef01eecbcd9be34e333d4
 		</form>
-		
+		</div>
+		<div id = "form">
 		<form action="QuizDescSaveServlet" method="post" id="descform">
-<<<<<<< HEAD
-		<p style="color:white">Description:</p>
-		<!--<textarea name="desc" form="descform" placeholder="Quiz Description" rows=5></textarea> Might not need the form thing -->
-		<textarea name="desc" placeholder="Quiz Description" rows=5></textarea>
-		<p><input type="submit" value="Save"/></p>
-=======
 		<p>
 		Description:
 		<br>
@@ -101,25 +90,28 @@ if (quizID == null) {
 		<br>
 		<input type="submit" value="Save"/>
 		</p>
->>>>>>> 5cbec62c57b5dbc6869ef01eecbcd9be34e333d4
 		</form>
+		</div>
 		
 		<%ArrayList<QuestionAbstract> questions = QuizHelper.getQuizQuestions(conn, quizID);
 			for (int i = 0; i < questions.size(); ++i) {
 				QuestionAbstract curr = questions.get(i);
-				String answer = "";
-				if (!curr.getAnswers().isEmpty()) answer = curr.getAnswers().get(0);
+				//String answer = "";
+				//if (!curr.getAnswers().isEmpty()) answer = curr.getAnswers().get(0);
+				int questionID = curr.getQuestionID();
 				int type = curr.getType();
+				String answer = curr.getAnswer();
 				switch (type) {
 					case QuestionHelper.MULTIPLE_CHOICE:
 						//displayMC(curr);
 						break;
 					case QuestionHelper.QUESTION_RESPONSE:
 						out.println("<form action=\"QRServlet\" method=\"post\">");
+						out.println("<input type=\"hidden\" name=\"questionID\" value=" + questionID + " />");
 						out.println("<p>");
 						out.println("Question " + i + ":");
 						out.println("<br>");
-						out.println("<input type=\"text\" name=\"text\" placeholder=\"Question Text\" value=\"" + curr.getQuestion() + "\"");
+						out.println("<input type=\"text\" name=\"text\" placeholder=\"Question Text\" value=\"" + ((QuestionResponse)curr).getText() + "\"");
 						out.println("<br>");
 						out.println("<input type=\"submit\" value=\"Save\"/>");
 						out.println("<br>");
@@ -127,16 +119,18 @@ if (quizID == null) {
 						out.println("<br>");
 						out.println("<input type=\"submit\" value=\"Save\"/>");
 						out.println("</p>");
+						out.println("</form>");
 						break;
 					case QuestionHelper.FILL_IN_BLANK:
 						//displayFB(curr);
 						break;
 					case QuestionHelper.PICTURE_RESPONSE:
 						out.println("<form action=\"PRServlet\" method=\"post\">");
+						out.println("<input type=\"hidden\" name=\"questionID\" value=" + questionID + " />");
 						out.println("<p>");
 						out.println("Question " + i + ":");
 						out.println("<br>");
-						out.println("<input type=\"text\" name=\"text\" placeholder=\"Image URL\" value=\"" + curr.getQuestion() + "\"");
+						out.println("<input type=\"text\" name=\"text\" placeholder=\"Image URL\" value=\"" + ((PictureResponse)curr).getText() + "\"");
 						out.println("<br>");
 						out.println("<input type=\"submit\" value=\"Save\"/>");
 						out.println("<br>");
@@ -144,18 +138,16 @@ if (quizID == null) {
 						out.println("<br>");
 						out.println("<input type=\"submit\" value=\"Save\"/>");
 						out.println("</p>");
+						out.println("</form>");
 						break;
 					}
 			}
 		%>
 		
+		<div id="form">
 		<form action="AddQuestionServlet" method="post">
-<<<<<<< HEAD
-		<p style="color:white">Add a new question:</p>
-=======
-		Add a new question:
+		<p>Add a new question:</p>
 		<br>
->>>>>>> 5cbec62c57b5dbc6869ef01eecbcd9be34e333d4
 		<select name="qtype">
 		<option selected="selected" disabled="disabled">Select a question type...</option>
 		<option value="MULTIPLE_CHOICE">Multiple Choice</option>
@@ -163,12 +155,10 @@ if (quizID == null) {
 		<option value="FILL_IN_BLANK">Fill in the Blank</option>
 		<option value="PICTURE_RESPONSE">Picture-Response</option>
 		</select>
-<<<<<<< HEAD
 		<p style="white:color"><input type="submit" value="Add"/></p>
-=======
 		<input type="submit" value="Add"/>
->>>>>>> 5cbec62c57b5dbc6869ef01eecbcd9be34e333d4
 		</form>
+		</div>
 		
 		<form action="QuizCreationServlet" method="post">
 		<p><input type="submit" value="Finish!"/></p>

@@ -54,13 +54,13 @@ public class NotificationServlet extends HttpServlet {
 		String type = request.getParameter("type");
 		String recipientName = request.getParameter("recipient");
 		String senderName = request.getParameter("sender");
-		User sender = UserHelper.getUserByID(conn, senderName);
-		User recipient = UserHelper.getUserByID(conn, recipientName);
+//		User sender = UserHelper.getUserByID(conn, senderName);
+//		User recipient = UserHelper.getUserByID(conn, recipientName);
 		
 		if (type.equals("note"))
 		{
 			String text = request.getParameter("text");
-			Note note = new Note(NotificationsHelper.NOTE_TYPE, -1, sender, recipient, text);
+			Note note = new Note(NotificationsHelper.NOTE_TYPE, -1, senderName, recipientName, text);
 			NotificationsHelper.addNote(conn, note);
 			RequestDispatcher dispatch = request.getRequestDispatcher("note.jsp?type=submit&to="+recipientName);
 			dispatch.forward(request, response);
@@ -85,8 +85,9 @@ public class NotificationServlet extends HttpServlet {
 			}
 			int QuizID = Integer.parseInt(idFromLink);
 			
-			Quiz quiz = QuizHelper.getQuizByID(conn, QuizID);
-			Challenge challenge = new Challenge(NotificationsHelper.CHALLENGE, -1, sender, recipient, quiz, link);
+//			Quiz quiz = QuizHelper.getQuizByID(conn, QuizID);
+			Challenge challenge = new Challenge(NotificationsHelper.CHALLENGE, -1, senderName, recipientName, QuizID, link
+					,QuizHelper.getScore(conn, QuizID, senderName));
 			NotificationsHelper.addChallenge(conn, challenge);
 			RequestDispatcher dispatch = request.getRequestDispatcher("challenge.jsp?type=submit&to=" + recipientName);
 			dispatch.forward(request, response);
