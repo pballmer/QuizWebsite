@@ -252,7 +252,7 @@ if (name != null) out.println(" - " + name);
 								String link = challenge.getQuizLink();
 								double score = challenge.getScore();
 								Quiz quiz = QuizHelper.getQuizByID(conn, challenge.getQuizID());
-								out.println("<p><a href=\"user.jsp?id=" + sender + "></a>" + sender + "</p> has challenged you to take " + "<a href=\"" + link + "\">" + quiz.getName() + ". You need to get a score greater than <b>" + score + "</b> to win.");	
+								out.println("<a href=\"user.jsp?id=" + sender + "\">" + sender + "</a> has sent you a <a href=\"challenge.jsp?id=" + challenge.getID() + "&type=read&to="+ sender + "\"> challenge.</a>");	
 								out.println("<br>");
 							}
 							
@@ -272,8 +272,8 @@ if (name != null) out.println(" - " + name);
 							for (int i = 0; i < friendNames.size(); i++)
 							{
 								String friendName = friendNames.get(i);
-								ArrayList<Quiz> recentQuizTaken = QuizHelper.getQuizzesMade(conn, friendName, 3);
-								ArrayList<Quiz> recentQuizMade = QuizHelper.getQuizzesTaken(conn, friendName, 3);
+								ArrayList<Quiz> recentQuizTaken = QuizHelper.getQuizzesTaken(conn, friendName, 3);
+								ArrayList<Quiz> recentQuizMade = QuizHelper.getQuizzesMade(conn, friendName, 3);
 								ArrayList<String> recAchieves = UserHelper.getAchievements(conn, friendName);
 								
 								out.println("<b><p> Your friend <a href=\"user.jsp?id=" + friendName + "\">" + friendName + "</a> has </p></b>");
@@ -287,7 +287,7 @@ if (name != null) out.println(" - " + name);
 									int quizID = quiz.getId();
 									String description = quiz.getDescription();
 									
-									out.println("<li><a href=\"#quizwebsite\">" + quizName + "</a></li>");
+									out.println("<li><a href=\"quizsummary.jsp?id=" + quizID + "\">" + quizName + "</a></li>");
 								}
 								out.println("</ul>");
 								
@@ -300,7 +300,7 @@ if (name != null) out.println(" - " + name);
 									int quizID = quiz.getId();
 									String description = quiz.getDescription();
 									
-									out.println("<li><a href=\"#quizwebsite\">" + quizName + "</a></li>");
+									out.println("<li><a href=\"quizsummary.jsp?id=" + quizID + "\">"  + quizName + "</a></li>");
 								}
 								out.println("</ul>");
 								

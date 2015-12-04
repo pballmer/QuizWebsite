@@ -89,13 +89,13 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 					}
 					else if (type.equals("read"))
 					{
-						out.println("<h2><a href=\"user.jsp?id=" + user + "\"" + user + "has sent you this challenge: </h2>");
+						out.println("<h2><a href=\"user.jsp?id=" + user + "\">" + user + "</a> has sent you this challenge: </h2>");
 						Challenge challenge = NotificationsHelper.getChallenge(conn, Integer.parseInt(ChallengeID));
 						Quiz quiz = QuizHelper.getQuizByID(conn, challenge.getQuizID());
-						User challenger = UserHelper.getUserByID(conn, user);
-						out.println("<p> Quiz: " + quiz.getName() + "</p>");
-						out.println("<p> Score to beat: " + challenger.getScore(challenge.getQuizID()) + " </p>");
-						out.println("<a href=\"#takequiz\"> Take quiz. </a>");
+						out.println("<p>Quiz: <a href=\"quizsummary.jsp?id=" + quiz.getId() + "\">" + quiz.getName() + "</a></p>");
+						out.println("<p> Score to beat: " + challenge.getScore() + " </p>");
+						out.println("<a class = \"reg-button\" href=\"#takequiz\"> Take quiz. </a>");
+						NotificationsHelper.readChallenge(conn, challenge.getID());
 					}
 					else if (type.equals("submit"))
 					{

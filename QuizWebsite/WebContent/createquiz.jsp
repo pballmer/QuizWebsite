@@ -81,6 +81,7 @@ if (quizID == null) {
 		</p>
 		</form>
 		</div>
+				<br>
 		<div id = "form">
 		<form action="QuizDescSaveServlet" method="post" id="descform">
 		<p>
@@ -180,7 +181,7 @@ if (quizID == null) {
 				out.println("</div>");
 			}
 		%>
-		
+		<br>
 		<div id="form">
 		<form action="AddQuestionServlet" method="post">
 		<p style="white:color">Add a new question:
@@ -196,7 +197,7 @@ if (quizID == null) {
 		</p>
 		</form>
 		</div>
-		
+		<br>
 		<form action="QuizCreationServlet" method="post">
 		<p><input type="submit" value="Finish!"/></p>
 		</form>

@@ -12,6 +12,8 @@
 <% String name =(String)session.getAttribute("name");
 ServletContext context = pageContext.getServletContext();
 DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
+String tag = (String)request.getParameter("tag");
+String message = (String)request.getParameter("message");
 %>
 <link rel="stylesheet" type="text/css" href="main.css">
 
@@ -68,7 +70,46 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 	
 	<div id = "filler">
 	</div>
+	
 	<div id ="content">
+		<%
+			if (message != null)
+			{
+				out.println("<h3 style=\"color:red\">Error when searching for tag.</h3>");
+			}
+		%>
+		<h1 style="color:white"> What tag would you like to search?</h1>
+			<div id = "form">
+				<form action="QuizSearchServlet" method="post">
+				<p>Tag:
+				<input type="text" name="tag" />
+				<input type="submit" value="Search"/></p>
+				</form>
+			</div>
+			
+		<%
+			if (tag!= null)
+			{
+				ArrayList<Integer> ids = QuizHelper.getQuizIDsFromTag(conn, tag);
+				out.println("<br><div id=\"form\"");
+				if (ids.size() == 0)
+				{
+					out.println("<p> No quizzes found with the tag " + tag + "</p>");
+				}
+				else
+				{
+					out.println("<p><b> Quizzes found: </b> </p>");
+					out.println("<ul>");
+					for (int i = 0; i < ids.size(); i++)
+					{
+						Quiz quiz = QuizHelper.getQuizByID(conn, ids.get(i));
+						out.println("<li><a href=\"quizsummary.jsp?id=" + quiz.getId() + "\">" + quiz.getName() + "</a></li>");
+					}
+					out.println("</ul>");
+				}
+				out.println("</div>");
+			}
+		%>
 		<h1 style="color:white">List of all quizzes</h1>
 			<div id="form">
 				<ul>

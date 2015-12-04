@@ -178,11 +178,11 @@
 				
 				out.println("<div id =\"dailytop\" class =\"tab\">");
 					Date date = new Date();
-					int year = date.getYear();
-					int month = date.getMonth();
+					int year = date.getYear()+1900;
+					int month = date.getMonth()+1;
 					int day = date.getDate();
 					String today = year + "-" + month + "-" + day + " 00:00:00";
-					String tomorrow = year + "-" + month + "-" + day+1 + "00:00:00";
+					String tomorrow = year + "-" + month + "-" + (day+1) + " 00:00:00";
 					HashMap<String, Double> scores = QuizHelper.getDailyTopScorers(conn, quizId, today, tomorrow);
 					Set<String> dailyScorers = scores.keySet();
 					out.println("<ul>");
