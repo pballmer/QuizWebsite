@@ -71,7 +71,9 @@ Integer quizID = (Integer)session.getAttribute("quizID");
 	<div id = "results">
 		<h1>Quiz Results:</h1>
 		<%	double score = QuizHelper.getScore(conn, quizID, name);
+			long time = QuizHelper.getTimeDiff(conn, quizID, name);
 			out.println("<h1>Score: " + score + "</h1>");
+			out.println("<h2>Time: " + time + "</h2>");
 		%>
 	</div>
 

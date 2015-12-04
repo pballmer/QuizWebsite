@@ -1,5 +1,6 @@
 package db;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -104,7 +105,7 @@ public class QuizHelper
 		}
 		return result;
 	}
-	
+
 	public static String getStartTime(DBConnection conn, int QuizID, String Username)
 	{
 		String result = "";
@@ -690,6 +691,60 @@ public class QuizHelper
 			System.err.println("Error occured when inserting user into database.");
 			e.printStackTrace();			
 		}
+	}
+	
+	//call when user starts to take a quiz
+	public static void addQuizToTake(DBConnection conn, Quiz quiz, String user){ 
+		int QuizID = quiz.getId();
+		String command = "INSERT INTO QuizzesTaken (Username, QuizID, StartTime)"
+				+ " VALUES(\"" + user + "\"," + QuizID + ", NOW);"; 
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(command);
+			ps.execute();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();			
+		}
+	}
+	
+	public static void addEndTime(DBConnection conn, Quiz quiz, String user) {
+		int QuizID = quiz.getId();
+		String command = "UPDATE QuizzesTaken"
+				+ "SET EndTime=NOW"
+				+ " WHERE QuizID=" + QuizID + ", Username=\"" + user + "\";"; 
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(command);
+			ps.execute();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();			
+		}
+	}
+	
+	public static long getTimeDiff(DBConnection conn, int QuizID, String user){
+		long diff = -1;
+		String query = "SELECT StartTime, EndTime FROM QuizzesTaken WHERE QuizID=" + QuizID + ", AND Username=\"" + user + "\";"; 
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+
+			Date before = results.getDate(1);
+			Date after = results.getDate(2);
+			diff = after.getTime() - before.getTime();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();			
+		}
+		return diff;
 	}
 	
 	public static void addQuizQuestion(DBConnection conn, int quizID, int questionID)
