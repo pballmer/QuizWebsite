@@ -8,10 +8,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Browse Quizzes</title>
+<title>Quiz Results</title>
 <% String name =(String)session.getAttribute("name");
 ServletContext context = pageContext.getServletContext();
 DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
+Integer quizID = (Integer)session.getAttribute("quizID");
 %>
 <link rel="stylesheet" type="text/css" href="main.css">
 
@@ -64,24 +65,15 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 		<h1> Quiz08 </h1>
 	</div>
 	</div>
-
 	
-	<div id = "filler">
+	<div id = "spacing">
 	</div>
-	<div id ="content">
-		<h1>List of all quizzes</h1>
-			<div id="form">
-				<ul>
-					<%
-						ArrayList<Quiz> quizzes = QuizHelper.getQuizzes(conn, -1, "", "");
-						for (int i = 0; i < quizzes.size(); i++)
-						{
-							Quiz quiz = quizzes.get(i);
-							out.println("<li><a href=\"takeQuiz.jsp?id=" + quiz.getId() + "\">" + quiz.getName() + "</a></li>");
-						}
-					%>
-				</ul>
-		   </div>
+	<div id = "results">
+		<h1>Quiz Results:</h1>
+		<%	double score = QuizHelper.getScore(conn, quizID, name);
+			out.println("<h1>Score: " + score + "</h1>");
+		%>
 	</div>
+
 </body>
 </html>
