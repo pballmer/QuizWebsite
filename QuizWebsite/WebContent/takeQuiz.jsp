@@ -72,7 +72,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 					String id = request.getParameter("id").toString();
 					DBConnection dbconn = new DBConnection();
 					Quiz quiz = QuizHelper.getQuizByID(conn, Integer.parseInt(id));
-					QuizHelper.addQuizToTake(conn, quiz, name);
+					//QuizHelper.addQuizToTake(conn, quiz, name);
 					System.out.println(quiz.getQuestions().size());
 				%>
 				
@@ -80,7 +80,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 
 	
 		<h1> You're Taking <%=quiz.getName() %></h1>
-		<form action="QuizTakenServlet.java">
+		<form action="quizResults.jsp">
 		
 			<%
 			ArrayList<String> mcArray = new ArrayList<String>();
@@ -96,8 +96,13 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 			String mcQ = "Which is A?";
 			MultipleChoice mc1 = new MultipleChoice(1, 2, mcQ, answer, QuestionHelper.MULTIPLE_CHOICE, mcArray);
 			QuestionResponse qr1 = new QuestionResponse(2, 2, "What's the first letter of the alphabet?", answer,QuestionHelper.QUESTION_RESPONSE, mcArray);
+<<<<<<< HEAD
+			FillBlank fb1 = new FillBlank(3, 2, "The first letter of the alphabet is ", answer, QuestionHelper.FILL_IN_BLANK, fbArray);
+			PictureResponse pr1 = new PictureResponse(4, 2, "http://www.havefunteaching.com/wp-content/uploads/2013/06/letter-a.png"
+=======
 			FillBlank fb1 = new FillBlank(3, 2, "The first letter of the alphabet is ", answer, QuestionHelper.FILL_IN_BLANK, mcArray);
 			PictureResponse pr1 = new PictureResponse(4, 2, "http://sweetclipart.com/multisite/sweetclipart/files/letter_a.png"
+>>>>>>> pballmer
 					, answer, QuestionHelper.PICTURE_RESPONSE, mcArray);
 
 			ArrayList<QuestionAbstract> questions = new ArrayList<QuestionAbstract>();
@@ -117,6 +122,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 							out.println("<h2>" + mc.getQuestion() + "<h2/>"); 
 							for(int j = 0; j < mc.getOptions().size(); j++){
 								out.println("<input type=\"radio\" id=\""+ mc.getQuestionID() +  "" +"\">" + mc.getOptions().get(j) +"<br>"); 
+								System.out.println("j is " + j);
 							}
 							continue;
 						case QuestionHelper.QUESTION_RESPONSE:
@@ -126,9 +132,9 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 							continue;
 						case QuestionHelper.FILL_IN_BLANK:
 							FillBlank fillBlank = (FillBlank)questions.get(i);
-							out.println("<h2>" +  fillBlank.getOptions().get(0) + "<h2>");
-							out.println("<input type=\"text\" id= "+ fillBlank.getQuestionID()  +"><br>");
-							out.println("<h2>" +  fillBlank.getOptions().get(1) + "<h2>");	
+							out.print("<h2>" +  fillBlank.getOptions().get(0) + "<h2>");
+							out.print("<input type=\"text\" id= "+ fillBlank.getQuestionID()  +">");
+							out.print("<h2>" +  fillBlank.getOptions().get(1) + "</h2>");	
 							continue;
 						case QuestionHelper.PICTURE_RESPONSE:
 							PictureResponse pr = (PictureResponse)questions.get(i);

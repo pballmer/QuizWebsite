@@ -85,6 +85,7 @@ public class QuizHelper
 	
 	public static double getScore(DBConnection conn, int QuizID, String Username)
 	{
+		System.out.println("bitch");
 		double result = 0;
 		try
 		{
@@ -705,7 +706,7 @@ public class QuizHelper
 		}
 		catch (SQLException e)
 		{
-			System.err.println("Error occured when inserting user into database.");
+			System.err.println("Error occured when adding quiz to take.");
 			e.printStackTrace();			
 		}
 	}
@@ -722,7 +723,7 @@ public class QuizHelper
 		}
 		catch (SQLException e)
 		{
-			System.err.println("Error occured when inserting user into database.");
+			System.err.println("Error occured when adding end time.");
 			e.printStackTrace();			
 		}
 	}
@@ -741,7 +742,7 @@ public class QuizHelper
 		}
 		catch (SQLException e)
 		{
-			System.err.println("Error occured when inserting user into database.");
+			System.err.println("Error occured when getting time diff.");
 			e.printStackTrace();			
 		}
 		return diff;
