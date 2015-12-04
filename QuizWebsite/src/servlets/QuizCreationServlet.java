@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import db.DBConnection;
 import db.QuizHelper;
+import db.UserHelper;
 import entities.Quiz;
 
 /**
@@ -45,12 +46,23 @@ public class QuizCreationServlet extends HttpServlet {
 		Integer quizID = (Integer)session.getAttribute("quizID");
 		String quizName = (String) session.getAttribute("quizName");
 		String quizDesc = (String) session.getAttribute("quizDesc");
+		String username = (String)session.getAttribute("name");
 		Quiz quiz = new Quiz(quizID, quizName, quizDesc);
 		ServletContext context = getServletContext();
 		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
         // TODO set request's id parameter so that quizsummary can display right away
-        QuizHelper.addQuizMade(conn, quiz, (String) session.getAttribute("name"));
-        RequestDispatcher dispatch = request.getRequestDispatcher("quizsummary.jsp");
+        QuizHelper.addQuizMade(conn, quiz, username);
+        if(UserHelper.getNumQuizzesMade(conn, username) == 1){
+    		UserHelper.addAchievement(conn, UserHelper.AMATEUR, username);
+        } else if (UserHelper.getNumQuizzesMade(conn, username) == 5){
+        	UserHelper.addAchievement(conn, UserHelper.PROLIFIC, username);
+        } else if (UserHelper.getNumQuizzesMade(conn, username) == 10){
+        	UserHelper.addAchievement(conn, UserHelper.PRODIGIOUS, username);
+        }
+        System.out.println("here");
+        System.out.println("quiz id" + quizID);
+        RequestDispatcher dispatch = request.getRequestDispatcher("quizsummary.jsp?id=" + quizID);
+        
 		dispatch.forward(request, response);
 	}
 

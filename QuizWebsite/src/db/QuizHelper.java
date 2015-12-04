@@ -793,12 +793,13 @@ public class QuizHelper
 	public static void addQuizMade(DBConnection conn, Quiz quiz, String user)
 	{
 		int QuizID = quiz.getId();
-		String query = "INSERT INTO QuizzesMade VALUES(\"" + user + "\", " + QuizID + ", -1, null);";
+		
+		String query = "INSERT INTO QuizzesMade VALUES(\"" + user + "\", " + QuizID + ", -1, NOW());";
 		// TODO use real values for status and time ^
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ps.executeQuery();
+			ps.execute();
 		}
 		catch (SQLException e)
 		{

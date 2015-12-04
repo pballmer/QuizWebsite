@@ -23,6 +23,10 @@ public class UserHelper
 	private static final int ACCEPTED = 1;
 	private static final int SENDER = 2;
 	private static final int RECIPIENT = 3;
+	public static final String AMATEUR = "Amateur Author";
+	public static final String PROLIFIC = "Prolific Author";
+	public static final String PRODIGIOUS = "Prodigious Author";
+	
 	
 	public static User getUserFromRecord(ResultSet rs, int row)
 	{
@@ -145,6 +149,23 @@ public class UserHelper
 			System.err.println("Error occured when accessing database.");
 		}
 		return null;
+	}
+	
+	public static int getNumQuizzesMade(DBConnection conn, String Username){
+		int numMade = 0;
+		String query = "SELECT * FROM QuizzesMade WHERE Username=\"" + Username + "\";";
+		try {
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			ResultSet temp = results;
+			temp.last();
+			numMade = temp.getRow();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return numMade;
+		
 	}
 	
 	// TODO purpose of this method?

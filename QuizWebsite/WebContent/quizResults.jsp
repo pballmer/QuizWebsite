@@ -74,10 +74,9 @@ long time = QuizHelper.getTimeDiff(conn, quizID, name);
 	<div id = "content">
 		<h1 style="color:white">Quiz Results:</h1>
 		<div id = "form">
-		<%	System.out.println(conn.toString());
+		<%	
 			out.println("<h1>Score: " + score + "</h1>");
 			out.println("<h2>Time: " + time + "</h2>");
-			//out.println("<h3>Number of questions in quiz: " + quiz.getQuestions().size() + "</h3>");
 		%>
 		</div>
 	</div>
