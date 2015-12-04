@@ -94,35 +94,45 @@ if (quizID == null) {
 		<%ArrayList<QuestionAbstract> questions = QuizHelper.getQuizQuestions(conn, quizID);
 			for (int i = 0; i < questions.size(); ++i) {
 				QuestionAbstract curr = questions.get(i);
+				String answer = "";
+				if (!curr.getAnswers().isEmpty()) answer = curr.getAnswers().get(0);
 				int type = curr.getType();
 				switch (type) {
-				case QuestionHelper.MULTIPLE_CHOICE:
-					//displayMC(curr);
-					break;
-				case QuestionHelper.QUESTION_RESPONSE:
-					out.println("<form action=\"QRServlet\" method=\"post\">");
-					out.println("<p>");
-					out.println("Question Text:");
-					out.println("<br>");
-					out.println("<input type=\"text\" name=\"text\" placeholder=\"Question Text\" value=\"" + curr.getQuestion() + "\"");
-					out.println("<br>");
-					out.println("<input type=\"submit\" value=\"Save\"/>");
-					out.println("</p>");
-					out.println("<p>");
-					out.println("Answer:");
-					out.println("<br>");
-					out.println("<input type=\"text\" name=\"answer\" placeholder=\"Answer\" value=\"" + curr.getAnswers().get(0) + "\"");
-					out.println("<br>");
-					out.println("<input type=\"submit\" value=\"Save\"/>");
-					out.println("</p>");
-					break;
-				case QuestionHelper.FILL_IN_BLANK:
-					//displayFB(curr);
-					break;
-				case QuestionHelper.PICTURE_RESPONSE:
-					//displayPR(curr);
-					break;
-				}
+					case QuestionHelper.MULTIPLE_CHOICE:
+						//displayMC(curr);
+						break;
+					case QuestionHelper.QUESTION_RESPONSE:
+						out.println("<form action=\"QRServlet\" method=\"post\">");
+						out.println("<p>");
+						out.println("Question " + i + ":");
+						out.println("<br>");
+						out.println("<input type=\"text\" name=\"text\" placeholder=\"Question Text\" value=\"" + curr.getQuestion() + "\"");
+						out.println("<br>");
+						out.println("<input type=\"submit\" value=\"Save\"/>");
+						out.println("<br>");
+						out.println("<input type=\"text\" name=\"answer\" placeholder=\"Answer\" value=\"" + answer + "\"");
+						out.println("<br>");
+						out.println("<input type=\"submit\" value=\"Save\"/>");
+						out.println("</p>");
+						break;
+					case QuestionHelper.FILL_IN_BLANK:
+						//displayFB(curr);
+						break;
+					case QuestionHelper.PICTURE_RESPONSE:
+						out.println("<form action=\"PRServlet\" method=\"post\">");
+						out.println("<p>");
+						out.println("Question " + i + ":");
+						out.println("<br>");
+						out.println("<input type=\"text\" name=\"text\" placeholder=\"Image URL\" value=\"" + curr.getQuestion() + "\"");
+						out.println("<br>");
+						out.println("<input type=\"submit\" value=\"Save\"/>");
+						out.println("<br>");
+						out.println("<input type=\"text\" name=\"answer\" placeholder=\"Answer\" value=\"" + answer + "\"");
+						out.println("<br>");
+						out.println("<input type=\"submit\" value=\"Save\"/>");
+						out.println("</p>");
+						break;
+					}
 			}
 		%>
 		

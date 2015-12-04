@@ -73,7 +73,7 @@ public class Quiz {
 	}
 	
 	public void addQuestion(QuestionAbstract question, DBConnection conn){
-		QuizHelper.addQuizQuestion(conn, this, question);
+		QuizHelper.addQuizQuestion(conn, this.id, question.getQuestionID());
 		questions.add(question);
 	}
 	
