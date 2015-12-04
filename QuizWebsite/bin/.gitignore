@@ -1,2 +1,5 @@
 /db/
 /entities/
+/listeners/
+/servlets/
+/src/
