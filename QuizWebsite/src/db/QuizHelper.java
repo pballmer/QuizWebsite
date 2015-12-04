@@ -597,7 +597,7 @@ public class QuizHelper
 		return scores;
 	}
 	
-	public ArrayList<String> getTagsForQuiz(DBConnection conn, Quiz quiz){
+	public static ArrayList<String> getTagsForQuiz(DBConnection conn, Quiz quiz){
 		int QuizID = quiz.getId();
 		ArrayList<String> tags = new ArrayList<String>();
 		String query = "SELECT * FROM Tags WHERE QuizID = " + QuizID + ";";
@@ -621,7 +621,7 @@ public class QuizHelper
 		return tags;
 	}
 	
-	public ArrayList<Integer> getQuizIDsFromTag(DBConnection conn, String tag){
+	public static ArrayList<Integer> getQuizIDsFromTag(DBConnection conn, String tag){
 		ArrayList<Integer> quizIDs = new ArrayList<Integer>();
 		String query = "SELECT * FROM Tags WHERE Tag = \"" + tag + "\";";
 		try {
@@ -727,7 +727,7 @@ public class QuizHelper
 	{
 		HashMap<String, Double> scores = new HashMap<String, Double>();
 		try {
-			String query = "SELECT Username, Score FROM QuizzesTaken WHERE QuizID =" + quizID + " AND EndTime > " + today + " AND EndTime <" + tomorrow + " ORDER BY EndTime DESC;";
+			String query = "SELECT Username, Score FROM QuizzesTaken WHERE QuizID =" + quizID + " AND EndTime > '" + today + "' AND EndTime <'" + tomorrow + "' ORDER BY EndTime DESC;";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			
 			ResultSet results = ps.executeQuery();

@@ -44,6 +44,7 @@ public class User {
 		this.quizzesMade = new ArrayList<Quiz>();
 		this.quizzesTaken = new HashMap<Integer, Double>();
 		this.notifications = new ArrayList<NotificationAbstract>();
+		this.achievements = new ArrayList<String>();
 		try {
 			md = MessageDigest.getInstance("SHA");
 		} catch (NoSuchAlgorithmException e) {
@@ -60,6 +61,7 @@ public class User {
 		this.quizzesMade = new ArrayList<Quiz>();
 		this.quizzesTaken = new HashMap<Integer, Double>();
 		this.notifications = new ArrayList<NotificationAbstract>();
+		this.achievements = new ArrayList<String>();
 		try {
 			md = MessageDigest.getInstance("SHA");
 		} catch (NoSuchAlgorithmException e) {

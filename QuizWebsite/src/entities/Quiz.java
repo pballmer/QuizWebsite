@@ -62,7 +62,7 @@ public class Quiz {
 	public double doScore(ArrayList<String> responses){
 		double score = 0;
 		for(int i = 0; i < responses.size(); i++){
-			if(questions.get(i).checkAnswer(responses.get(i))) score++;
+			//if(questions.get(i).checkAnswer(responses.get(i))) score++;
 		}
 		return (score/questions.size());//returns score as a percentage where each question is worth 1
 	}
@@ -136,4 +136,5 @@ public class Quiz {
 		Quiz q = (Quiz)o;
 		return (q.getId() == this.getId());
 	}
+	
 }

@@ -81,6 +81,7 @@ if (quizID == null) {
 		</p>
 		</form>
 		</div>
+				<br>
 		<div id = "form">
 		<form action="QuizDescSaveServlet" method="post" id="descform">
 		<p>
@@ -143,7 +144,7 @@ if (quizID == null) {
 					}
 			}
 		%>
-		
+		<br>
 		<div id="form">
 		<form action="AddQuestionServlet" method="post">
 		<p>Add a new question:</p>
@@ -159,7 +160,7 @@ if (quizID == null) {
 		<input type="submit" value="Add"/>
 		</form>
 		</div>
-		
+		<br>
 		<form action="QuizCreationServlet" method="post">
 		<p><input type="submit" value="Finish!"/></p>
 		</form>

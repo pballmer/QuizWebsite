@@ -64,7 +64,6 @@ public class NotificationsHelper
 //		return notification;
 //	}
 	
-<<<<<<< HEAD
 	/*
 	private static FriendRequest getFriendRequestFromRecord(DBConnection conn, ResultSet rs, int row)
 	{
