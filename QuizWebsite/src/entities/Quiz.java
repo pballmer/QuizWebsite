@@ -12,12 +12,12 @@ public class Quiz {
 	private User creator;
 	private List<QuestionAbstract> questions;
 	private String description;
-	private long startTime;
-	private long endTime;
+	private Date startTime;
+	private Date endTime;
 	private boolean random = false; //set these defaults for what I thought make sense
 	private boolean onePage = true;
 	private boolean immediateCorrection = false;
-	private boolean practiceMode = false;
+	private List<String> tags;
 	
 	// default constructor used when creating a new quiz with no info yet
 	public Quiz()
@@ -33,6 +33,7 @@ public class Quiz {
 		this.name = quizname;
 		this.description = desc;
 		questions = new ArrayList<QuestionAbstract>();
+		tags = new ArrayList<String>();
 	}
 	//constructor without other options being set
 	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link){
@@ -42,11 +43,12 @@ public class Quiz {
 		this.questions = new ArrayList<QuestionAbstract>();
 		questions.addAll(questionInput);
 		this.creator = user;
-		this.startTime = System.currentTimeMillis();
+		this.startTime = new Date();
+		tags = new ArrayList<String>();
 	}
 	
 	//constructor with all options set
-	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link, boolean rand, boolean page, boolean correction, boolean practice){//constructor 
+	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link, boolean rand, boolean page, boolean correction){//constructor 
 		this.name = nameInput;
 		this.link = link;
 		this.description = descInput;
@@ -57,8 +59,8 @@ public class Quiz {
 		if(random) randomize();
 		this.onePage = page;
 		this.immediateCorrection = correction;
-		this.practiceMode = practice;
-		this.startTime = System.currentTimeMillis();
+		this.startTime = new Date();
+		tags = new ArrayList<String>();
 	}
 	
 	public double doScore(ArrayList<String> responses){
@@ -67,6 +69,11 @@ public class Quiz {
 			if(questions.get(i).checkAnswer(responses.get(i))) score++;
 		}
 		return (score/questions.size());//returns score as a percentage where each question is worth 1
+	}
+	
+	public void addTag(String tag, DBConnection conn){
+		tags.add(tag);
+		QuizHelper.addTag(conn, this, tag);
 	}
 	
 	public void addQuestion(QuestionAbstract question, DBConnection conn){
@@ -79,11 +86,6 @@ public class Quiz {
 		long seed = System.nanoTime();
 		Collections.shuffle(questions, new Random(seed));
 		//TODO: update BE
-	}
-	
-	public long getQuizTime(){
-		endTime = System.currentTimeMillis();
-		return endTime - startTime;
 	}
 	
 	public String getName() {
@@ -114,11 +116,15 @@ public class Quiz {
 		return description;
 	}
 
-	public long getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
+	
+	public void setEndTime(){
+		endTime = new Date();
+	}
 
-	public long getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
@@ -132,10 +138,6 @@ public class Quiz {
 
 	public boolean isImmediateCorrection() {
 		return immediateCorrection;
-	}
-
-	public boolean isPracticeMode() {
-		return practiceMode;
 	}
 	
 	public String getLink() {

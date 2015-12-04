@@ -8,12 +8,11 @@ import db.DBConnection;
 
 public class QuestionAbstract {
 	
-
-
 	protected static final int MULTIPLE_CHOICE = 0;
 	protected static final int QUESTION_RESPONSE = 1;
 	protected static final int FILL_IN_BLANK = 2;
 	protected static final int PICTURE_RESPONSE = 3;	
+
 	private int questionID;
 	private int quizID;
 	private int type;
@@ -32,6 +31,7 @@ public class QuestionAbstract {
 		this.quizID = QuestionHelper.addQuestion(dbConn, this.type);
 		this.question = question;
 		this.answers = answers;	
+		this.options = options;
 		//add answers
 		QuestionHelper.addAnswers(dbConn, this.questionID, this.answers);
 	}
