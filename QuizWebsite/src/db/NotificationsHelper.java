@@ -64,26 +64,26 @@ public class NotificationsHelper
 //		return notification;
 //	}
 	
-//	private static FriendRequest getFriendRequestFromRecord(ResultSet rs, int row)
-//	{
-//		FriendRequest request = null;
-//		try 
-//		{
-//			rs.absolute(row);
-//			int NotificationID = rs.getInt(NOTIFICATION_ID);
-//			boolean Sender = rs.getBoolean(SENDER);
-//			int Recipient = rs.getInt(RECIPIENT);
-//			int Status = rs.getInt(STATUS);
-//			request = new FriendRequest(Status, NotificationID, Sender, Recipient);
-//		}
-//		catch (SQLException ex)
-//		{
-//			ex.printStackTrace();
-//			System.err.println("Error occured when accessing database.");
-//		}
-//		return request;
-//		
-//	}
+	private static FriendRequest getFriendRequestFromRecord(ResultSet rs, int row)
+	{
+		FriendRequest request = null;
+		try 
+		{
+			rs.absolute(row);
+			int NotificationID = rs.getInt(NOTIFICATION_ID);
+			String Sender = rs.getString(SENDER);
+			String Recipient = rs.getString(RECIPIENT);
+			int Status = rs.getInt(STATUS);
+			request = new FriendRequest(Status, NotificationID, Sender, Recipient);
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return request;
+		
+	}
 	
 	private static Challenge getChallengeFromRecord(ResultSet rs, int row)
 	{
