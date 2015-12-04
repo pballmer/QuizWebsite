@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class PictureResponse extends QuestionAbstract{
-	/*This is the constructor for the picture response
-	 * */
-	public PictureResponse(int questionID, int quizID, String question, ArrayList<String> answers, int type, ArrayList<String >options) {
-		super(questionID, quizID, question, answers, PICTURE_RESPONSE, options);
+	
+	private String text;
+	
+	public PictureResponse(int questionID, String text, String answer) {
+		super(questionID, PICTURE_RESPONSE, answer);
+		this.text = text;
+	}
+
+	public String getText() {
+		return text;
 	}
 }

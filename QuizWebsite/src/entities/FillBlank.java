@@ -5,8 +5,20 @@ import java.util.Set;
 
 public class FillBlank extends QuestionAbstract {
 
-	public FillBlank(int questionID, int quizID, String question, ArrayList<String> answers, int type, ArrayList<String> options) {
-		super(questionID, quizID, question, answers, FILL_IN_BLANK, options);
-	} 
+	private String textBefore;
+	private String textAfter;
 	
+	public FillBlank(int questionID, String textBefore, String textAfter, String answer) {
+		super(questionID, FILL_IN_BLANK, answer);
+		this.textBefore = textBefore;
+		this.textAfter = textAfter;
+	}
+
+	public String getTextBefore() {
+		return textBefore;
+	}
+
+	public String getTextAfter() {
+		return textAfter;
+	}
 }

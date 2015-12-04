@@ -6,7 +6,14 @@ import entities.QuestionAbstract;
 
 public class QuestionResponse extends QuestionAbstract{
 	
-	public QuestionResponse(int questionID, int quizID, String question, ArrayList<String> answers, int type, ArrayList<String >options){
-		super(questionID, quizID, question, answers, QUESTION_RESPONSE, options);
+	private String text;
+	
+	public QuestionResponse(int questionID, String text, String answer) {
+		super(questionID, QUESTION_RESPONSE, answer);
+		this.text = text;
+	}
+	
+	public String getText() {
+		return text;
 	}
 }

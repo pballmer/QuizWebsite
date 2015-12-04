@@ -94,19 +94,22 @@ if (quizID == null) {
 		<%ArrayList<QuestionAbstract> questions = QuizHelper.getQuizQuestions(conn, quizID);
 			for (int i = 0; i < questions.size(); ++i) {
 				QuestionAbstract curr = questions.get(i);
-				String answer = "";
-				if (!curr.getAnswers().isEmpty()) answer = curr.getAnswers().get(0);
+				//String answer = "";
+				//if (!curr.getAnswers().isEmpty()) answer = curr.getAnswers().get(0);
+				int questionID = curr.getQuestionID();
 				int type = curr.getType();
+				String answer = curr.getAnswer();
 				switch (type) {
 					case QuestionHelper.MULTIPLE_CHOICE:
 						//displayMC(curr);
 						break;
 					case QuestionHelper.QUESTION_RESPONSE:
 						out.println("<form action=\"QRServlet\" method=\"post\">");
+						out.println("<input type=\"hidden\" name=\"questionID\" value=" + questionID + " />");
 						out.println("<p>");
 						out.println("Question " + i + ":");
 						out.println("<br>");
-						out.println("<input type=\"text\" name=\"text\" placeholder=\"Question Text\" value=\"" + curr.getQuestion() + "\"");
+						out.println("<input type=\"text\" name=\"text\" placeholder=\"Question Text\" value=\"" + ((QuestionResponse)curr).getText() + "\"");
 						out.println("<br>");
 						out.println("<input type=\"submit\" value=\"Save\"/>");
 						out.println("<br>");
@@ -114,16 +117,18 @@ if (quizID == null) {
 						out.println("<br>");
 						out.println("<input type=\"submit\" value=\"Save\"/>");
 						out.println("</p>");
+						out.println("</form>");
 						break;
 					case QuestionHelper.FILL_IN_BLANK:
 						//displayFB(curr);
 						break;
 					case QuestionHelper.PICTURE_RESPONSE:
 						out.println("<form action=\"PRServlet\" method=\"post\">");
+						out.println("<input type=\"hidden\" name=\"questionID\" value=" + questionID + " />");
 						out.println("<p>");
 						out.println("Question " + i + ":");
 						out.println("<br>");
-						out.println("<input type=\"text\" name=\"text\" placeholder=\"Image URL\" value=\"" + curr.getQuestion() + "\"");
+						out.println("<input type=\"text\" name=\"text\" placeholder=\"Image URL\" value=\"" + ((PictureResponse)curr).getText() + "\"");
 						out.println("<br>");
 						out.println("<input type=\"submit\" value=\"Save\"/>");
 						out.println("<br>");
@@ -131,6 +136,7 @@ if (quizID == null) {
 						out.println("<br>");
 						out.println("<input type=\"submit\" value=\"Save\"/>");
 						out.println("</p>");
+						out.println("</form>");
 						break;
 					}
 			}

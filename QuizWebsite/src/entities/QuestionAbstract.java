@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import db.DBConnection;
 
-public class QuestionAbstract {
+public abstract class QuestionAbstract {
 	
 	protected static final int MULTIPLE_CHOICE = 0;
 	protected static final int QUESTION_RESPONSE = 1;
@@ -14,29 +14,53 @@ public class QuestionAbstract {
 	protected static final int PICTURE_RESPONSE = 3;	
 
 	private int questionID;
-	private int quizID;
+	//private int quizID;
 	private int type;
-	private String question;
-	private ArrayList<String> answers = new ArrayList<String>(); 
-	private ArrayList<String> options = new ArrayList<String>();
+	private String answer;
+//	private String question;
+//	private ArrayList<String> answers = new ArrayList<String>(); 
+//	private ArrayList<String> options = new ArrayList<String>();
+	
+//	public QuestionAbstract(int questionID, int quizID) {
+//		this.questionID = questionID;
+//		this.quizID = quizID;
+//	}
+	
+	public QuestionAbstract(int questionID, int type, String answer) {
+		this.questionID = questionID;
+		this.type = type;
+		this.answer = answer;
+	}
+	
+	public int getQuestionID() {
+		return questionID;
+	}
+	
+	public int getType(){
+		return this.type;
+	}
+	
+	public String getAnswer() {
+		return answer;
+	}
 	
 	 /*Constructor for QuestionAbstract
 	 * NOTE** IF QUIZ ID == -1 Then the question was not created with knowledge of it's quiz id. Just a heads up
 	 * */
-	public QuestionAbstract(int questionID, int quizID, String question, ArrayList<String> answers, int type, ArrayList<String> options){
-		this.questionID =  questionID;
-		this.type = type;
-		//DBConnection dbConn = new DBConnection();
-		//Question helper will return int OR group decide something else. TO BE FIXED
-		//this.quizID = QuestionHelper.addQuestion(dbConn, this.type);
-		this.quizID = -1;
-		this.question = question;
-		this.answers = answers;	
-		this.options = options;
+//	public QuestionAbstract(int questionID, int quizID, String question, ArrayList<String> answers, int type, ArrayList<String> options){
+//		this.questionID =  questionID;
+//		this.type = type;
+//		//DBConnection dbConn = new DBConnection();
+//		//Question helper will return int OR group decide something else. TO BE FIXED
+//		//this.quizID = QuestionHelper.addQuestion(dbConn, this.type);
+//		this.quizID = -1;
+//		this.question = question;
+//		this.answers = answers;	
+//		this.options = options;
 		//add answers
 		// TODO make this happen again if needed. don't have db rn
 		//QuestionHelper.addAnswers(dbConn, this.questionID, this.answers);
-	}
+	//}
 	
 //	/* This will add the question into the correct table for it's type and add it's answers as well, regardless of type, however you must insert type
 //	 * */
@@ -61,36 +85,31 @@ public class QuestionAbstract {
 //		
 //	}
 	
-	public ArrayList<String> getOptions(){	
-		return this.options;
-	}
-	public int getType(){
-		return this.type;
-	}
+//	public ArrayList<String> getOptions(){	
+//		return this.options;
+//	}
 	
-	/*This gets the question itself
-	 * */
-	public String getQuestion() {
-		//this is a change
-		return question;
-	}
+	
+//	/*This gets the question itself
+//	 * */
+//	public String getQuestion() {
+//		//this is a change
+//		return question;
+//	}
+//
+//	/*This gets an arraylist of answers
+//	 * */
+//	public ArrayList<String> getAnswers() {
+//		return answers;
+//	}
+//
+//	//check answer
+//	public boolean checkAnswer(String answer){
+//		return this.answers.contains(answer);
+//	}
+//	
+//	public int getQuizID() {
+//		return quizID;
+//	}
 
-	/*This gets an arraylist of answers
-	 * */
-	public ArrayList<String> getAnswers() {
-		return answers;
-	}
-
-	//check answer
-	public boolean checkAnswer(String answer){
-		return this.answers.contains(answer);
-	}
-	
-	public int getQuizID() {
-		return quizID;
-	}
-	
-	public int getQuestionID() {
-		return questionID;
-	}
 }
