@@ -20,14 +20,14 @@ public class QuestionHelper
 	private static final int ANSWER = 2;
 	private static final int OPTIONS = 2;
 	
-	public static enum QuestionTypes {
-		MULTIPLE_CHOICE, QUESTION_RESPONSE, FILL_IN_BLANK, PICTURE_RESPONSE
-	}
+//	public static enum QuestionTypes {
+//		MULTIPLE_CHOICE, QUESTION_RESPONSE, FILL_IN_BLANK, PICTURE_RESPONSE
+//	}
 	
-	/*private static final int MULTIPLE_CHOICE = 0;
-	private static final int QUESTION_RESPONSE = 1;
-	private static final int FILL_IN_BLANK = 2;
-	private static final int PICTURE_RESPONSE = 3;*/
+	public static final int MULTIPLE_CHOICE = 0;
+	public static final int QUESTION_RESPONSE = 1;
+	public static final int FILL_IN_BLANK = 2;
+	public static final int PICTURE_RESPONSE = 3;
 	
 	
 	//NOTE: THIS SETS THE QUIZ ID TO -1 (assuming client will have Quiz ID/will not be needed
@@ -40,13 +40,19 @@ public class QuestionHelper
 			rs.absolute(row);
 			
 			//changes from QUIZ_NAME to QUestion_ID etc.
-			String questionID = rs.getString("QUESTION_ID");
-			String questionType = rs.getString("QUESTION_TYPE");
+			String questionID = rs.getString("QUESTIONID");
+			int questionType = Integer.parseInt(rs.getString("QUESTIONTYPE"));
+				
 			ArrayList<String> answers = getAnswers(conn, questionID);
-			ArrayList<String> options = getQuestionOptions(conn, questionID);
+			//ArrayList<String> options = getQuestionOptions(conn, questionID);
+			ArrayList<String> options = new ArrayList<String>();
+			options.add("tempdummy");
 			//where is above quiz ID coming from and need to get question string
 			//this is 
-			question = new QuestionAbstract(Integer.parseInt(questionID), -1, options.get(0), answers, QuestionTypes.valueOf(questionType), options);
+			
+			// TODO make this return an object of the correct type
+			
+			question = new QuestionAbstract(Integer.parseInt(questionID), -1, options.get(0), answers, questionType, options);
 
 		}
 		catch (SQLException ex)
@@ -163,7 +169,7 @@ public class QuestionHelper
 			
 			if (question != null)
 			{
-				QuestionTypes type = question.getType();
+				int type = question.getType();
 				switch (type)
 				{
 					case MULTIPLE_CHOICE:
@@ -220,7 +226,7 @@ public class QuestionHelper
 		return options;
 	}
 	//will return int later OR we will change it so it takes the ID as a parameter
-	public static int addQuestion(DBConnection conn, QuestionTypes type)
+	public static int addQuestion(DBConnection conn, int type)
 	{
 		String query = "INSERT INTO Question VALUES(NULL," + type + ");";
 		try
@@ -232,6 +238,7 @@ public class QuestionHelper
 			ResultSet rs = stmt.executeQuery("SELECT * FROM Question");
 			rs.last();
 			int lastID = Integer.parseInt(rs.getString("QuestionID"));
+			//query = ""
 			switch (type) {
 				case MULTIPLE_CHOICE:
 					// intentionally not adding an entry into the MC table. ask colin for explanation
@@ -291,7 +298,7 @@ public class QuestionHelper
 //		}
 //	}
 	
-	public static void addQuestionResponse(DBConnection conn, int questionID) {
+	private static void addQuestionResponse(DBConnection conn, int questionID) {
 		try {
 			String query = "INSERT INTO QuestionResponse VALUES(" + questionID + ", '');";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
@@ -303,7 +310,7 @@ public class QuestionHelper
 		}
 	}
 	
-	public static void addFillBlank(DBConnection conn, int questionID) {
+	private static void addFillBlank(DBConnection conn, int questionID) {
 		try {
 			String query = "INSERT INTO FillInBlank VALUES(" + questionID + ", '');";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
@@ -315,7 +322,7 @@ public class QuestionHelper
 		}
 	}
 	
-	public static void addPictureResponse(DBConnection conn, int questionID) {
+	private static void addPictureResponse(DBConnection conn, int questionID) {
 		try {
 			String query = "INSERT INTO PictureResponse VALUES(" + questionID + ", '');";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);

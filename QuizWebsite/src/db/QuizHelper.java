@@ -633,11 +633,9 @@ public class QuizHelper
 		}
 	}
 	
-	public static void addQuizQuestion(DBConnection conn, Quiz quiz, QuestionAbstract question)
+	public static void addQuizQuestion(DBConnection conn, int quizID, int questionID)
 	{
-		int QuizID = quiz.getId();
-		String questionID = Integer.toString(question.getQuestionID());
-		String query = "INSERT INTO QuizQuestion VALUES(" + QuizID + ", " + questionID + ");";
+		String query = "INSERT INTO QuizQuestions VALUES(" + quizID + ", " + questionID + ");";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);

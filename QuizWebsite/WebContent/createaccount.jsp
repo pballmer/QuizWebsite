@@ -52,7 +52,7 @@
 
 			%>
 					<br>
-			<a href ="index.jsp" class ="big-button"> Home </a>a>
+			<a href ="index.jsp" class ="big-button"> Home </a>
 
 		</div>
 		

@@ -73,7 +73,7 @@
 				<p>User Name:
 				<input type="text" name="name" />
 				<p>Password:
-				<input type="text" name="pass" />
+				<input type="password" name="pass" />
 				<input type="submit" value="Login"/></p>
 				</form>
 				<a href="createaccount.jsp">Create New Account</a>

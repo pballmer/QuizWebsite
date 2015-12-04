@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import db.DBConnection;
+import db.QuestionHelper;
 import db.QuizHelper;
 
 /**
@@ -40,14 +41,18 @@ public class AddQuestionServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String qType = request.getParameter("qtype");        
+		String qType = request.getParameter("qtype");
+		int type = -1;
+		if (qType.equals("MULTIPLE_CHOICE")) type = QuestionHelper.MULTIPLE_CHOICE;
+		else if (qType.equals("QUESTION_RESPONSE")) type = QuestionHelper.QUESTION_RESPONSE;
+		else if (qType.equals("FILL_IN_BLANK")) type = QuestionHelper.FILL_IN_BLANK;
+		else if (qType.equals("PICTURE_RESPONSE")) type = QuestionHelper.PICTURE_RESPONSE;
 		HttpSession session = request.getSession();
 		ServletContext context = getServletContext();
 		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
-        //session.setAttribute("quizDesc", quizDesc);
-		// create question, which adds it to the questions list and its specific list
-		// add that question to the quiz
-        QuizHelper.
+        int questionID = QuestionHelper.addQuestion(conn, type);
+        Integer quizID = (Integer)session.getAttribute("quizID");
+        QuizHelper.addQuizQuestion(conn, quizID, questionID);
         RequestDispatcher dispatch = request.getRequestDispatcher("createquiz.jsp");
 		dispatch.forward(request, response);
 	}

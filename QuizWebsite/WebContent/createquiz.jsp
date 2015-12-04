@@ -1,7 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"
     import="db.*"
-    import="entities.*"%>
+    import="entities.*"
+    import="java.util.*"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -89,6 +90,41 @@ if (quizID == null) {
 		<input type="submit" value="Save"/>
 		</p>
 		</form>
+		
+		<%ArrayList<QuestionAbstract> questions = QuizHelper.getQuizQuestions(conn, quizID);
+			for (int i = 0; i < questions.size(); ++i) {
+				QuestionAbstract curr = questions.get(i);
+				int type = curr.getType();
+				switch (type) {
+				case QuestionHelper.MULTIPLE_CHOICE:
+					//displayMC(curr);
+					break;
+				case QuestionHelper.QUESTION_RESPONSE:
+					out.println("<form action=\"QRServlet\" method=\"post\">");
+					out.println("<p>");
+					out.println("Question Text:");
+					out.println("<br>");
+					out.println("<input type=\"text\" name=\"text\" placeholder=\"Question Text\" value=\"" + curr.getQuestion() + "\"");
+					out.println("<br>");
+					out.println("<input type=\"submit\" value=\"Save\"/>");
+					out.println("</p>");
+					out.println("<p>");
+					out.println("Answer:");
+					out.println("<br>");
+					out.println("<input type=\"text\" name=\"answer\" placeholder=\"Answer\" value=\"" + curr.getAnswers().get(0) + "\"");
+					out.println("<br>");
+					out.println("<input type=\"submit\" value=\"Save\"/>");
+					out.println("</p>");
+					break;
+				case QuestionHelper.FILL_IN_BLANK:
+					//displayFB(curr);
+					break;
+				case QuestionHelper.PICTURE_RESPONSE:
+					//displayPR(curr);
+					break;
+				}
+			}
+		%>
 		
 		<form action="AddQuestionServlet" method="post">
 		Add a new question:
