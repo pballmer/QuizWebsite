@@ -9,10 +9,10 @@ public abstract class NotificationAbstract {
 
 	protected int type;
 	protected int id;
-	protected User from;
-	protected User to;
+	protected String from;
+	protected String to;
 
-	public NotificationAbstract(int type, int id, User from, User to) {
+	public NotificationAbstract(int type, int id, String from, String to) {
 		this.type = type;
 		this.id = id;
 		this.from = from;
@@ -20,12 +20,12 @@ public abstract class NotificationAbstract {
 	}
 	
 	public String getSenderName() {
-		return from.getUsername();
+		return from;
 	}
 	
 	public String getRecipient()
 	{
-		return to.getUsername();
+		return to;
 	}
 
 }

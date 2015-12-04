@@ -1,26 +1,28 @@
 package entities;
 
 public class Challenge extends NotificationAbstract{
-	private Quiz quiz;
+	private int quizID;
 	private String link;
+	private double score;
 	
-	public Challenge(int type, int id, User from, User to, Quiz q, String link){
+	public Challenge(int type, int id, String from, String to, int quizID, String link, double score){
 		super(type, id, from, to);
-		this.quiz = q;
+		this.quizID = quizID;
 		this.link = link;
+		this.score = score;
 	}
 	
 	public int getQuizID(){
-		return quiz.getId();
+		return quizID;
 	}
 	
 	public String getQuizLink(){
 		return link;
 	}
 	
-	public int getScore(){
+	public double getScore(){
 		//return from.getQuizzesTaken().get(quiz.getId());
-		return 10;
+		return score;
 	}
 
 }
