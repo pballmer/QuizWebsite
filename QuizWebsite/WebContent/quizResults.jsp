@@ -13,12 +13,13 @@
 ServletContext context = pageContext.getServletContext();
 DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 Integer quizID = (Integer)session.getAttribute("quizID");
+double score = QuizHelper.getScore(conn, quizID, name);
+long time = QuizHelper.getTimeDiff(conn, quizID, name);
 %>
 <link rel="stylesheet" type="text/css" href="main.css">
 
 </head>
 <body>
-
 
 
 	<div id = "container">
@@ -66,14 +67,16 @@ Integer quizID = (Integer)session.getAttribute("quizID");
 	</div>
 	</div>
 	
-	<div id = "spacing">
+	<div id = "filler">
 	</div>
-	<div id = "results">
+	
+	<br>
+	<div id = "content">
 		<h1>Quiz Results:</h1>
-		<%	double score = QuizHelper.getScore(conn, quizID, name);
-			long time = QuizHelper.getTimeDiff(conn, quizID, name);
+		<%	System.out.println(conn.toString());
 			out.println("<h1>Score: " + score + "</h1>");
 			out.println("<h2>Time: " + time + "</h2>");
+			//out.println("<h3>Number of questions in quiz: " + quiz.getQuestions().size() + "</h3>");
 		%>
 	</div>
 
