@@ -9,10 +9,6 @@ public class Challenge extends NotificationAbstract{
 		this.quiz = q;
 		this.link = link;
 	}
-
-	public String getText(){
-		return text;
-	}
 	
 	public int getQuizID(){
 		return quiz.getId();

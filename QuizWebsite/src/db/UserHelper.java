@@ -296,6 +296,18 @@ public class UserHelper
 		return achList;
 	}
 	
+	public static void addAchievement(DBConnection conn, String ach, String username){
+		String command = "INSERT INTO Achievements VALUES(\"" + username + "\",\"" + ach + "\");";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(command);
+			ps.execute();
+		} catch (SQLException e) {
+			System.err.println("Error occured when inserting achievement into database.");
+			e.printStackTrace();
+		}
+	}
+	
 	public static HashMap<String, Double> getPastQuizPerformances(DBConnection conn, String Username)
 	{
 		HashMap<String, Double> map = new HashMap<String, Double>();

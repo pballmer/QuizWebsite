@@ -1,19 +1,27 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"
-   	import = "db.*"
-   	import = "entities.*"%>
+    import="db.*"
+    import="java.util.*"
+    import="entities.*"
+    %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Information Incorrect</title>
-<% String name =(String)session.getAttribute("name"); 
-	ServletContext context = pageContext.getServletContext();
-	DBConnection conn = (DBConnection) context.getAttribute("Database Connection");%>
+<title>Quiz Results</title>
+<% String name =(String)session.getAttribute("name");
+ServletContext context = pageContext.getServletContext();
+DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
+Integer quizID = (Integer)session.getAttribute("quizID");
+double score = QuizHelper.getScore(conn, quizID, name);
+long time = QuizHelper.getTimeDiff(conn, quizID, name);
+%>
 <link rel="stylesheet" type="text/css" href="main.css">
 
 </head>
 <body>
+
+
 	<div id = "container">
 	
 	<div id = "sidebar">
@@ -21,6 +29,7 @@
 		<div id = "profpic">
 		</div>
 		<div id = "sidebar-content">
+		
 			<%if (name != null)
 				{
 				out.println("<h1>Welcome, " + name + ".</h1>");
@@ -49,7 +58,6 @@
 			%>
 			<br>
 			<a href ="index.jsp" class ="big-button"> Home </a>
-
 		</div>
 		
 	</div>
@@ -58,26 +66,19 @@
 		<h1> Quiz08 </h1>
 	</div>
 	</div>
-
 	
 	<div id = "filler">
 	</div>
 	
 	<br>
-	
-	<div id ="content">
-		<div id = "form">
-			<h1>Please Try Again</h1>
-				<p>Either your user name or password is incorrect. Please try again.</p>
-				<form action="LoginServlet" method="post">
-				<p>User Name:
-				<input type="text" name="name" />
-				<p>Password:
-				<input type="password" name="pass" />
-				<input type="submit" value="Login"/></p>
-				</form>
-				<a href="createaccount.jsp">Create New Account</a>
-			</div>
+	<div id = "content">
+		<h1>Quiz Results:</h1>
+		<%	System.out.println(conn.toString());
+			out.println("<h1>Score: " + score + "</h1>");
+			out.println("<h2>Time: " + time + "</h2>");
+			//out.println("<h3>Number of questions in quiz: " + quiz.getQuestions().size() + "</h3>");
+		%>
 	</div>
+
 </body>
 </html>

@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Browse Users </title>
+<title>Browse Quizzes</title>
 <% String name =(String)session.getAttribute("name");
 ServletContext context = pageContext.getServletContext();
 DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
@@ -31,7 +31,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 			<%if (name != null)
 				{
 				out.println("<h1>Welcome, " + name + ".</h1>");
-				out.println("<a href=\"#createQuiz\" class=\"reg-button\">Create Quiz</a>");
+				out.println("<a href=\"createquiz.jsp\" class=\"reg-button\">Create Quiz</a>");
 				out.println("<a href=\"browseQuiz.jsp\" class=\"reg-button\"> Browse Quiz</a>");
 				out.println("<br>");
 				out.println("<a href =\"allusers.jsp\" class = \"reg-button\"> Browse Users</a>");

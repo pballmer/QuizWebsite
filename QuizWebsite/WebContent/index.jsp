@@ -17,7 +17,6 @@ if (name != null) out.println(" - " + name);
 <% 
 	ServletContext context = pageContext.getServletContext();
 	DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
-	int blah = 0;
 %>
 
 
@@ -65,7 +64,7 @@ if (name != null) out.println(" - " + name);
 			<%if (name != null)
 				{
 				out.println("<h1>Welcome, " + name + ".</h1>");
-				out.println("<a href=\"#createQuiz\" class=\"reg-button\">Create Quiz</a>");
+				out.println("<a href=\"createquiz.jsp\" class=\"reg-button\">Create Quiz</a>");
 				out.println("<a href=\"browseQuiz.jsp\" class=\"reg-button\"> Browse Quiz</a>");
 				out.println("<br>");
 				out.println("<a href =\"allusers.jsp\" class = \"reg-button\"> Browse Users</a>");

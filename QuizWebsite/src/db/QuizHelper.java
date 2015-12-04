@@ -1,5 +1,6 @@
 package db;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -135,7 +136,7 @@ public class QuizHelper
 		}
 		return score;
 	}
-	
+
 	public static String getStartTime(DBConnection conn, int QuizID, String Username)
 	{
 		String result = "";
@@ -279,7 +280,20 @@ public class QuizHelper
 	public static void setQuizName(DBConnection conn, int QuizID, String newName)
 	{
 		try {
-			String query = "UPDATE QuizzesMade SET QuizName = '" + newName + "' WHERE QuizID = " + QuizID + ";";
+			String query = "UPDATE Quiz SET QuizName = '" + newName + "' WHERE QuizID = " + QuizID + ";";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+			
+		} catch (SQLException ex) {
+				ex.printStackTrace();
+				System.err.println("Error occured when accessing database.");
+			}
+	}
+	
+	public static void setQuizDesc(DBConnection conn, int QuizID, String newDesc)
+	{
+		try {
+			String query = "UPDATE Quiz SET Description = '" + newDesc + "' WHERE QuizID = " + QuizID + ";";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ps.execute();
 			
@@ -318,6 +332,29 @@ public class QuizHelper
 			System.err.println("Error occured when accessing database.");
 		}
 		return quizList;
+	}
+	
+	public static double getTopScore(DBConnection conn, int id){
+		String query = "SELECT * FROM QuizzesTaken WHERE QuizID = " + id + ";";
+		double currScore = -1;//sentinel
+		try {
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if(results.isBeforeFirst()){
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				for(int i = 1; i <= numRows; i++){
+					results.absolute(i);
+					if(results.getInt(3) > currScore) currScore = results.getInt(3);
+				}
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing top score.");
+		}
+		return currScore;
 	}
 	
 	public static ArrayList<Quiz> getRecentQuizzes(DBConnection conn, int num)
@@ -556,6 +593,53 @@ public class QuizHelper
 		return scores;
 	}
 	
+	public ArrayList<String> getTagsForQuiz(DBConnection conn, Quiz quiz){
+		int QuizID = quiz.getId();
+		ArrayList<String> tags = new ArrayList<String>();
+		String query = "SELECT * FROM Tags WHERE QuizID = " + QuizID + ";";
+		try {
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if(results.isBeforeFirst()){
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				for(int i = 1; i <= numRows; i++){
+					results.absolute(i);
+					tags.add(results.getString(2));
+				}
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			System.err.println("Error occured when getting tags.");
+		}
+		return tags;
+	}
+	
+	public ArrayList<Integer> getQuizIDsFromTag(DBConnection conn, String tag){
+		ArrayList<Integer> quizIDs = new ArrayList<Integer>();
+		String query = "SELECT * FROM Tags WHERE Tag = \"" + tag + "\";";
+		try {
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if(results.isBeforeFirst()){
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				for(int i = 1; i <= numRows; i++){
+					results.absolute(i);
+					quizIDs.add(results.getInt(1));
+				}
+			}
+		} catch (SQLException ex){
+			ex.printStackTrace();
+			System.err.println("Error occured when getting quizzes from tag.");
+		}
+		return quizIDs;
+	}
+	
 	public static ArrayList<Quiz> getQuizzesTaken(DBConnection conn, String Username, int num)
 	{
 		ArrayList<Integer> idList = new ArrayList<Integer>();
@@ -675,7 +759,7 @@ public class QuizHelper
 						+ QuizName + "', '" + Description + "');";
 		try {
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
-			ps.executeQuery(); // TODO is this right?
+			ps.execute();
 			// Use below to do rs.last(), increment and it should be the last question added according to TA
 			Statement stmt = conn.getConnection().createStatement();
 			ResultSet rs = stmt.executeQuery("SELECT * FROM Quiz");
@@ -688,6 +772,18 @@ public class QuizHelper
 		}
 		//this is so it can compile
 		return -1;
+	}
+	
+	public static void addTag(DBConnection conn, Quiz quiz, String tag){
+		int QuizID = quiz.getId();
+		String command = "INSERT INTO Tags VALUES (\"" + QuizID + "\", " + tag + ");";
+		try {
+			PreparedStatement ps = conn.getConnection().prepareStatement(command);
+			ps.execute();
+		} catch (SQLException e){
+			System.err.println("Error occured when inserting tag into database.");
+			e.printStackTrace();
+		}
 	}
 	
 	public static void addQuizMade(DBConnection conn, Quiz quiz, String user)
@@ -722,11 +818,63 @@ public class QuizHelper
 		}
 	}
 	
-	public static void addQuizQuestion(DBConnection conn, Quiz quiz, QuestionAbstract question)
-	{
+	//call when user starts to take a quiz
+	public static void addQuizToTake(DBConnection conn, Quiz quiz, String user){ 
 		int QuizID = quiz.getId();
-		String questionID = Integer.toString(question.getQuestionID());
-		String query = "INSERT INTO QuizQuestion VALUES(" + QuizID + ", " + questionID + ");";
+		String command = "INSERT INTO QuizzesTaken (Username, QuizID, StartTime)"
+				+ " VALUES(\"" + user + "\"," + QuizID + ", NOW);"; 
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(command);
+			ps.execute();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when adding quiz to take.");
+			e.printStackTrace();			
+		}
+	}
+	
+	public static void addEndTime(DBConnection conn, Quiz quiz, String user) {
+		int QuizID = quiz.getId();
+		String command = "UPDATE QuizzesTaken"
+				+ "SET EndTime=NOW"
+				+ " WHERE QuizID=" + QuizID + ", Username=\"" + user + "\";"; 
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(command);
+			ps.execute();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when adding end time.");
+			e.printStackTrace();			
+		}
+	}
+	
+	public static long getTimeDiff(DBConnection conn, int QuizID, String user){
+		long diff = -1;
+		String query = "SELECT StartTime, EndTime FROM QuizzesTaken WHERE QuizID=" + QuizID + ", AND Username=\"" + user + "\";"; 
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+
+			Date before = results.getDate(1);
+			Date after = results.getDate(2);
+			diff = after.getTime() - before.getTime();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when getting time diff.");
+			e.printStackTrace();			
+		}
+		return diff;
+	}
+	
+	public static void addQuizQuestion(DBConnection conn, int quizID, int questionID)
+	{
+		String query = "INSERT INTO QuizQuestions VALUES(" + quizID + ", " + questionID + ");";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);

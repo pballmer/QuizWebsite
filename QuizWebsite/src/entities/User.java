@@ -6,6 +6,7 @@ import java.util.*;
 import db.DBConnection;
 import db.NotificationsHelper;
 import db.QuizHelper;
+import db.UserHelper;
 
 public class User {
 	private String username;
@@ -13,8 +14,9 @@ public class User {
 	private boolean admin;
 	private List<User> friends;
 	private List<Quiz> quizzesMade;
-	private Map<Integer, Integer> quizzesTaken;//maps quiz id to score
+	private Map<Integer, Double> quizzesTaken;//maps quiz id to score
 	private List<NotificationAbstract> notifications;
+	private List<String> achievements;
 	
 	// TODO should only initialize this once
 	public static MessageDigest md;
@@ -24,8 +26,9 @@ public class User {
 		this.admin = false;
 		this.friends = new ArrayList<User>();
 		this.quizzesMade = new ArrayList<Quiz>();
-		this.quizzesTaken = new HashMap<Integer, Integer>();
+		this.quizzesTaken = new HashMap<Integer, Double>();
 		this.notifications = new ArrayList<NotificationAbstract>();
+		this.achievements = new ArrayList<String>();
 		try {
 			md = MessageDigest.getInstance("SHA");
 		} catch (NoSuchAlgorithmException e) {
@@ -39,7 +42,7 @@ public class User {
 		this.admin = admin;
 		this.friends = new ArrayList<User>();
 		this.quizzesMade = new ArrayList<Quiz>();
-		this.quizzesTaken = new HashMap<Integer, Integer>();
+		this.quizzesTaken = new HashMap<Integer, Double>();
 		this.notifications = new ArrayList<NotificationAbstract>();
 		try {
 			md = MessageDigest.getInstance("SHA");
@@ -54,6 +57,9 @@ public class User {
 		this.username = un;
 		this.admin = admin;
 		this.friends = new ArrayList<User>();
+		this.quizzesMade = new ArrayList<Quiz>();
+		this.quizzesTaken = new HashMap<Integer, Double>();
+		this.notifications = new ArrayList<NotificationAbstract>();
 		try {
 			md = MessageDigest.getInstance("SHA");
 		} catch (NoSuchAlgorithmException e) {
@@ -62,15 +68,33 @@ public class User {
 		password = encryptPass(pw);
 	}
 	
-	public void addQuizTaken(Quiz quiz, DBConnection conn, int score){
+	public void addQuizTaken(Quiz quiz, DBConnection conn, double score){
 		quizzesTaken.put(quiz.getId(), score);
 		QuizHelper.addQuizTaken(conn, quiz, this.getUsername(), score, String.valueOf(quiz.getStartTime()), String.valueOf(quiz.getEndTime()));
+		if(quizzesTaken.size() == 10){
+			this.addAchievement("Quiz Machine", conn);
+		}
+		if(score >= QuizHelper.getTopScore(conn, quiz.getId()) && !achievements.contains("I am the Greatest")){
+			this.addAchievement("I am the Greatest", conn);
+		}
 	}
 	
 	public void addQuizMade(Quiz quiz, DBConnection conn){
 		QuizHelper.addQuiz(conn, quiz);
 		QuizHelper.addQuizMade(conn, quiz, username);
 		quizzesMade.add(quiz);
+		if(quizzesMade.size() == 1) {
+			this.addAchievement("Amateur Author", conn);
+		} else if(quizzesMade.size() == 5){
+			this.addAchievement("Prolific Author", conn);
+		} else if(quizzesMade.size() == 10){
+			this.addAchievement("Prodigious Author", conn);
+		}
+	}
+	
+	public void addAchievement(String ach, DBConnection conn){
+		UserHelper.addAchievement(conn, ach, username);
+		achievements.add(ach);
 	}
 	
 	public void addChallenge(Challenge challenge, DBConnection conn){
@@ -97,12 +121,11 @@ public class User {
 		return admin;
 	}
 	
-	public Map<Integer, Integer> getQuizzesTaken() {
-		return quizzesTaken;
+	public double getScore(int QuizID){
+		return quizzesTaken.get(QuizID);
 	}
 
 	public void addFriend(User friend){
-		
 		friends.add(friend);
 	}
 	
