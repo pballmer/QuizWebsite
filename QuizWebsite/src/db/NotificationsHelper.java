@@ -167,8 +167,8 @@ public class NotificationsHelper
 	}
 	
 	public static ArrayList<Note> getUnreadNotes(DBConnection conn, String recipient)
-	{
-		String query = "SELECT NotificationID FROM Notes C JOIN Notifications N ON N.NotificationID = C.NotificationID WHERE Recipient = '" + recipient + "' GROUP BY NotificationID";
+	{/*
+		String query = "SELECT C.NotificationID FROM Notes C JOIN Notifications N ON N.NotificationID = C.NotificationID WHERE Recipient = '" + recipient + "' GROUP BY NotificationID";
 		ArrayList<Integer> ids = new ArrayList<Integer>();
 		ArrayList<Integer> idNote = new ArrayList<Integer>();
 		ArrayList<Note> notes = new ArrayList<Note>();
@@ -232,7 +232,33 @@ public class NotificationsHelper
 			ex.printStackTrace();
 			System.err.println("Error occured when accessing database.");
 		}
-		return notes;	
+		return notes;
+		*/	
+		String query = "SELECT * FROM Notes WHERE Recipient='" + recipient + "' AND Checked=0";
+		ArrayList<Note> notes = new ArrayList<Note>();
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				for (int j = 1; j <= numRows; j++)
+				{
+					results.absolute(j);
+					notes.add(getNoteFromRecord(conn, results, j));
+				}
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return notes;
 	}
 	
 	public static Challenge getChallenge(DBConnection conn, int NotificationID)
@@ -276,7 +302,7 @@ public class NotificationsHelper
 				for (int i = 1; i <= numRows; i++)
 				{
 					results.absolute(i);
-					String friend = results.getString(2);
+					String friend = results.getString(1);
 					friends.add(friend);
 				}
 			}
@@ -412,7 +438,8 @@ public class NotificationsHelper
 	
 	public static ArrayList<Challenge> getUnreadChallenges(DBConnection conn, String username)
 	{
-		String query = "SELECT NotificationID FROM Challenge C JOIN Notifications N ON N.NotificationID = C.NotificationID WHERE Recipient = '" + username + "' GROUP BY NotificationID";
+		/*
+		String query = "SELECT C.NotificationID FROM Challenge C JOIN Notifications N ON N.NotificationID = C.NotificationID WHERE Recipient = '" + username + "' GROUP BY NotificationID";
 		ArrayList<Integer> ids = new ArrayList<Integer>();
 		ArrayList<Integer> idNote = new ArrayList<Integer>();
 		ArrayList<Challenge> challenges = new ArrayList<Challenge>();
@@ -477,7 +504,35 @@ public class NotificationsHelper
 			System.err.println("Error occured when accessing database.");
 		}
 		return challenges;	
+		*/
+		
+		String query = "SELECT * FROM Challenge WHERE Recipient='" + username + "' AND Checked=0";
+		ArrayList<Challenge> challenges = new ArrayList<Challenge>();
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				for (int i = 1; i <= numRows; i++)
+				{
+					results.absolute(i);
+					challenges.add(getChallengeFromRecord(conn, results, i));
+				}
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return challenges;	
 	}
+	
 	
 	public static int addNotification(DBConnection conn, int type, boolean checked)
 	{
@@ -517,7 +572,7 @@ public class NotificationsHelper
 		int id = addNotification(conn, CHALLENGE, false);
 		
 		String query = "INSERT INTO Challenge VALUES(" + id + ", '" + sender + "', '" + recipient +"'," +
-							QuizID + ", '" + link +"', " + score + ");";
+							QuizID + ", '" + link +"', " + score + ",0);";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
@@ -555,8 +610,7 @@ public class NotificationsHelper
 		
 		int id = addNotification(conn, NOTE_TYPE, false);
 		
-		String query = "INSERT INTO Notes VALUES(" + id + ", '" + sender + "', '" + recipient +"', '" +
-							message + "');";
+		String query = "INSERT INTO Notes VALUES(" + id + ", \"" + sender + "\", \"" + recipient +"\", \"" + message + "\", 0);";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
@@ -571,7 +625,15 @@ public class NotificationsHelper
 	
 	public static void respondToFriendRequest(DBConnection conn, String Sender, String Recipient, int response)
 	{
-		String query = "UPDATE Friends SET Status = " + response + " WHERE Sender = '" + Sender + "' AND Recipient = '" + Recipient + "';";
+		String query = "";
+		if (response == REJECTED)
+		{
+			query = "DELETE FROM Friends WHERE Sender='" + Sender + "' AND Recipient ='" + Recipient + "';";
+		}
+		else
+		{
+			query = "UPDATE Friends SET Status = " + response + " WHERE Sender = '" + Sender + "' AND Recipient = '" + Recipient + "';";
+		}
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
@@ -586,7 +648,7 @@ public class NotificationsHelper
 	
 	public static void readNote(DBConnection conn, int id)
 	{
-		String query = "UPDATE Notification SET Checked = 1 WHERE NotificationID =" + id + ";";
+		String query = "UPDATE Notes SET Checked = 1 WHERE NotificationID =" + id + ";";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
@@ -601,7 +663,7 @@ public class NotificationsHelper
 	
 	public static void readChallenge(DBConnection conn, int id)
 	{
-		String query = "UPDATE NotificationID SET Checked = 1 WHERE NotificationID =" + id + ";";
+		String query = "UPDATE Challenge SET Checked = 1 WHERE NotificationID =" + id + ";";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);

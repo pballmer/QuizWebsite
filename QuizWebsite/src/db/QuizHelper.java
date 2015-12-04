@@ -413,6 +413,8 @@ public class QuizHelper
 	
 	public static int removeQuizHistory(DBConnection conn, int id)
 	{
+		Quiz quiz = QuizHelper.getQuizByID(conn, id);
+		if (quiz==null) return -1;
 		String query = "DELETE FROM Quiz WHERE QuizId=" + id + ";";
 		try
 		{
@@ -438,6 +440,8 @@ public class QuizHelper
 	
 	public static int removeQuiz(DBConnection conn, int id)
 	{
+		Quiz quiz = QuizHelper.getQuizByID(conn, id);
+		if (quiz==null) return -1;
 		String query = "DELETE FROM Quiz WHERE QuizId=" + id + ";";
 		try
 		{
@@ -691,7 +695,7 @@ public class QuizHelper
 	{
 		HashMap<String, Double> scores = new HashMap<String, Double>();
 		try {
-			String query = "SELECT Username, Score FROM QuizzesTaken WHERE QuizID =" + quizID + " AND EndTime > " + today + " AND EndTime <" + tomorrow + " ORDER BY Score DESC;";
+			String query = "SELECT Username, Score FROM QuizzesTaken WHERE QuizID =" + quizID + " AND EndTime > '" + today + "' AND EndTime < '" + tomorrow + "' ORDER BY Score DESC;";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			
 			ResultSet results = ps.executeQuery();

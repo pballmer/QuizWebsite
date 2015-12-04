@@ -79,7 +79,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 	<div id ="content">
 
 	
-		<h1> You're Taking <%=quiz.getName() %></h1>
+		<h1 style="color:white"> You're Taking <%=quiz.getName() %></h1>
 		<form action="quizResults.jsp">
 		
 			<%
@@ -105,9 +105,8 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 			questions.add(pr1);
 			questions.add(fb1);
 			questions.add(qr1);
-			
+			out.println("<div id = \"form\"");
 				//for(int i = 0 ; i < quiz.getQuestions().size(); i++){
-				
 				for(int i = 0 ; i < questions.size(); i++){
 					
 					switch (questions.get(i).getType())
@@ -158,8 +157,9 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 							out.println("Answer: <input type=\"text\" id= "+ pr.getQuestionID()  +"><br>");
 						default: break;
 						*/
-					}					
+					}	
 				}
+			out.println("</div>");
 			%>
 			<button type="submit">Submit Quiz</button>
 		</form>
