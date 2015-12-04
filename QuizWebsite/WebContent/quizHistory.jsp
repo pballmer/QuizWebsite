@@ -69,7 +69,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 	<br>
 	
 	<div id ="content">
-		<h1> Your quiz history. </h1>
+		<h1 style="color:white"> Your quiz history. </h1>
 		<div id="form">
 			<%
 				ArrayList<Quiz> quizzesTaken = QuizHelper.getQuizzesTaken(conn, name, -1);

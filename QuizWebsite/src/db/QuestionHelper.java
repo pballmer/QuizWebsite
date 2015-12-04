@@ -309,6 +309,40 @@ public class QuestionHelper
 		return questionID;
 	}
 	
+<<<<<<< HEAD
+	//adds the arraylist of answers to the question
+	public static void addAnswers(DBConnection conn, int id, ArrayList<String> answers)
+	{
+		try
+		{
+			for (int i = 0; i < answers.size(); i++)
+			{
+				String query = "INSERT INTO Answers VALUES(" + id + ", '" + answers.get(i) + "');";
+				PreparedStatement ps = conn.getConnection().prepareStatement(query);
+				ps.executeQuery();
+			}
+		}
+		catch (SQLException ex)
+		{
+			System.err.println("Error occured when inserting user into database.");
+			ex.printStackTrace();	
+		}
+	}
+
+	public static void addFillBlank(DBConnection conn, FillBlank question)
+	{
+
+		int id = question.getQuestionID();
+		String before = question.getBefore();
+		String after = question.getAfter();
+		ArrayList<String> answers = question.getAnswers();
+		
+		addQuestion(conn, FILL_IN_BLANK);
+		addAnswers(conn, id, answers);
+
+		try
+		{
+			String query = "INSERT INTO FillInBlank VALUES(" + id + ", '" + before + "', " + after + ");";
 //	public static void addMultipleChoice(DBConnection conn, int questionID)
 //	{
 //		String query = "INSERT INTO MultipleChoice VALUES(" + questionID + ", '');";
@@ -421,6 +455,8 @@ public class QuestionHelper
 			}
 	}
 	
+	/*
+	
 	//adds the arraylist of answers to the question
 	public static void addAnswers(DBConnection conn, int id, ArrayList<String> answers)
 	{
@@ -439,7 +475,7 @@ public class QuestionHelper
 			ex.printStackTrace();	
 		}
 	}
-	
+	*/
 //	public static void addFillBlank(DBConnection conn, FillBlank question)
 //	{
 //

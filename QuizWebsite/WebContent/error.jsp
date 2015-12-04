@@ -66,7 +66,7 @@
 	<div id = "filler">
 	</div>
 	<div id ="content">
-		<h1> An error occurred. </h1>
+		<h1 style="color:white"> An error occurred. </h1>
 			<div id="form">
 				<h3> It's not you...it's us.</h3>
 			</div>

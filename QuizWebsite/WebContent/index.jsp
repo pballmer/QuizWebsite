@@ -232,8 +232,8 @@ if (name != null) out.println(" - " + name);
 					out.println("</ul>");
 					out.println("</td>");
 					out.println("<td>");
-							ArrayList<Challenge> challenges = NotificationsHelper.getChallengeByRecipient(conn, name);
-							ArrayList<Note> notes = NotificationsHelper.getNotesByRecipient(conn, name);
+							ArrayList<Challenge> challenges = NotificationsHelper.getUnreadChallenges(conn, name);
+							ArrayList<Note> notes = NotificationsHelper.getUnreadNotes(conn, name);
 							ArrayList<String> friends = NotificationsHelper.getPendingFrendRequests(conn, name);
 							
 							out.println("<h5> You have " + friends.size() + " NEW Friend Requests </h5>");
@@ -261,10 +261,8 @@ if (name != null) out.println(" - " + name);
 							for (int i = 0; i < notes.size(); i++)
 							{
 								Note note = notes.get(i);
-								String text = note.getText();
 								String sender = note.getSenderName();
-								out.println("<p><a href=\"user.jsp?id=" + sender + ">" + sender + "</a></p> has sent you a note saying: </p>");
-								out.println("<p>" + text + "</p>");
+								out.println("<p><a href=\"user.jsp?id=" + sender + "\">" + sender + "</a> has sent you a <a href=\"note.jsp?id=" + note.getID() + "&type=read&to=" + sender + "\"> Note </a>");
 								out.println("<br>");
 							}
 					out.println("</td>");
@@ -278,11 +276,11 @@ if (name != null) out.println(" - " + name);
 								ArrayList<Quiz> recentQuizMade = QuizHelper.getQuizzesTaken(conn, friendName, 3);
 								ArrayList<String> recAchieves = UserHelper.getAchievements(conn, friendName);
 								
-								out.println("<b><p> Your friend <a href=\"user.jsp?id=" + friendName + "\">" + friendName + "</a> has</p></b>");
+								out.println("<b><p> Your friend <a href=\"user.jsp?id=" + friendName + "\">" + friendName + "</a> has </p></b>");
 								
 								out.println("<p>Taken the following quizzes: </p>");
 								out.println("<ul>");
-								for (int j = 0; i < recentQuizTaken.size(); i++)
+								for (int j = 0; j < recentQuizTaken.size(); j++)
 								{
 									Quiz quiz = recentQuizTaken.get(j);
 									String quizName = quiz.getName();
@@ -295,7 +293,7 @@ if (name != null) out.println(" - " + name);
 								
 								out.println("<p>Made the following quizzes: </p>");
 								out.println("<ul>");
-								for (int j = 0; i < recentQuizMade.size(); i++)
+								for (int j = 0; j < recentQuizMade.size(); j++)
 								{
 									Quiz quiz = recentQuizMade.get(j);
 									String quizName = quiz.getName();
@@ -308,7 +306,7 @@ if (name != null) out.println(" - " + name);
 								
 								out.println("<p>Got the following achievements: </p>");
 								out.println("<ul>");
-								for (int j = 0; i < recAchieves.size(); i++)
+								for (int j = 0; j < recAchieves.size(); j++)
 								{
 									out.println("<li>" + recAchieves.get(j) + "</li>");
 								}

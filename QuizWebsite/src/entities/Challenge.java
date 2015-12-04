@@ -19,7 +19,7 @@ public class Challenge extends NotificationAbstract{
 	public String getQuizLink(){
 		return link;
 	}
-	
+
 	public double getScore(){
 		//return from.getQuizzesTaken().get(quiz.getId());
 		return score;

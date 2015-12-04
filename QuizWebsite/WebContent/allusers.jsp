@@ -76,7 +76,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 					out.println("<h3 style=\"color: red\"> User doesn't exist. Try again. </h3>");
 				}
 			%>
-			<h1> Who would you like to search?</h1>
+			<h1 style="color:white"> Who would you like to search?</h1>
 			<div id = "form">
 				<form action="UserServlet" method="post">
 				<p>User Name:

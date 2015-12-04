@@ -76,7 +76,7 @@
 				out.println("</div>");
 			}
 		%>
-		<h2>Site Statistics</h2>
+		<h2 style="color:white">Site Statistics</h2>
 			<div id="form">
 				<h5>Number of Users: </h5>
 				<p> <%= UserHelper.getTotalNumUsers(conn) %> </p>
@@ -84,7 +84,7 @@
 				<p> <%= QuizHelper.getTotalNumQuizzes(conn) %> </p>
 			</div>
 		<br>
-		<h2>Create Announcements</h2>
+		<h2 style="color:white">Create Announcements</h2>
 			<div id="form">
 				<form action="AdministrationServlet" method="post">
 				<p>Text:
@@ -96,7 +96,7 @@
 				</form>
 			</div>
 			<br>
-		<h2>Remove User Accounts</h2>
+		<h2 style="color:white">Remove User Accounts</h2>
 			<div id="form">
 				<form action="AdministrationServlet" method="post">
 				<p> Username:
@@ -107,7 +107,7 @@
 				</form>
 			</div>
 			<br>
-		<h2>Remove Quizzes</h2>
+		<h2 style="color:white">Remove Quizzes</h2>
 			<div id="form">
 				<form action="AdministrationServlet" method="post">
 				<p> ID or Link:
@@ -118,7 +118,7 @@
 				</form>
 			</div>
 			<br>
-		<h2>Remove Quiz Histories </h2>
+		<h2 style="color:white">Remove Quiz Histories </h2>
 			<div id="form">
 				<form action="AdministrationServlet" method="post">
 				<p> ID or Link:
@@ -129,7 +129,7 @@
 				</form>
 			</div>
 			<br>
-		<h2>Promote User to Administration</h2>
+		<h2 style="color:white">Promote User to Administration</h2>
 			<div id="form">
 				<form action="AdministrationServlet" method="post">
 				<p> Username

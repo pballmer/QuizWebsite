@@ -71,8 +71,8 @@ if (quizID == null) {
 	<div id = "filler">
 	</div>
 	<div id ="content">
+		<div id ="form">
 		<form action="QuizNameSaveServlet" method="post">
-		<p>
 		Quiz Name:
 		<br>
 		<input type="text" name="name" placeholder="New Quiz" <%out.print("value=\"" + quizName + "\"");%> />
@@ -80,7 +80,8 @@ if (quizID == null) {
 		<input type="submit" value="Save"/>
 		</p>
 		</form>
-		
+		</div>
+		<div id = "form">
 		<form action="QuizDescSaveServlet" method="post" id="descform">
 		<p>
 		Description:
@@ -90,6 +91,7 @@ if (quizID == null) {
 		<input type="submit" value="Save"/>
 		</p>
 		</form>
+		</div>
 		
 		<%ArrayList<QuestionAbstract> questions = QuizHelper.getQuizQuestions(conn, quizID);
 			for (int i = 0; i < questions.size(); ++i) {
@@ -142,8 +144,9 @@ if (quizID == null) {
 			}
 		%>
 		
+		<div id="form">
 		<form action="AddQuestionServlet" method="post">
-		Add a new question:
+		<p>Add a new question:</p>
 		<br>
 		<select name="qtype">
 		<option selected="selected" disabled="disabled">Select a question type...</option>
@@ -152,8 +155,10 @@ if (quizID == null) {
 		<option value="FILL_IN_BLANK">Fill in the Blank</option>
 		<option value="PICTURE_RESPONSE">Picture-Response</option>
 		</select>
+		<p style="white:color"><input type="submit" value="Add"/></p>
 		<input type="submit" value="Add"/>
 		</form>
+		</div>
 		
 		<form action="QuizCreationServlet" method="post">
 		<p><input type="submit" value="Finish!"/></p>

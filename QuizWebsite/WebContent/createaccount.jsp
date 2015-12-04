@@ -68,16 +68,18 @@
 	</div>
 	
 	<div id = "content">
-	<h1>Create New Account</h1>
+	<h1 style="color:white">Create New Account</h1>
 
 <div id="form">
 	<p>Please enter a proposed username and password.</p>
 	<form action="AccountCreationServlet" method="post">
 	<p>User Name:
-	<input type="text" name="name" />
+	<input type="text" name="name" /> </p>
 	<p>Password:
-	<input type="password" name="pass" />
-	<input type="submit" value="Create account"/></p>
+	<input type="password" name="pass" /></p>
+	<p> Admin:
+	<input type="checkbox" name="admin" value="True"/></p>
+	<input type="submit" value="Create account"/>
 	</form>
 </div>
 	</div>

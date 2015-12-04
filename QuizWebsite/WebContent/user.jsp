@@ -96,14 +96,14 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 	</div>
 
 	<div id ="content">
-		<h1 style="text-align: center"> <%= user %>'s Profile Page </h1>
+		<h1 style="text-align: center; color:white;"> <%= user %>'s Profile Page </h1>
 		<center>
 		<div id = "form">
 		<center>
 		<% 
 			if (!name.equals(user) && !UserHelper.getFriends(conn, name).contains(user))
 			{
-					out.println("<a href=\"friendreq.jsp?id=" + user + "&type=pending\" class = \"reg-button\"> Add Friend</a>");
+					out.println("<a href=\"friendreq.jsp?id=" + user + "&type=pending\" class = \"reg-button\">Add Friend</a>");
 			}
 			else
 			{
@@ -115,7 +115,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 		</center>
 		</div>
 		</center>
-		<% out.println("<h2> " + user + "'s Quiz Activity</h2>");
+		<% out.println("<h2 style=\"color:white\">" + user + "'s Quiz Activity</h2>");
 		out.println("<div id=\"tabs\">");
 		out.println("<div class=\"tab-nav\">");
 		out.println("<ul>");
