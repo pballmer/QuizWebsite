@@ -33,45 +33,57 @@ public class NotificationsHelper
 	
 
 	
-	private static Notification getNotificationFromRecord(ResultSet rs, int row)
-	{
-		Notification notification = null;
-		try 
-		{
-			rs.absolute(row);
-			int NotificationID = rs.getInt(NOTIFICATION_ID);
-			boolean Checked = rs.getBoolean(CHECKED);
-			int NotificationType = rs.getInt(NOTIFICATION_TYPE);
-			notification = new Notification(NotificationID, Checked, NotificationType);
-		}
-		catch (SQLException ex)
-		{
-			ex.printStackTrace();
-			System.err.println("Error occured when accessing database.");
-		}
-		return notification;
-	}
+//	private static NotificationAbstract getNotificationFromRecord(ResultSet rs, int row)
+//	{
+//		NotificationAbstract notification = null;
+//		try 
+//		{
+//			rs.absolute(row);
+//			int NotificationID = rs.getInt(NOTIFICATION_ID);
+//			boolean Checked = rs.getBoolean(CHECKED);
+//			int NotificationType = rs.getInt(NOTIFICATION_TYPE);
+//			switch(NotificationType){
+//				case CHALLENGE:
+//					// intentionally not adding an entry into the MC table. ask colin for explanation
+//					break;
+//				case FRIEND_REQUEST:
+//					addQuestionResponse(conn, lastID);
+//					break;
+//				case FILL_IN_BLANK:
+//					addFillBlank(conn, lastID);
+//					break;
+//				default: break;
+//			}
+//			notification = new (NotificationID, Checked, NotificationType);
+//		}
+//		catch (SQLException ex)
+//		{
+//			ex.printStackTrace();
+//			System.err.println("Error occured when accessing database.");
+//		}
+//		return notification;
+//	}
 	
-	private static FriendRequest getFriendRequestFromRecord(ResultSet rs, int row)
-	{
-		FriendRequest request = null;
-		try 
-		{
-			rs.absolute(row);
-			int NotificationID = rs.getInt(NOTIFICATION_ID);
-			boolean Sender = rs.getBoolean(SENDER);
-			int Recipient = rs.getInt(RECIPIENT);
-			int Status = rs.getInt(STATUS);
-			request = new FriendRequest(NotificationID, Sender, Recipient, Status);
-		}
-		catch (SQLException ex)
-		{
-			ex.printStackTrace();
-			System.err.println("Error occured when accessing database.");
-		}
-		return request;
-		
-	}
+//	private static FriendRequest getFriendRequestFromRecord(ResultSet rs, int row)
+//	{
+//		FriendRequest request = null;
+//		try 
+//		{
+//			rs.absolute(row);
+//			int NotificationID = rs.getInt(NOTIFICATION_ID);
+//			boolean Sender = rs.getBoolean(SENDER);
+//			int Recipient = rs.getInt(RECIPIENT);
+//			int Status = rs.getInt(STATUS);
+//			request = new FriendRequest(Status, NotificationID, Sender, Recipient);
+//		}
+//		catch (SQLException ex)
+//		{
+//			ex.printStackTrace();
+//			System.err.println("Error occured when accessing database.");
+//		}
+//		return request;
+//		
+//	}
 	
 	private static Challenge getChallengeFromRecord(ResultSet rs, int row)
 	{
@@ -80,12 +92,12 @@ public class NotificationsHelper
 		{
 			rs.absolute(row);
 			int NotificationID = rs.getInt(NOTIFICATION_ID);
-			boolean Sender = rs.getBoolean(SENDER);
-			int Recipient = rs.getInt(RECIPIENT);
+			String Sender = rs.getString(SENDER);
+			String Recipient = rs.getString(RECIPIENT);
 			int QuizID = rs.getInt(QUIZ_ID);
 			String link = rs.getString(LINK);
 			double score = rs.getDouble(SCORE);
-			request = new Challenge(NotificationID, Sender, Recipient, QuizID, link, score);
+			request = new Challenge(CHALLENGE, NotificationID, Sender, Recipient, QuizID, link, score);
 		}
 		catch (SQLException ex)
 		{
@@ -102,10 +114,10 @@ public class NotificationsHelper
 		{
 			rs.absolute(row);
 			int NotificationID = rs.getInt(NOTIFICATION_ID);
-			boolean Sender = rs.getBoolean(SENDER);
-			int Recipient = rs.getInt(RECIPIENT);
+			String Sender = rs.getString(SENDER);
+			String Recipient = rs.getString(RECIPIENT);
 			String note = rs.getString(NOTE);
-			request = new Note(NotificationID, Sender, Recipient, note);
+			request = new Note(NOTE, NotificationID, Sender, Recipient, note);
 		}
 		catch (SQLException ex)
 		{
@@ -116,26 +128,26 @@ public class NotificationsHelper
 	}
 	
 	
-	public static Notification getNotification(DBConnection conn, int NotificationID)
-	{
-		try
-		{
-			String query = "SELECT * FROM Notifications WHERE NotificationID = " + NotificationID + ";";
-			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ResultSet results = ps.executeQuery();
-			
-			if (results.isBeforeFirst())
-			{
-				return getNotificationFromRecord(results, 1);
-			}
-		}
-		catch (SQLException ex)
-		{
-			ex.printStackTrace();
-			System.err.println("Error occured when accessing database.");
-		}
-		return null;
-	}
+//	public static Notification getNotification(DBConnection conn, int NotificationID)
+//	{
+//		try
+//		{
+//			String query = "SELECT * FROM Notifications WHERE NotificationID = " + NotificationID + ";";
+//			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+//			ResultSet results = ps.executeQuery();
+//			
+//			if (results.isBeforeFirst())
+//			{
+//				return getNotificationFromRecord(results, 1);
+//			}
+//		}
+//		catch (SQLException ex)
+//		{
+//			ex.printStackTrace();
+//			System.err.println("Error occured when accessing database.");
+//		}
+//		return null;
+//	}
 	
 	public static Note getNote(DBConnection conn, int NotificationID)
 	{
