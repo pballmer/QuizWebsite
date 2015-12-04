@@ -698,7 +698,7 @@ public class QuizHelper
 	public static void addQuizToTake(DBConnection conn, Quiz quiz, String user){ 
 		int QuizID = quiz.getId();
 		String command = "INSERT INTO QuizzesTaken (Username, QuizID, StartTime)"
-				+ " VALUES(\"" + user + "\"," + QuizID + ", NOW);"; 
+				+ " VALUES(\"" + user + "\"," + QuizID + ", NOW());"; 
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
@@ -714,7 +714,7 @@ public class QuizHelper
 	public static void addEndTime(DBConnection conn, Quiz quiz, String user) {
 		int QuizID = quiz.getId();
 		String command = "UPDATE QuizzesTaken"
-				+ "SET EndTime=NOW"
+				+ "SET EndTime=NOW()"
 				+ " WHERE QuizID=" + QuizID + ", Username=\"" + user + "\";"; 
 		try
 		{
