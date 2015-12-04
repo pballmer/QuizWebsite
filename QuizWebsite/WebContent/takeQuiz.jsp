@@ -73,7 +73,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 					DBConnection dbconn = new DBConnection();
 					Quiz quiz = QuizHelper.getQuizByID(conn, Integer.parseInt(id));
 					//QuizHelper.addQuizToTake(conn, quiz, name);
-					System.out.println(quiz.getQuestions().size());
+					//System.out.println(quiz.getQuestions().size());
 				%>
 				
 	<div id ="content">
@@ -83,7 +83,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 		<form action="quizResults.jsp">
 		
 			<%
-			ArrayList<String> mcArray = new ArrayList<String>();
+/* 			ArrayList<String> mcArray = new ArrayList<String>();
 			ArrayList<String> fbArray = new ArrayList<String>();
 			ArrayList<String> answer = new ArrayList<String>();
 			answer.add("A");
@@ -105,10 +105,10 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 			//questions.add(mc1);
 			questions.add(pr1);
 			questions.add(fb1);
-			questions.add(qr1);
+			questions.add(qr1); */
 			
-				//for(int i = 0 ; i < quiz.getQuestions().size(); i++){
-				
+			for(int i = 0 ; i < quiz.getQuestions().size(); i++){
+				/*
 				for(int i = 0 ; i < questions.size(); i++){
 					
 					switch (questions.get(i).getType())
@@ -137,30 +137,35 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 							PictureResponse pr = (PictureResponse)questions.get(i);
 							out.println("<img src="+ pr.getText() +"><br>");
 							out.println("Answer: <input type=\"text\" id= "+ pr.getQuestionID()  +" alt=\"PictureResponse\" height=\"100\" width=\"100\"><br>");
-							continue;
-/*
-					switch (quiz.getQuestions().get(i).getType())
+							continue;*/
+
+				switch (quiz.getQuestions().get(i).getType())
 					{
-						case QuestionAbstract.MULTIPLE_CHOICE:
-							MultipleChoice mc = (MultipleChoice)quiz.getQuestions().get(i);
-							out.println("<h2>" + mc.getQuestion() + "<h2/>"); 
+						case QuestionHelper.MULTIPLE_CHOICE:
+							MultipleChoice mc = (MultipleChoice) quiz.getQuestions().get(i);
+							out.println("<h2>" + mc.getText() + "<h2/>"); 
 							for(int j = 0; j < mc.getOptions().size(); j++){
-								out.println("<input type=\"checkbox\"id=\""+ mc.getQuestionID() +  "" +"\"" + mc.getOptions().get(j) +"<br>"); 
+								out.println("<input type=\"radio\" id=\""+ mc.getQuestionID() +  "" +"\">" + mc.getOptions().get(j) +"<br>"); 
+								System.out.println("j is " + j);
 							}
-						case QuestionAbstract.QUESTION_RESPONSE:
+							continue;
+						case QuestionHelper.QUESTION_RESPONSE:
 							QuestionResponse questionResponse = (QuestionResponse)quiz.getQuestions().get(i);
-							out.println("<h2>" + questionResponse.getQuestion() + "<h2/>");
-							out.println("Last name: <input type=\"text\" id= "+questionResponse.getQuestionID()  +"><br>");					
-						case QuestionAbstract.FILL_IN_BLANK:
+							out.println("<h2>" + questionResponse.getText() + "<h2/>");
+							out.println("Answer: <input type=\"text\" id= "+questionResponse.getQuestionID()  +"><br>");	
+							continue;
+						case QuestionHelper.FILL_IN_BLANK:
 							FillBlank fillBlank = (FillBlank)quiz.getQuestions().get(i);
-							out.println("<h2>" +  fillBlank.getQuestion() + "<h2/>");
-							out.println("Answer: <input type=\"text\" id= "+ fillBlank.getQuestionID()  +"><br>");	
-						case QuestionAbstract.PICTURE_RESPONSE:
+							out.print("<h2>" +  fillBlank.getTextBefore() + "<h2>");
+							out.print("<input type=\"text\" id= "+ fillBlank.getQuestionID()  +">");
+							out.print("<h2>" +  fillBlank.getTextAfter() + "</h2>");	
+							continue;
+						case QuestionHelper.PICTURE_RESPONSE:
 							PictureResponse pr = (PictureResponse)quiz.getQuestions().get(i);
-							out.println("<img src="+ pr.getQuestion() +">");
-							out.println("Answer: <input type=\"text\" id= "+ pr.getQuestionID()  +"><br>");
-						default: break;
-						*/
+							out.println("<img src="+ pr.getText() +"><br>");
+							out.println("Answer: <input type=\"text\" id= "+ pr.getQuestionID()  +" alt=\"PictureResponse\" height=\"100\" width=\"100\"><br>");
+							continue;
+						
 					}					
 				}
 			%>
