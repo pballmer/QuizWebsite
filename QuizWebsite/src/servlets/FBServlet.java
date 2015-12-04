@@ -14,16 +14,16 @@ import db.DBConnection;
 import db.QuestionHelper;
 
 /**
- * Servlet implementation class QRServlet
+ * Servlet implementation class FBServlet
  */
-@WebServlet("/QRServlet")
-public class QRServlet extends HttpServlet {
+@WebServlet("/FBServlet")
+public class FBServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public QRServlet() {
+    public FBServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -39,12 +39,13 @@ public class QRServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String text = request.getParameter("text");
+		String textBefore = request.getParameter("textBefore");
 		String answer = request.getParameter("answer");
+		String textAfter = request.getParameter("textAfter");
 		int questionID = Integer.parseInt(request.getParameter("questionID"));
 		ServletContext context = getServletContext();
 		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
-        QuestionHelper.setQRAttributes(conn, questionID, text, answer);
+        QuestionHelper.setFBAttributes(conn, questionID, textBefore, textAfter, answer);
         RequestDispatcher dispatch = request.getRequestDispatcher("createquiz.jsp");
 		dispatch.forward(request, response);
 	}

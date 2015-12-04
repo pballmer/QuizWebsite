@@ -120,7 +120,17 @@ if (quizID == null) {
 						out.println("</form>");
 						break;
 					case QuestionHelper.FILL_IN_BLANK:
-						//displayFB(curr);
+						out.println("<form action=\"FBServlet\" method=\"post\">");
+						out.println("<input type=\"hidden\" name=\"questionID\" value=" + questionID + " />");
+						out.println("<p>");
+						out.println("Question " + i + ":");
+						out.println("<br>");
+						out.println("<input type=\"text\" name=\"textBefore\" placeholder=\"Question Text\" value=\"" + ((FillBlank)curr).getTextBefore() + "\"");
+						out.println("<input type=\"text\" name=\"answer\" placeholder=\"Answer\" value=\"" + answer + "\"");
+						out.println("<input type=\"text\" name=\"textAfter\" placeholder=\"Question Text\" value=\"" + ((FillBlank)curr).getTextAfter() + "\"");
+						out.println("<input type=\"submit\" value=\"Save\"/>");
+						out.println("</p>");
+						out.println("</form>");
 						break;
 					case QuestionHelper.PICTURE_RESPONSE:
 						out.println("<form action=\"PRServlet\" method=\"post\">");

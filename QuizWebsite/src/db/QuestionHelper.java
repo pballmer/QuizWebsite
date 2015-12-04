@@ -18,7 +18,8 @@ public class QuestionHelper
 	private static final int QUESTION_ID = 1;
 	private static final int QUESTION_TYPE = 2;
 	private static final int ANSWER = 2;
-	private static final int OPTIONS = 2;
+	private static final int TEXT = 2;
+	private static final int OPTIONS = 3;
 	
 //	public static enum QuestionTypes {
 //		MULTIPLE_CHOICE, QUESTION_RESPONSE, FILL_IN_BLANK, PICTURE_RESPONSE
@@ -61,19 +62,20 @@ public class QuestionHelper
 	}
 	
 	private static QuestionAbstract getMCQuestion(int questionID, int questionType, DBConnection conn) {
-		ArrayList<String> options = QuestionHelper.getQuestionOptions(conn, questionID, questionType);
+		String text = getQuestion(conn, questionID, questionType).get(0);
+		ArrayList<String> options = getOptions(conn, questionID);
 		String answer = getAnswers(conn, questionID).get(0);
-		return new MultipleChoice(questionID, options, answer);
+		return new MultipleChoice(questionID, text, options, answer);
 	}
 	
 	private static QuestionAbstract getQRQuestion(int questionID, int questionType, DBConnection conn) {
-		String text = getQuestionOptions(conn, questionID, questionType).get(0);
+		String text = getQuestion(conn, questionID, questionType).get(0);
 		String answer = getAnswers(conn, questionID).get(0);
 		return new QuestionResponse(questionID, text, answer);
 	}
 	
 	private static QuestionAbstract getFBQuestion(int questionID, int questionType, DBConnection conn) {
-		ArrayList<String> parts = QuestionHelper.getQuestionOptions(conn, questionID, questionType);
+		ArrayList<String> parts = getQuestion(conn, questionID, questionType);
 		String textBefore = parts.get(0);
 		String textAfter = parts.get(1);
 		String answer = getAnswers(conn, questionID).get(0);
@@ -81,7 +83,7 @@ public class QuestionHelper
 	}
 	
 	private static QuestionAbstract getPRQuestion(int questionID, int questionType, DBConnection conn) {
-		String text = getQuestionOptions(conn, questionID, questionType).get(0);
+		String text = getQuestion(conn, questionID, questionType).get(0);
 		String answer = getAnswers(conn, questionID).get(0);
 		return new PictureResponse(questionID, text, answer);
 	}
@@ -177,7 +179,7 @@ public class QuestionHelper
 	
 	//since all question types except MC have their question text in their database, 
 	//this will simply return question options size 1 for these types
-	public static ArrayList<String> getQuestionOptions(DBConnection conn, int QuestionID, int type)
+	public static ArrayList<String> getQuestion(DBConnection conn, int QuestionID, int type)
 	{		
 		try {
 			String quesQuery = "SELECT * FROM Question WHERE QuestionID =" + QuestionID + ";";
@@ -189,16 +191,16 @@ public class QuestionHelper
 				{
 					case MULTIPLE_CHOICE:
 						String multQuery = "SELECT * FROM MultipleChoice WHERE QuestionID = " + QuestionID + ";";
-						return getOptions(conn, multQuery);
+						return getQuestionText(conn, multQuery);
 					case QUESTION_RESPONSE:
 						String respQuery = "SELECT * FROM QuestionResponse WHERE QuestionID = " + QuestionID + ";";
-						return getOptions(conn, respQuery);
+						return getQuestionText(conn, respQuery);
 					case FILL_IN_BLANK:
 						String fillQuery = "SELECT * FROM FillInBlank WHERE QuestionID = " + QuestionID + ";";
 						return getBeforeAndAfter(conn, fillQuery);
 					case PICTURE_RESPONSE:
 						String picQuery = "SELECT * FROM PictureResponse WHERE QuestionID = " + QuestionID + ";";
-						return getOptions(conn, picQuery);
+						return getQuestionText(conn, picQuery);
 					default: break;
 				}
 			}
@@ -209,6 +211,27 @@ public class QuestionHelper
 			System.err.println("Error occured when accessing database.");
 		}
 		return new ArrayList<String>();
+	}
+	
+	private static ArrayList<String> getQuestionText(DBConnection conn, String query)
+	{
+		ArrayList<String> text = new ArrayList<String>();
+		try {
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				results.absolute(1);
+				text.add(results.getString(TEXT));
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return text;
 	}
 	
 	private static ArrayList<String> getBeforeAndAfter(DBConnection conn, String query)
@@ -235,12 +258,12 @@ public class QuestionHelper
 		return list;
 	}
 	
-	//returns the 'options' for a question. For every question except MC's this will be an arraylist of size 1 where
-	//the 0 index will contain the question text
-	private static ArrayList<String> getOptions(DBConnection conn, String query)
+	//returns the 'options' for a multiple choice question
+	private static ArrayList<String> getOptions(DBConnection conn, int questionID)
 	{
 		ArrayList<String> options = new ArrayList<String>();
 		try {
+			String query = "SELECT * FROM MultipleChoice WHERE QuestionID = " + questionID + ";";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ResultSet results = ps.executeQuery();
 			
@@ -343,7 +366,7 @@ public class QuestionHelper
 	
 	private static void addMultipleChoice(DBConnection conn, int questionID) {
 		try {
-			String query = "INSERT INTO MultipleChoice VALUES(" + questionID + ", '');";
+			String query = "INSERT INTO MultipleChoice VALUES(" + questionID + ", '', '');";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ps.execute();			
 		}
@@ -367,7 +390,7 @@ public class QuestionHelper
 	
 	private static void addFillBlank(DBConnection conn, int questionID) {
 		try {
-			String query = "INSERT INTO FillInBlank VALUES(" + questionID + ", '');";
+			String query = "INSERT INTO FillInBlank VALUES(" + questionID + ", '', '');";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ps.execute();			
 		}
@@ -408,6 +431,23 @@ public class QuestionHelper
 	public static void setPRAttributes(DBConnection conn, int questionID, String text, String answer) {
 		try {
 			String query = "UPDATE PictureResponse SET ImageFile = '" + text + "' WHERE QuestionID = " + questionID + ";";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+			
+			query = "UPDATE Answers SET CorrectAnswer = '" + answer + "' WHERE QuestionID = " + questionID + ";";
+			ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+			
+		} catch (SQLException ex) {
+				ex.printStackTrace();
+				System.err.println("Error occured when accessing database.");
+			}
+	}
+	
+	public static void setFBAttributes(DBConnection conn, int questionID, String textBefore, String textAfter, String answer) {
+		try {
+			String query = "UPDATE FillInBlank SET TextBefore = '" + textBefore + "', TextAfter = '"
+							+ textAfter + "' WHERE QuestionID = " + questionID + ";";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ps.execute();
 			
