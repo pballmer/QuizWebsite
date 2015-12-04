@@ -64,30 +64,6 @@ public class NotificationsHelper
 //		return notification;
 //	}
 	
-	/*
-	private static FriendRequest getFriendRequestFromRecord(DBConnection conn, ResultSet rs, int row)
-	{
-		FriendRequest request = null;
-		try 
-		{
-			rs.absolute(row);
-			int NotificationID = rs.getInt(NOTIFICATION_ID);
-			String Sender = rs.getString(SENDER);
-			String Recipient = rs.getSTring(RECIPIENT);
-			int Status = rs.getInt(STATUS);
-			User sender = UserHelper.getUserByID(conn, Sender);
-			User recipient = UserHelper.getUserByID(conn, recipient);
-			request = new FriendRequest( NotificationID, sender, recipient, Status);
-		}
-		catch (SQLException ex)
-		{
-			ex.printStackTrace();
-			System.err.println("Error occured when accessing database.");
-		}
-		return request;
-		
-	}
-	*/
 //	private static FriendRequest getFriendRequestFromRecord(ResultSet rs, int row)
 //	{
 //		FriendRequest request = null;

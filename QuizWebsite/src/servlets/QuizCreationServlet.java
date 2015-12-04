@@ -59,10 +59,11 @@ public class QuizCreationServlet extends HttpServlet {
         } else if (UserHelper.getNumQuizzesMade(conn, username) == 10){
         	UserHelper.addAchievement(conn, UserHelper.PRODIGIOUS, username);
         }
-        System.out.println("here");
-        System.out.println("quiz id" + quizID);
+        session.removeAttribute("quizID");
+    	session.removeAttribute("quizName");
+    	session.removeAttribute("quizDesc");
         RequestDispatcher dispatch = request.getRequestDispatcher("quizsummary.jsp?id=" + quizID);
-        
+ 
 		dispatch.forward(request, response);
 	}
 
