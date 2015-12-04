@@ -52,6 +52,7 @@ public class ScoreServlet extends HttpServlet {
 		Integer quizID = (Integer)session.getAttribute("quizID");
 		String username = (String)session.getAttribute("name");
 		Quiz quiz = QuizHelper.getQuizByID(conn, quizID);
+		QuizHelper.addEndTime(conn, quiz, username);
 		List<QuestionAbstract> questions = quiz.getQuestions();
 		int numCorrect = 0;
 		int numQuestions = questions.size();

@@ -77,14 +77,18 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 					//System.out.println(quiz.getQuestions().size());
 				%>
 				
-	<div id ="content">
+	<div id ="form">
 
 	
-		<h1> You're Taking <%=quiz.getName() %></h1>
+		<h1 style="color:white" > You're Taking <%=quiz.getName() %></h1>
 		<form action="ScoreServlet.jsp">
 			<input type="hidden" name="quizID" value="<%=id%>" />
 		
 			<%
+			QuizHelper.addQuizToTake(dbconn, quiz, name);
+			Date date = new Date();
+			long currTime = date.getTime();
+			System.out.println("curr time is " + currTime);
 /* 			ArrayList<String> mcArray = new ArrayList<String>();
 			ArrayList<String> fbArray = new ArrayList<String>();
 			ArrayList<String> answer = new ArrayList<String>();
@@ -172,6 +176,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 				}
 			%>
 			<button type="submit">Submit Quiz</button>
+			<%System.out.println(date.getTime() - currTime); %>
 		</form>
 	</div>
 </body>
