@@ -40,19 +40,18 @@ public class QuestionHelper
 			rs.absolute(row);
 			
 			//changes from QUIZ_NAME to QUestion_ID etc.
-			String questionID = rs.getString("QUESTIONID");
+			int questionID = Integer.parseInt(rs.getString("QUESTIONID"));
 			int questionType = Integer.parseInt(rs.getString("QUESTIONTYPE"));
 				
 			ArrayList<String> answers = getAnswers(conn, questionID);
-			//ArrayList<String> options = getQuestionOptions(conn, questionID);
-			ArrayList<String> options = new ArrayList<String>();
-			options.add("tempdummy");
+			ArrayList<String> options = getQuestionOptions(conn, questionID, questionType);
 			//where is above quiz ID coming from and need to get question string
 			//this is 
 			
 			// TODO make this return an object of the correct type
+			// TODO get correct quiz id
 			
-			question = new QuestionAbstract(Integer.parseInt(questionID), -1, options.get(0), answers, questionType, options);
+			question = new QuestionAbstract(questionID, -1, "", answers, questionType, options);
 
 		}
 		catch (SQLException ex)
@@ -122,7 +121,7 @@ public class QuestionHelper
 //	}
 	
 	//returns the arraylist of the answers
-	public static ArrayList<String> getAnswers(DBConnection conn, String QuestionID)
+	public static ArrayList<String> getAnswers(DBConnection conn, int QuestionID)
 	{
 		ArrayList<String> answers = new ArrayList<String>();
 		try {
@@ -154,22 +153,14 @@ public class QuestionHelper
 	
 	//since all question types except MC have their question text in their database, 
 	//this will simply return question options size 1 for these types
-	public static ArrayList<String> getQuestionOptions(DBConnection conn, String QuestionID)
-	{
-		QuestionAbstract question = null;
-		
+	public static ArrayList<String> getQuestionOptions(DBConnection conn, int QuestionID, int type)
+	{		
 		try {
 			String quesQuery = "SELECT * FROM Question WHERE QuestionID =" + QuestionID + ";";
 			PreparedStatement ps = conn.getConnection().prepareStatement(quesQuery);
 			ResultSet results = ps.executeQuery();
 			if (results.isBeforeFirst())
 			{
-				question = getQuestionFromRecord(results, 1, conn);
-			}
-			
-			if (question != null)
-			{
-				int type = question.getType();
 				switch (type)
 				{
 					case MULTIPLE_CHOICE:

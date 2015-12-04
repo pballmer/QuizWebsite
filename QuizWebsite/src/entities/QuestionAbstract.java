@@ -26,14 +26,16 @@ public class QuestionAbstract {
 	public QuestionAbstract(int questionID, int quizID, String question, ArrayList<String> answers, int type, ArrayList<String> options){
 		this.questionID =  questionID;
 		this.type = type;
-		DBConnection dbConn = new DBConnection();
+		//DBConnection dbConn = new DBConnection();
 		//Question helper will return int OR group decide something else. TO BE FIXED
-		this.quizID = QuestionHelper.addQuestion(dbConn, this.type);
+		//this.quizID = QuestionHelper.addQuestion(dbConn, this.type);
+		this.quizID = -1;
 		this.question = question;
 		this.answers = answers;	
 		this.options = options;
 		//add answers
-		QuestionHelper.addAnswers(dbConn, this.questionID, this.answers);
+		// TODO make this happen again if needed. don't have db rn
+		//QuestionHelper.addAnswers(dbConn, this.questionID, this.answers);
 	}
 	
 //	/* This will add the question into the correct table for it's type and add it's answers as well, regardless of type, however you must insert type
