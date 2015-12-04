@@ -2,7 +2,7 @@
 
 html
 	{
-	background-color:#F8F8FF;
+	background-color:black;
 	}
 	
 #main {
@@ -133,6 +133,22 @@ body
 		height: 20px;
 	}
 	
+#content .big-button
+	{
+		border: 2px solid;
+		border-color: black;
+		background-color: transparent;
+		text-transform: uppercase;
+		margin: 3px;
+		padding: 2px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		color: black;
+		width: 260px;
+		height: 20px;
+	}
+	
 #profpic
 	{
 		width: 75px;
@@ -171,18 +187,20 @@ body
 #form
 	{
 		background-color:white;
-		box-shadow:-1px 1px 1px rgba(0,0,0,0.15);
+		box-shadow:-3px 3px 3px #778899;
 		padding: 10px;
-		width:85%
+		width:85%;
+		border-radius:10px;
 	}
 
-#box
+#box 
 	{
 	background-color: white ;
-	box-shadow:-2px 2px 2px rgba(0,0,0,0.15);
+	box-shadow:-3px 3px 3px 	#778899;
 	width: 75%;
 	margin:0 auto;
-	padding: 0px 10px 0px 10px
+	padding: 0px 10px 0px 10px;
+	border-radius:10px;
 	}
 
 	
@@ -192,7 +210,6 @@ body
 
 #miscinfo td.header{
 		padding: 0px 65px 0px 65px;
-		border-radius: 1px 1px 0px 1px;
 	}
 
 #miscinfo td{
@@ -200,7 +217,7 @@ body
 		white-space: nowrap;
 	}
 #miscinfo table{
-	box-shadow:-1px 1px 1px rgba(0,0,0,0.15);	
+	box-shadow:-3px 3px 3px #778899;	
 }
 	
 #navigation ul{
@@ -304,10 +321,10 @@ h1 {
     /*----- Content of Tabs -----*/
     .tab-content {
         padding:15px;
-        border-radius:1px;
-        box-shadow:-1px 1px 1px rgba(0,0,0,0.15);
+        border-radius:10px;
+        box-shadow:-3px 3px 3px #778899;
         background:white;
-        width: 85%;
+        width: 95%;
     }
  
         .tab {

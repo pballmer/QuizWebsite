@@ -69,7 +69,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 	<div id = "filler">
 	</div>
 	<div id ="content">
-		<h1>List of all quizzes</h1>
+		<h1 style="color:white">List of all quizzes</h1>
 			<div id="form">
 				<ul>
 					<%
@@ -77,7 +77,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 						for (int i = 0; i < quizzes.size(); i++)
 						{
 							Quiz quiz = quizzes.get(i);
-							out.println("<li><a href=\"takeQuiz.jsp?id=" + quiz.getId() + "\">" + quiz.getName() + "</a></li>");
+							out.println("<li><a href=\"quizsummary.jsp?id=" + quiz.getId() + "\">" + quiz.getName() + "</a></li>");
 						}
 					%>
 				</ul>

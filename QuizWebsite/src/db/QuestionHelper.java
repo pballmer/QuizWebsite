@@ -266,7 +266,8 @@ public class QuestionHelper
 	{
 
 		int id = question.getQuestionID();
-		String text = question.getQuestion();
+		String before = question.getBefore();
+		String after = question.getAfter();
 		ArrayList<String> answers = question.getAnswers();
 		
 		addQuestion(conn, FILL_IN_BLANK);
@@ -274,7 +275,7 @@ public class QuestionHelper
 
 		try
 		{
-			String query = "INSERT INTO FillInBlank VALUES(" + id + ", '" + text + "');";
+			String query = "INSERT INTO FillInBlank VALUES(" + id + ", '" + before + "', " + after + ");";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ps.executeQuery();
 		}

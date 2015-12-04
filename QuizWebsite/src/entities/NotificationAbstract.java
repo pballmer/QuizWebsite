@@ -27,5 +27,10 @@ public abstract class NotificationAbstract {
 	{
 		return to.getUsername();
 	}
+	
+	public int getID()
+	{
+		return this.id;
+	}
 
 }

@@ -52,7 +52,7 @@
 
 			%>
 					<br>
-			<a href ="index.jsp" class ="big-button"> Home </a>a>
+			<a href ="index.jsp" class ="big-button"> Home </a>
 
 		</div>
 		
@@ -68,7 +68,7 @@
 	</div>
 	
 	<div id = "content">
-	<h1>Create New Account</h1>
+	<h1 style="color:white">Create New Account</h1>
 
 <div id="form">
 	<p>Please enter a proposed username and password.</p>

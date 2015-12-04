@@ -82,9 +82,39 @@ public class QuizHelper
 		return query;
 	}
 	
+	public static ArrayList<Double> getScores(DBConnection conn, int QuizID, String Username)
+	{
+		ArrayList<Double> scores = new ArrayList<Double>();
+		try
+		{
+			String query = "SELECT Score FROM QuizzesTaken WHERE QuizID = " + QuizID + " AND Username='" + Username + "';";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				for (int i = 1; i <= numRows; i++)
+				{
+					results.absolute(i);
+					scores.add(results.getDouble(1));
+				}
+			}
+		}
+		catch (SQLException ex)
+		{
+			
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return scores;
+	}
+	
 	public static double getScore(DBConnection conn, int QuizID, String Username)
 	{
-		double result = 0;
+		double score = 0;
 		try
 		{
 			String query = "SELECT Score FROM QuizzesTaken WHERE QuizID = " + QuizID + " AND Username='" + Username + "';";
@@ -94,15 +124,16 @@ public class QuizHelper
 			if (results.isBeforeFirst())
 			{
 				results.absolute(1);
-				result = results.getDouble(1);
+				score = results.getDouble(1);
 			}
 		}
 		catch (SQLException ex)
 		{
+			
 			ex.printStackTrace();
 			System.err.println("Error occured when accessing database.");
 		}
-		return result;
+		return score;
 	}
 	
 	public static String getStartTime(DBConnection conn, int QuizID, String Username)
@@ -495,6 +526,36 @@ public class QuizHelper
 		return map;
 	}
 	
+	public static ArrayList<Double> getAllScores(DBConnection conn, int QuizID)
+	{
+		ArrayList<Double> scores = new ArrayList<Double>();
+		try {
+			String query = "SELECT * FROM QuizzesTaken WHERE QuizID = " + QuizID + ";";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			
+			ResultSet results = ps.executeQuery();
+			if (results.isBeforeFirst())
+			{
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				int total = (numRows > 10) ? 10 : numRows;
+				for (int i = 1; i <= total; i++)
+				{
+					results.absolute(i);
+					double score = results.getDouble(SCORE);
+					scores.add(score);
+				}
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return scores;
+	}
+	
 	public static ArrayList<Quiz> getQuizzesTaken(DBConnection conn, String Username, int num)
 	{
 		ArrayList<Integer> idList = new ArrayList<Integer>();
@@ -540,6 +601,70 @@ public class QuizHelper
 		}
 		
 		return quizList;
+	}
+	
+	public static HashMap<String, Double> getDailyTopScorers(DBConnection conn, int quizID, String today, String tomorrow)
+	{
+		HashMap<String, Double> scores = new HashMap<String, Double>();
+		try {
+			String query = "SELECT Username, Score FROM QuizzesTaken WHERE QuizID =" + quizID + " AND EndTime > " + today + " AND EndTime <" + tomorrow + " ORDER BY Score DESC;";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			
+			ResultSet results = ps.executeQuery();
+	
+			if (results.isBeforeFirst())
+			{
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				int total = (numRows > 10) ? 10 : numRows;
+				for (int i = 1; i <= total; i++)
+				{
+					results.absolute(i);
+					scores.put(results.getString(1), results.getDouble(2));
+				}
+			}
+			
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		
+		return scores;
+	}
+	
+	public static HashMap<String, Double> getRecentDailyScorers(DBConnection conn, int quizID, String today, String tomorrow)
+	{
+		HashMap<String, Double> scores = new HashMap<String, Double>();
+		try {
+			String query = "SELECT Username, Score FROM QuizzesTaken WHERE QuizID =" + quizID + " AND EndTime > " + today + " AND EndTime <" + tomorrow + " ORDER BY EndTime DESC;";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			
+			ResultSet results = ps.executeQuery();
+	
+			if (results.isBeforeFirst())
+			{
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				int total = (numRows > 10) ? 10 : numRows;
+				for (int i = 1; i <= total; i++)
+				{
+					results.absolute(i);
+					scores.put(results.getString(1), results.getDouble(2));
+				}
+			}
+			
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		
+		return scores;
 	}
 	
 	public static int addQuiz(DBConnection conn, Quiz quiz)

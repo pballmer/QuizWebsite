@@ -23,8 +23,8 @@ public class Challenge extends NotificationAbstract{
 	}
 	
 	public int getScore(){
-		//return from.getQuizzesTaken().get(quiz.getId());
-		return 10;
+		return from.getQuizzesTaken().get(quiz.getId());
+		//return 10;
 	}
 
 }
