@@ -83,10 +83,39 @@ public class QuizHelper
 		return query;
 	}
 	
+	public static ArrayList<Double> getScores(DBConnection conn, int QuizID, String Username)
+	{
+		ArrayList<Double> scores = new ArrayList<Double>();
+		try
+		{
+			String query = "SELECT Score FROM QuizzesTaken WHERE QuizID = " + QuizID + " AND Username='" + Username + "';";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				for (int i = 1; i <= numRows; i++)
+				{
+					results.absolute(i);
+					scores.add(results.getDouble(1));
+				}
+			}
+		}
+		catch (SQLException ex)
+		{
+			
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return scores;
+	}
+	
 	public static double getScore(DBConnection conn, int QuizID, String Username)
 	{
-		System.out.println("bitch");
-		double result = 0;
+		double score = 0;
 		try
 		{
 			String query = "SELECT Score FROM QuizzesTaken WHERE QuizID = " + QuizID + " AND Username='" + Username + "';";
@@ -96,15 +125,16 @@ public class QuizHelper
 			if (results.isBeforeFirst())
 			{
 				results.absolute(1);
-				result = results.getDouble(1);
+				score = results.getDouble(1);
 			}
 		}
 		catch (SQLException ex)
 		{
+			
 			ex.printStackTrace();
 			System.err.println("Error occured when accessing database.");
 		}
-		return result;
+		return score;
 	}
 
 	public static String getStartTime(DBConnection conn, int QuizID, String Username)
@@ -383,6 +413,8 @@ public class QuizHelper
 	
 	public static int removeQuizHistory(DBConnection conn, int id)
 	{
+		Quiz quiz = QuizHelper.getQuizByID(conn, id);
+		if (quiz==null) return -1;
 		String query = "DELETE FROM Quiz WHERE QuizId=" + id + ";";
 		try
 		{
@@ -408,6 +440,8 @@ public class QuizHelper
 	
 	public static int removeQuiz(DBConnection conn, int id)
 	{
+		Quiz quiz = QuizHelper.getQuizByID(conn, id);
+		if (quiz==null) return -1;
 		String query = "DELETE FROM Quiz WHERE QuizId=" + id + ";";
 		try
 		{
@@ -533,6 +567,36 @@ public class QuizHelper
 		return map;
 	}
 	
+	public static ArrayList<Double> getAllScores(DBConnection conn, int QuizID)
+	{
+		ArrayList<Double> scores = new ArrayList<Double>();
+		try {
+			String query = "SELECT * FROM QuizzesTaken WHERE QuizID = " + QuizID + ";";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			
+			ResultSet results = ps.executeQuery();
+			if (results.isBeforeFirst())
+			{
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				int total = (numRows > 10) ? 10 : numRows;
+				for (int i = 1; i <= total; i++)
+				{
+					results.absolute(i);
+					double score = results.getDouble(SCORE);
+					scores.add(score);
+				}
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return scores;
+	}
+	
 	public ArrayList<String> getTagsForQuiz(DBConnection conn, Quiz quiz){
 		int QuizID = quiz.getId();
 		ArrayList<String> tags = new ArrayList<String>();
@@ -627,6 +691,70 @@ public class QuizHelper
 		return quizList;
 	}
 	
+	public static HashMap<String, Double> getDailyTopScorers(DBConnection conn, int quizID, String today, String tomorrow)
+	{
+		HashMap<String, Double> scores = new HashMap<String, Double>();
+		try {
+			String query = "SELECT Username, Score FROM QuizzesTaken WHERE QuizID =" + quizID + " AND EndTime > '" + today + "' AND EndTime < '" + tomorrow + "' ORDER BY Score DESC;";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			
+			ResultSet results = ps.executeQuery();
+	
+			if (results.isBeforeFirst())
+			{
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				int total = (numRows > 10) ? 10 : numRows;
+				for (int i = 1; i <= total; i++)
+				{
+					results.absolute(i);
+					scores.put(results.getString(1), results.getDouble(2));
+				}
+			}
+			
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		
+		return scores;
+	}
+	
+	public static HashMap<String, Double> getRecentDailyScorers(DBConnection conn, int quizID, String today, String tomorrow)
+	{
+		HashMap<String, Double> scores = new HashMap<String, Double>();
+		try {
+			String query = "SELECT Username, Score FROM QuizzesTaken WHERE QuizID =" + quizID + " AND EndTime > " + today + " AND EndTime <" + tomorrow + " ORDER BY EndTime DESC;";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			
+			ResultSet results = ps.executeQuery();
+	
+			if (results.isBeforeFirst())
+			{
+				ResultSet temp = results;
+				temp.last();
+				int numRows = temp.getRow();
+				int total = (numRows > 10) ? 10 : numRows;
+				for (int i = 1; i <= total; i++)
+				{
+					results.absolute(i);
+					scores.put(results.getString(1), results.getDouble(2));
+				}
+			}
+			
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		
+		return scores;
+	}
+	
 	public static int addQuiz(DBConnection conn, Quiz quiz)
 	{
 		String QuizName = quiz.getName();
@@ -665,7 +793,8 @@ public class QuizHelper
 	public static void addQuizMade(DBConnection conn, Quiz quiz, String user)
 	{
 		int QuizID = quiz.getId();
-		String query = "INSERT INTO QuizzesMade VALUES(\"" + user + "\", " + QuizID + ");";
+		String query = "INSERT INTO QuizzesMade VALUES(\"" + user + "\", " + QuizID + ", -1, null);";
+		// TODO use real values for status and time ^
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
@@ -698,7 +827,7 @@ public class QuizHelper
 	public static void addQuizToTake(DBConnection conn, Quiz quiz, String user){ 
 		int QuizID = quiz.getId();
 		String command = "INSERT INTO QuizzesTaken (Username, QuizID, StartTime)"
-				+ " VALUES(\"" + user + "\"," + QuizID + ", NOW);"; 
+				+ " VALUES(\"" + user + "\"," + QuizID + ", NOW());"; 
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
@@ -714,7 +843,7 @@ public class QuizHelper
 	public static void addEndTime(DBConnection conn, Quiz quiz, String user) {
 		int QuizID = quiz.getId();
 		String command = "UPDATE QuizzesTaken"
-				+ "SET EndTime=NOW"
+				+ "SET EndTime=NOW()"
 				+ " WHERE QuizID=" + QuizID + ", Username=\"" + user + "\";"; 
 		try
 		{

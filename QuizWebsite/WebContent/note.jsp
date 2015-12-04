@@ -91,6 +91,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 					{
 						out.println("<h2>" + user + " has sent you this note: </h2>");
 						Note note = NotificationsHelper.getNote(conn, Integer.parseInt(NoteID));
+						NotificationsHelper.readNote(conn, Integer.parseInt(NoteID));
 						out.println("<p>" + note.getText() + "</p>");
 						out.println("<a href=\"note.jsp?type=send&to=" + user + "\"> Reply? </a>");			
 					}

@@ -71,8 +71,8 @@ if (quizID == null) {
 	<div id = "filler">
 	</div>
 	<div id ="content">
+		<div id ="form">
 		<form action="QuizNameSaveServlet" method="post">
-		<p>
 		Quiz Name:
 		<br>
 		<input type="text" name="name" placeholder="New Quiz" <%out.print("value=\"" + quizName + "\"");%> />
@@ -80,7 +80,8 @@ if (quizID == null) {
 		<input type="submit" value="Save"/>
 		</p>
 		</form>
-		
+		</div>
+		<div id = "form">
 		<form action="QuizDescSaveServlet" method="post" id="descform">
 		<p>
 		Description:
@@ -90,9 +91,11 @@ if (quizID == null) {
 		<input type="submit" value="Save"/>
 		</p>
 		</form>
+		</div>
 		
 		<%ArrayList<QuestionAbstract> questions = QuizHelper.getQuizQuestions(conn, quizID);
 			for (int i = 0; i < questions.size(); ++i) {
+				out.println("<div id =\"form\">");
 				QuestionAbstract curr = questions.get(i);
 				//String answer = "";
 				//if (!curr.getAnswers().isEmpty()) answer = curr.getAnswers().get(0);
@@ -101,7 +104,29 @@ if (quizID == null) {
 				String answer = curr.getAnswer();
 				switch (type) {
 					case QuestionHelper.MULTIPLE_CHOICE:
-						//displayMC(curr);
+						ArrayList<String> options = ((MultipleChoice)curr).getOptions();
+						int numOptions = options.size();
+						out.println("<form action=\"MCServlet\" method=\"post\">");
+						out.println("<input type=\"hidden\" name=\"questionID\" value=" + questionID + " />");
+						out.println("<input type=\"hidden\" name=\"numOptions\" value=\"" + numOptions + "\" />");
+						out.println("<p>");
+						out.println("Question " + i + ":");
+						out.println("<br>");
+						out.println("<input type=\"text\" name=\"text\" placeholder=\"Question Text\" value=\"" + ((MultipleChoice)curr).getText() + "\" />");
+						//out.println("<br>");
+						out.println("<ol type=\"A\">");
+						for (int optionNum = 0; optionNum < numOptions; ++optionNum) {
+							out.println("<li><input type=\"text\" name=\"option" + optionNum + "\" placeholder=\"Option " + optionNum + "\" value=\"" + options.get(optionNum) + "\" /></li>");
+							//out.println("<br>");
+						}
+						out.println("<li><input type=\"text\" name=\"option" + numOptions + "\" placeholder=\"Option " + numOptions + "\" /></li>");
+						out.println("</ol>");
+						//out.println("<br>");
+						out.println("<input type=\"text\" name=\"answer\" placeholder=\"Answer\" value=\"" + answer + "\"");
+						out.println("<br>");
+						out.println("<input type=\"submit\" value=\"Save\"/>");
+						out.println("</p>");
+						out.println("</form>");
 						break;
 					case QuestionHelper.QUESTION_RESPONSE:
 						out.println("<form action=\"QRServlet\" method=\"post\">");
@@ -111,7 +136,7 @@ if (quizID == null) {
 						out.println("<br>");
 						out.println("<input type=\"text\" name=\"text\" placeholder=\"Question Text\" value=\"" + ((QuestionResponse)curr).getText() + "\"");
 						out.println("<br>");
-						out.println("<input type=\"submit\" value=\"Save\"/>");
+						//out.println("<input type=\"submit\" value=\"Save\"/>");
 						out.println("<br>");
 						out.println("<input type=\"text\" name=\"answer\" placeholder=\"Answer\" value=\"" + answer + "\"");
 						out.println("<br>");
@@ -125,9 +150,12 @@ if (quizID == null) {
 						out.println("<p>");
 						out.println("Question " + i + ":");
 						out.println("<br>");
-						out.println("<input type=\"text\" name=\"textBefore\" placeholder=\"Question Text\" value=\"" + ((FillBlank)curr).getTextBefore() + "\"");
+						out.println("<input type=\"text\" name=\"textBefore\" placeholder=\"Text Before Blank\" value=\"" + ((FillBlank)curr).getTextBefore() + "\"");
+						out.println("<br>");
 						out.println("<input type=\"text\" name=\"answer\" placeholder=\"Answer\" value=\"" + answer + "\"");
-						out.println("<input type=\"text\" name=\"textAfter\" placeholder=\"Question Text\" value=\"" + ((FillBlank)curr).getTextAfter() + "\"");
+						out.println("<br>");
+						out.println("<input type=\"text\" name=\"textAfter\" placeholder=\"Text After Blank\" value=\"" + ((FillBlank)curr).getTextAfter() + "\"");
+						out.println("<br>");
 						out.println("<input type=\"submit\" value=\"Save\"/>");
 						out.println("</p>");
 						out.println("</form>");
@@ -140,7 +168,7 @@ if (quizID == null) {
 						out.println("<br>");
 						out.println("<input type=\"text\" name=\"text\" placeholder=\"Image URL\" value=\"" + ((PictureResponse)curr).getText() + "\"");
 						out.println("<br>");
-						out.println("<input type=\"submit\" value=\"Save\"/>");
+						//out.println("<input type=\"submit\" value=\"Save\"/>");
 						out.println("<br>");
 						out.println("<input type=\"text\" name=\"answer\" placeholder=\"Answer\" value=\"" + answer + "\"");
 						out.println("<br>");
@@ -149,11 +177,13 @@ if (quizID == null) {
 						out.println("</form>");
 						break;
 					}
+				out.println("</div>");
 			}
 		%>
 		
+		<div id="form">
 		<form action="AddQuestionServlet" method="post">
-		Add a new question:
+		<p style="white:color">Add a new question:
 		<br>
 		<select name="qtype">
 		<option selected="selected" disabled="disabled">Select a question type...</option>
@@ -163,7 +193,9 @@ if (quizID == null) {
 		<option value="PICTURE_RESPONSE">Picture-Response</option>
 		</select>
 		<input type="submit" value="Add"/>
+		</p>
 		</form>
+		</div>
 		
 		<form action="QuizCreationServlet" method="post">
 		<p><input type="submit" value="Finish!"/></p>

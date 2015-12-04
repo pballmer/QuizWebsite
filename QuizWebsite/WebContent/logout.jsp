@@ -8,6 +8,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Logout</title>
 <% session.removeAttribute("name");
+	session.removeAttribute("quizID");
+	session.removeAttribute("quizName");
+	session.removeAttribute("quizDesc");
 	String name = null;
 	ServletContext context = pageContext.getServletContext();
 	DBConnection conn = (DBConnection)context.getAttribute("Database Connection");%>

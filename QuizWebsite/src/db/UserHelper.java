@@ -359,8 +359,8 @@ public class UserHelper
 				for (int i = 1; i <= numRows; i++)
 				{
 					results.absolute(i);
-					String sender = results.getString(SENDER);
-					String recipient = results.getString(RECIPIENT);
+					String sender = results.getString(1);
+					String recipient = results.getString(2);
 					String friendname = (Username.equals(sender)) ? recipient : sender;
 					friends.add(friendname);
 				}
@@ -394,6 +394,8 @@ public class UserHelper
 	
 	public static int makeAdmin(DBConnection conn, String username)
 	{
+		User user = UserHelper.getUserByID(conn, username);
+		if (user == null) return -1;
 		String query = "UPDATE Users SET Admin=1 WHERE Username='" + username + "';";
 		try
 		{
@@ -411,6 +413,8 @@ public class UserHelper
 	}
 	public static int removeUser(DBConnection conn, String username)
 	{
+		User user = UserHelper.getUserByID(conn, username);
+		if (user == null) return -1;
 		String query = "DELETE FROM Users WHERE Username='" + username + "';";
 		try
 		{
@@ -422,6 +426,7 @@ public class UserHelper
 			e.printStackTrace();
 			return -1;
 		}
+		
 	
 	return 1;
 	}

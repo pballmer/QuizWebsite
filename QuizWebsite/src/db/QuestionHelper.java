@@ -276,7 +276,8 @@ public class QuestionHelper
 				{
 					results.absolute(i);
 					String option = results.getString(OPTIONS);
-					options.add(option);
+					//options.add(option);
+					if (!option.isEmpty()) options.add(option); // check needed here for case of new question TODO MAYBE unneeded
 				}
 			}
 		}
@@ -332,6 +333,25 @@ public class QuestionHelper
 		return questionID;
 	}
 	
+	//adds the arraylist of answers to the question
+	public static void addAnswers(DBConnection conn, int id, ArrayList<String> answers)
+	{
+		try
+		{
+			for (int i = 0; i < answers.size(); i++)
+			{
+				String query = "INSERT INTO Answers VALUES(" + id + ", '" + answers.get(i) + "');";
+				PreparedStatement ps = conn.getConnection().prepareStatement(query);
+				ps.executeQuery();
+			}
+		}
+		catch (SQLException ex)
+		{
+			System.err.println("Error occured when inserting user into database.");
+			ex.printStackTrace();	
+		}
+	}
+
 //	public static void addMultipleChoice(DBConnection conn, int questionID)
 //	{
 //		String query = "INSERT INTO MultipleChoice VALUES(" + questionID + ", '');";
@@ -417,49 +437,79 @@ public class QuestionHelper
 			String query = "UPDATE QuestionResponse SET QuestionText = '" + text + "' WHERE QuestionID = " + questionID + ";";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ps.execute();
-			
+
 			query = "UPDATE Answers SET CorrectAnswer = '" + answer + "' WHERE QuestionID = " + questionID + ";";
 			ps = conn.getConnection().prepareStatement(query);
 			ps.execute();
-			
+
 		} catch (SQLException ex) {
-				ex.printStackTrace();
-				System.err.println("Error occured when accessing database.");
-			}
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
 	}
-	
+
 	public static void setPRAttributes(DBConnection conn, int questionID, String text, String answer) {
 		try {
 			String query = "UPDATE PictureResponse SET ImageFile = '" + text + "' WHERE QuestionID = " + questionID + ";";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ps.execute();
-			
+
 			query = "UPDATE Answers SET CorrectAnswer = '" + answer + "' WHERE QuestionID = " + questionID + ";";
 			ps = conn.getConnection().prepareStatement(query);
 			ps.execute();
-			
+
 		} catch (SQLException ex) {
-				ex.printStackTrace();
-				System.err.println("Error occured when accessing database.");
-			}
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
 	}
-	
+
 	public static void setFBAttributes(DBConnection conn, int questionID, String textBefore, String textAfter, String answer) {
 		try {
-			String query = "UPDATE FillInBlank SET TextBefore = '" + textBefore + "', TextAfter = '"
-							+ textAfter + "' WHERE QuestionID = " + questionID + ";";
+			String query = "UPDATE FillInBlank SET QuestionTextBefore = '" + textBefore + "', " +
+					"QuestionTextAfter = '" + textAfter + "' WHERE QuestionID = " + questionID + ";";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+
+			query = "UPDATE Answers SET CorrectAnswer = '" + answer + "' WHERE QuestionID = " + questionID + ";";
+			ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+	}
+	
+	public static void setMCAttributes(DBConnection conn, int questionID, String text, ArrayList<String> options, String answer) {
+		try {
+			String query = "DELETE FROM MultipleChoice WHERE QuestionID = " + questionID + ";";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ps.execute();
 			
+			for (int i = 0; i < options.size(); ++i) {
+				query = "INSERT INTO MultipleChoice VALUES(" + questionID + ", '" + text + "', '" + options.get(i) + "');";
+				ps = conn.getConnection().prepareStatement(query);
+				ps.execute();
+			}
+			
+			if (options.size() == 0) {
+				query = "INSERT INTO MultipleChoice VALUES(" + questionID + ", '" + text + "', '');";
+				ps = conn.getConnection().prepareStatement(query);
+				ps.execute();
+			}
+			
 			query = "UPDATE Answers SET CorrectAnswer = '" + answer + "' WHERE QuestionID = " + questionID + ";";
 			ps = conn.getConnection().prepareStatement(query);
 			ps.execute();
-			
+
 		} catch (SQLException ex) {
-				ex.printStackTrace();
-				System.err.println("Error occured when accessing database.");
-			}
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
 	}
+	
+	/*
 	
 	//adds the arraylist of answers to the question
 	public static void addAnswers(DBConnection conn, int id, ArrayList<String> answers)
@@ -479,7 +529,7 @@ public class QuestionHelper
 			ex.printStackTrace();	
 		}
 	}
-	
+	*/
 //	public static void addFillBlank(DBConnection conn, FillBlank question)
 //	{
 //
@@ -573,4 +623,5 @@ public class QuestionHelper
 //			ex.printStackTrace();	
 //		}
 //	}	
+
 }

@@ -1,11 +1,19 @@
 package servlets;
 
 import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import db.DBConnection;
+import db.QuizHelper;
+import entities.Quiz;
 
 /**
  * Servlet implementation class QuizCreationServlet
@@ -33,7 +41,17 @@ public class QuizCreationServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		HttpSession session = request.getSession();
+		Integer quizID = (Integer)session.getAttribute("quizID");
+		String quizName = (String) session.getAttribute("quizName");
+		String quizDesc = (String) session.getAttribute("quizDesc");
+		Quiz quiz = new Quiz(quizID, quizName, quizDesc);
+		ServletContext context = getServletContext();
+		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
+        // TODO set request's id parameter so that quizsummary can display right away
+        QuizHelper.addQuizMade(conn, quiz, (String) session.getAttribute("name"));
+        RequestDispatcher dispatch = request.getRequestDispatcher("quizsummary.jsp");
+		dispatch.forward(request, response);
 	}
 
 }

@@ -45,6 +45,7 @@ public class AccountCreationServlet extends HttpServlet {
 		ServletContext context = getServletContext();
 		String name = request.getParameter("name");
 		String pass = request.getParameter("pass");
+		boolean admin = Boolean.parseBoolean(request.getParameter("admin"));
 		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 		
 		User user = UserHelper.getUserByID(conn, name);
@@ -55,7 +56,7 @@ public class AccountCreationServlet extends HttpServlet {
 		} else {
 			HttpSession session = request.getSession();
 	        session.setAttribute("name", name);
-	        User newUser = new User(name, pass);
+	        User newUser = new User(name, pass, admin);
 	        int status = UserHelper.addUser(conn, newUser);
 	        if (status == -1) // TODO kind of weird that we go to accountexists if there was a DB error but okay --> we can make a general error page like they do with twitter and stuff instead, this was jsut place holder
 	        {

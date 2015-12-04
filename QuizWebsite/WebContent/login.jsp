@@ -7,9 +7,11 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Login </title>
-<% String name =(String)session.getAttribute("name");
+<%  
+	String name =(String)session.getAttribute("name");
 	ServletContext context = pageContext.getServletContext();
-	DBConnection conn = (DBConnection)context.getAttribute("Database Connection");%>
+	DBConnection conn = (DBConnection)context.getAttribute("Database Connection");
+%>
 <link rel="stylesheet" type="text/css" href="main.css">
 
 </head>
@@ -66,7 +68,7 @@
 	<div id = "filler">
 	</div>
 	<div id ="content">
-		<h1>Please log in to view your profile</h1>
+		<h1 style="color:white">Please log in to view your profile</h1>
 			<div id="form">
 				<form action="LoginServlet" method="post">
 				<p>User Name:

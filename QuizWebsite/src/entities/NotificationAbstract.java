@@ -27,5 +27,10 @@ public abstract class NotificationAbstract {
 	{
 		return to;
 	}
+	
+	public int getID()
+	{
+		return this.id;
+	}
 
 }
