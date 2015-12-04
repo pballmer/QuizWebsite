@@ -97,7 +97,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 			MultipleChoice mc1 = new MultipleChoice(1, 2, mcQ, answer, QuestionHelper.MULTIPLE_CHOICE, mcArray);
 			QuestionResponse qr1 = new QuestionResponse(2, 2, "What's the first letter of the alphabet?", answer,QuestionHelper.QUESTION_RESPONSE, mcArray);
 			FillBlank fb1 = new FillBlank(3, 2, "The first letter of the alphabet is ", answer, QuestionHelper.FILL_IN_BLANK, fbArray);
-			PictureResponse pr1 = new PictureResponse(4, 2, "http://sweetclipart.com/multisite/sweetclipart/files/letter_a.png"
+			PictureResponse pr1 = new PictureResponse(4, 2, "http://www.havefunteaching.com/wp-content/uploads/2013/06/letter-a.png"
 					, answer, QuestionHelper.PICTURE_RESPONSE, mcArray);
 
 			ArrayList<QuestionAbstract> questions = new ArrayList<QuestionAbstract>();
