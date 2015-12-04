@@ -24,13 +24,12 @@ public class NotificationsHelper
 	
 	private static final int NOTE = 4;
 	
-	private static final int PENDING = 0;
-	private static final int ACCEPTED = 1;
-	private static final int REJECTED = 2;
+	public static final int PENDING = 0;
+	public static final int ACCEPTED = 1;
+	public static final int REJECTED = 2;
 	
-	private static final int FRIEND_REQUEST = 0;
-	private static final int CHALLENGE = 1;
-	private static final int NOTE_TYPE = 2;
+	public static final int CHALLENGE = 1;
+	public static final int NOTE_TYPE = 2;
 	
 
 	
@@ -53,17 +52,20 @@ public class NotificationsHelper
 		return notification;
 	}
 	
-	private static FriendRequest getFriendRequestFromRecord(ResultSet rs, int row)
+	/*
+	private static FriendRequest getFriendRequestFromRecord(DBConnection conn, ResultSet rs, int row)
 	{
 		FriendRequest request = null;
 		try 
 		{
 			rs.absolute(row);
 			int NotificationID = rs.getInt(NOTIFICATION_ID);
-			boolean Sender = rs.getBoolean(SENDER);
-			int Recipient = rs.getInt(RECIPIENT);
+			String Sender = rs.getString(SENDER);
+			String Recipient = rs.getSTring(RECIPIENT);
 			int Status = rs.getInt(STATUS);
-			request = new FriendRequest(NotificationID, Sender, Recipient, Status);
+			User sender = UserHelper.getUserByID(conn, Sender);
+			User recipient = UserHelper.getUserByID(conn, recipient);
+			request = new FriendRequest( NotificationID, sender, recipient, Status);
 		}
 		catch (SQLException ex)
 		{
@@ -73,20 +75,23 @@ public class NotificationsHelper
 		return request;
 		
 	}
-	
-	private static Challenge getChallengeFromRecord(ResultSet rs, int row)
+	*/
+	private static Challenge getChallengeFromRecord(DBConnection conn, ResultSet rs, int row)
 	{
 		Challenge request = null;
 		try 
 		{
 			rs.absolute(row);
 			int NotificationID = rs.getInt(NOTIFICATION_ID);
-			boolean Sender = rs.getBoolean(SENDER);
-			int Recipient = rs.getInt(RECIPIENT);
+			String Sender = rs.getString(SENDER);
+			String Recipient = rs.getString(RECIPIENT);
 			int QuizID = rs.getInt(QUIZ_ID);
 			String link = rs.getString(LINK);
 			double score = rs.getDouble(SCORE);
-			request = new Challenge(NotificationID, Sender, Recipient, QuizID, link, score);
+			User sender = UserHelper.getUserByID(conn, Sender);
+			User recipient = UserHelper.getUserByID(conn, Recipient);
+			Quiz quiz = QuizHelper.getQuizByID(conn, QuizID);
+			request = new Challenge(CHALLENGE, NotificationID, sender, recipient, quiz, link);
 		}
 		catch (SQLException ex)
 		{
@@ -96,17 +101,19 @@ public class NotificationsHelper
 		return request;
 	}
 	
-	private static Note getNoteFromRecord(ResultSet rs, int row)
+	private static Note getNoteFromRecord(DBConnection conn, ResultSet rs, int row)
 	{
 		Note request = null;
 		try 
 		{
 			rs.absolute(row);
 			int NotificationID = rs.getInt(NOTIFICATION_ID);
-			boolean Sender = rs.getBoolean(SENDER);
-			int Recipient = rs.getInt(RECIPIENT);
+			String Sender = rs.getString(SENDER);
+			String Recipient = rs.getString(RECIPIENT);
 			String note = rs.getString(NOTE);
-			request = new Note(NotificationID, Sender, Recipient, note);
+			User sender = UserHelper.getUserByID(conn, Sender);
+			User recipient = UserHelper.getUserByID(conn, Recipient);
+			request = new Note(NOTE_TYPE, NotificationID, sender, recipient, note);
 		}
 		catch (SQLException ex)
 		{
@@ -148,7 +155,7 @@ public class NotificationsHelper
 			
 			if (results.isBeforeFirst())
 			{
-				return getNoteFromRecord(results, 1);
+				return getNoteFromRecord(conn, results, 1);
 			}
 		}
 		catch (SQLException ex)
@@ -157,6 +164,75 @@ public class NotificationsHelper
 			System.err.println("Error occured when accessing database.");
 		}
 		return null;
+	}
+	
+	public static ArrayList<Note> getUnreadNotes(DBConnection conn, String recipient)
+	{
+		String query = "SELECT NotificationID FROM Notes C JOIN Notifications N ON N.NotificationID = C.NotificationID WHERE Recipient = '" + recipient + "' GROUP BY NotificationID";
+		ArrayList<Integer> ids = new ArrayList<Integer>();
+		ArrayList<Integer> idNote = new ArrayList<Integer>();
+		ArrayList<Note> notes = new ArrayList<Note>();
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet idResults = ps.executeQuery();
+			
+			if (idResults.isBeforeFirst())
+			{
+				ResultSet temp = idResults;
+				temp.last();
+				int numRows = temp.getRow();
+				for (int i = 1; i <= numRows; i++)
+				{
+					idResults.absolute(i);
+					ids.add(idResults.getInt(1));
+				}
+			}
+			
+			for (int i = 0; i < ids.size(); i++)
+			{
+				String query_notification = "SELECT * s WHERE NotificationID = " + ids.get(i) + " AND Checked = 0;";
+				ps = conn.getConnection().prepareStatement(query_notification);
+				ResultSet results = ps.executeQuery();
+
+				if (results.isBeforeFirst())
+				{
+					ResultSet temp = results;
+					temp.last();
+					int numRows = temp.getRow();
+					for (int j = 1; j <= numRows; j++)
+					{
+						results.absolute(j);
+						idNote.add(results.getInt(1));
+					}
+				}	
+			}
+			
+			for (int i = 0; i < ids.size(); i++)
+			{
+				String query_notification = "SELECT * FROM Notes WHERE NotificationID = " + ids.get(i) + ";";
+				ps = conn.getConnection().prepareStatement(query_notification);
+				ResultSet rs = ps.executeQuery();
+
+				if (rs.isBeforeFirst())
+				{
+					ResultSet temp = rs;
+					temp.last();
+					int numRows = temp.getRow();
+					for (int j = 1; j <= numRows; j++)
+					{
+						rs.absolute(j);
+						notes.add(getNoteFromRecord(conn, rs, j));
+					}
+				}	
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return notes;	
 	}
 	
 	public static Challenge getChallenge(DBConnection conn, int NotificationID)
@@ -169,7 +245,7 @@ public class NotificationsHelper
 			
 			if (results.isBeforeFirst())
 			{
-				return getChallengeFromRecord(results, 1);
+				return getChallengeFromRecord(conn, results, 1);
 			}
 		}
 		catch (SQLException ex)
@@ -181,33 +257,13 @@ public class NotificationsHelper
 		return null;
 	}
 	
-	public static FriendRequest getFriendRequest(DBConnection conn, int NotificationID)
-	{
-		try
-		{
-			String query = "SELECT * FROM Friends WHERE NotificationID = " + NotificationID + ";";
-			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ResultSet results = ps.executeQuery();
-			
-			if (results.isBeforeFirst())
-			{
-				return getFriendRequestFromRecord(results, 1);
-			}
-		}
-		catch (SQLException ex)
-		{
-			ex.printStackTrace();
-			System.err.println("Error occured when accessing database.");
-		}
-		return null;
-	}
 	
-	public static ArrayList<FriendRequest> getPendingFrendRequests(DBConnection conn, String username)
+	public static ArrayList<String> getPendingFrendRequests(DBConnection conn, String username)
 	{
-		ArrayList<FriendRequest> friends = new ArrayList<FriendRequest>();
+		ArrayList<String> friends = new ArrayList<String>();
 		try
 		{
-			String query = "SELECT * FROM Friends WHERE (Sender = '" + username + "' OR Recipient = '" + username + "') AND Status = " + PENDING + ";";
+			String query = "SELECT * FROM Friends WHERE (Recipient = '" + username + "') AND Status = " + PENDING + ";";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ResultSet results = ps.executeQuery();
 	
@@ -219,8 +275,9 @@ public class NotificationsHelper
 				int numRows = temp.getRow();
 				for (int i = 1; i <= numRows; i++)
 				{
-					FriendRequest req = getFriendRequestFromRecord(results, i);
-					friends.add(req);
+					results.absolute(i);
+					String friend = results.getString(2);
+					friends.add(friend);
 				}
 			}
 		}
@@ -235,21 +292,22 @@ public class NotificationsHelper
 	
 	public static ArrayList<Note> getNotesBySender(DBConnection conn, String username)
 	{
+		ArrayList<Note> notes = new ArrayList<Note>();
 		String query = "SELECT * FROM Notes WHERE Sender = '" + username + "';";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ResultSet results = ps.executeQuery();
-			ArrayList<Note> notes = new ArrayList<Note>();
+
 			
 			if (results.isBeforeFirst())
 			{
 				ResultSet temp = results;
-				temp.last());
+				temp.last();
 				int numRows = temp.getRow();
 				for (int i = 1; i <= numRows; i++)
 				{
-					Note note = getNoteFromRecord(results, i);
+					Note note = getNoteFromRecord(conn, results, i);
 					notes.add(note);
 				}
 			}
@@ -265,20 +323,21 @@ public class NotificationsHelper
 	public static ArrayList<Note> getNotesByRecipient(DBConnection conn, String username)
 	{
 		String query = "SELECT * FROM Notes WHERE Recipient = '" + username + "';";
+		ArrayList<Note> notes = new ArrayList<Note>();
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ResultSet results = ps.executeQuery();
-			ArrayList<Note> notes = new ArrayList<Note>();
+
 			
 			if (results.isBeforeFirst())
 			{
 				ResultSet temp = results;
-				temp.last());
+				temp.last();
 				int numRows = temp.getRow();
 				for (int i = 1; i <= numRows; i++)
 				{
-					Note note = getNoteFromRecord(results, i);
+					Note note = getNoteFromRecord(conn, results, i);
 					notes.add(note);
 				}
 			}
@@ -294,20 +353,21 @@ public class NotificationsHelper
 	public static ArrayList<Challenge> getChallengeBySender(DBConnection conn, String username)
 	{
 		String query = "SELECT * FROM Challenge WHERE Sender = '" + username + "';";
+		ArrayList<Challenge> challenges = new ArrayList<Challenge>();
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ResultSet results = ps.executeQuery();
-			ArrayList<Challenge> challenges = new ArrayList<Challenge>();
+
 			
 			if (results.isBeforeFirst())
 			{
 				ResultSet temp = results;
-				temp.last());
+				temp.last();
 				int numRows = temp.getRow();
 				for (int i = 1; i <= numRows; i++)
 				{
-					Challenge note = getChallengeFromRecord(results, i);
+					Challenge note = getChallengeFromRecord(conn, results, i);
 					challenges.add(note);
 				}
 			}
@@ -323,11 +383,12 @@ public class NotificationsHelper
 	public static ArrayList<Challenge> getChallengeByRecipient(DBConnection conn, String username)
 	{
 		String query = "SELECT * FROM Challenge WHERE Recipient = '" + username + "';";
+		ArrayList<Challenge> challenges = new ArrayList<Challenge>();
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ResultSet results = ps.executeQuery();
-			ArrayList<Challenge> challenges = new ArrayList<Challenge>();
+
 			
 			if (results.isBeforeFirst())
 			{
@@ -336,7 +397,7 @@ public class NotificationsHelper
 				int numRows = temp.getRow();
 				for (int i = 1; i <= numRows; i++)
 				{
-					Challenge note = getChallengeFromRecord(results, i);
+					Challenge note = getChallengeFromRecord(conn, results, i);
 					challenges.add(note);
 				}
 			}	
@@ -349,38 +410,118 @@ public class NotificationsHelper
 		return challenges;	
 	}
 	
-	public static void addNotification(DBConnection conn, int type, boolean checked)
+	public static ArrayList<Challenge> getUnreadChallenges(DBConnection conn, String username)
 	{
-		String query = "INSERT INTO Notifications VALUES(NULL," + type + "," + checked + ");";
+		String query = "SELECT NotificationID FROM Challenge C JOIN Notifications N ON N.NotificationID = C.NotificationID WHERE Recipient = '" + username + "' GROUP BY NotificationID";
+		ArrayList<Integer> ids = new ArrayList<Integer>();
+		ArrayList<Integer> idNote = new ArrayList<Integer>();
+		ArrayList<Challenge> challenges = new ArrayList<Challenge>();
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ps.executeQuery();
+			ResultSet idResults = ps.executeQuery();
+			
+			if (idResults.isBeforeFirst())
+			{
+				ResultSet temp = idResults;
+				temp.last();
+				int numRows = temp.getRow();
+				for (int i = 1; i <= numRows; i++)
+				{
+					idResults.absolute(i);
+					ids.add(idResults.getInt(1));
+				}
+			}
+			
+			for (int i = 0; i < ids.size(); i++)
+			{
+				String query_notification = "SELECT * FROM Notifications WHERE NotificationID = " + ids.get(i) + " AND Checked = 0;";
+				ps = conn.getConnection().prepareStatement(query_notification);
+				ResultSet results = ps.executeQuery();
+
+				if (results.isBeforeFirst())
+				{
+					ResultSet temp = results;
+					temp.last();
+					int numRows = temp.getRow();
+					for (int j = 1; j <= numRows; j++)
+					{
+						results.absolute(j);
+						idNote.add(results.getInt(1));
+					}
+				}	
+			}
+			
+			for (int i = 0; i < ids.size(); i++)
+			{
+				String query_notification = "SELECT * FROM Challenge WHERE NotificationID = " + ids.get(i) + ";";
+				ps = conn.getConnection().prepareStatement(query_notification);
+				ResultSet rs = ps.executeQuery();
+
+				if (rs.isBeforeFirst())
+				{
+					ResultSet temp = rs;
+					temp.last();
+					int numRows = temp.getRow();
+					for (int j = 1; j <= numRows; j++)
+					{
+						rs.absolute(j);
+						challenges.add(getChallengeFromRecord(conn, rs, j));
+					}
+				}	
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return challenges;	
+	}
+	
+	public static int addNotification(DBConnection conn, int type, boolean checked)
+	{
+		String query = "INSERT INTO Notifications VALUES(NULL," + checked+ ", " + type + ");";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+			
+			String query_id = "SELECT NotificationID FROM Notifications ORDER BY NotificationID DESC";
+			ps = conn.getConnection().prepareStatement(query_id);
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				results.absolute(1);
+				return results.getInt(1);
+			}
+
 		}
 		catch (SQLException ex)
 		{
 			System.err.println("Error occured when inserting notification into database.");
 			ex.printStackTrace();	
 		}
+		return -1;
 	}
 	
 	public static void addChallenge(DBConnection conn, Challenge challenge)
 	{
-		int id = challenge.getID();
-		String sender = challenge.getSender();
+		String sender = challenge.getSenderName();
 		String recipient = challenge.getRecipient();
 		int QuizID = challenge.getQuizID();
-		String link = challenge.getLink();
+		String link = challenge.getQuizLink();
 		double score = challenge.getScore();
 		
-		addNotification(conn, CHALLENGE, false);
+		int id = addNotification(conn, CHALLENGE, false);
 		
 		String query = "INSERT INTO Challenge VALUES(" + id + ", '" + sender + "', '" + recipient +"'," +
 							QuizID + ", '" + link +"', " + score + ");";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ps.executeQuery();
+			ps.execute();
 		}
 		catch (SQLException e)
 		{
@@ -389,16 +530,15 @@ public class NotificationsHelper
 		}
 	}
 	
-	public static void addFriendRequest(DBConnection conn, int ID, String sender, String recipient, int status)
+	public static void addFriendRequest(DBConnection conn, String sender, String recipient, int status)
 	{
-		addNotification(conn, FRIEND_REQUEST, false);
-		
-		String query = "INSERT INTO Friends VALUES(" + ID + ", '" + sender + "', '" + recipient +"'," +
+
+		String query = "INSERT INTO Friends VALUES('" + sender + "', '" + recipient +"'," +
 							status + ");";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ps.executeQuery();
+			ps.execute();
 		}
 		catch (SQLException e)
 		{
@@ -409,19 +549,18 @@ public class NotificationsHelper
 	
 	public static void addNote(DBConnection conn, Note note)
 	{
-		int id = note.getID();
-		String sender = note.getSender();
+		String sender = note.getSenderName();
 		String recipient = note.getRecipient();
-		String message = note.getStatus();
+		String message = note.getText();
 		
-		addNotification(conn, NOTE_TYPE, false);
+		int id = addNotification(conn, NOTE_TYPE, false);
 		
 		String query = "INSERT INTO Notes VALUES(" + id + ", '" + sender + "', '" + recipient +"', '" +
 							message + "');";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ps.executeQuery();
+			ps.execute();
 		}
 		catch (SQLException e)
 		{
@@ -430,13 +569,13 @@ public class NotificationsHelper
 		}
 	}
 	
-	public void respondToFriendRequest(DBConnection conn, String Sender, String Recipient, int response)
+	public static void respondToFriendRequest(DBConnection conn, String Sender, String Recipient, int response)
 	{
-		String query = "UPDATE Friends SET Status = " + response + "WHERE Sender = '" + Sender + "' AND Recipient = '" + Recipient + "';";
+		String query = "UPDATE Friends SET Status = " + response + " WHERE Sender = '" + Sender + "' AND Recipient = '" + Recipient + "';";
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ps.executeQuery();
+			ps.execute();
 		}
 		catch (SQLException e)
 		{
@@ -445,4 +584,33 @@ public class NotificationsHelper
 		}
 	}
 	
+	public static void readNote(DBConnection conn, int id)
+	{
+		String query = "UPDATE Notification SET Checked = 1 WHERE NotificationID =" + id + ";";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when responding to friend request");
+			e.printStackTrace();	
+		}
+	}
+	
+	public static void readChallenge(DBConnection conn, int id)
+	{
+		String query = "UPDATE NotificationID SET Checked = 1 WHERE NotificationID =" + id + ";";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when responding to friend request");
+			e.printStackTrace();	
+		}
+	}
 }

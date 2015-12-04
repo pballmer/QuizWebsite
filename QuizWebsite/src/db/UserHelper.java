@@ -33,7 +33,7 @@ public class UserHelper
 			String username = rs.getString(USERNAME);
 			String password = rs.getString(PASSWORD);
 			boolean admin = rs.getBoolean(ADMIN);
-			user = new User(username, password, admin);
+			user = new User(username, password, admin, true);
 		}
 		catch (SQLException ex)
 		{
@@ -43,15 +43,36 @@ public class UserHelper
 		return user;
 	}
 	
-	private static Achievement getAchievementFromRecord(ResultSet rs, int row)
+	public static int getTotalNumUsers(DBConnection conn)
 	{
-		Achievement achievement = null;
+		int num = 0; 
+		try
+		{
+			String query = "SELECT COUNT(*) FROM Users";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);		
+			ResultSet results = ps.executeQuery();
+			
+			if (results.isBeforeFirst())
+			{
+				results.absolute(1);
+				num = results.getInt(1);
+			}
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return num;
+	}
+	
+	private static String getAchievementFromRecord(ResultSet rs, int row)
+	{
+		String achievement = "";
 		try 
 		{
 			rs.absolute(row);
-			String username = rs.getString(USERNAME);
-			String achieve = rs.getString(ACHIEVEMENT);
-			achievement = new Achievement(username, achieve);
+			achievement = rs.getString(ACHIEVEMENT);
 		}
 		catch (SQLException ex)
 		{
@@ -109,7 +130,7 @@ public class UserHelper
 	{
 		try
 		{
-			String query = "SELECT * From Users WHERE UserID='" + UserID + "';";
+			String query = "SELECT * From Users WHERE Username='" + UserID + "';";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			
 			ResultSet results = ps.executeQuery();
@@ -218,7 +239,7 @@ public class UserHelper
 	//AL<String>?
 	public static ArrayList<String> getAllUserIDs(DBConnection conn)
 	{
-		ArrayList<User> userList = new ArrayList<User>();
+		ArrayList<String> userList = new ArrayList<String>();
 		try
 		{
 			String query = queryBuilder("", "", "true");
@@ -246,9 +267,9 @@ public class UserHelper
 		return userList;
 	}
 	
-	public static ArrayList<Achievements> getAchievements(DBConnection conn, String username)
+	public static ArrayList<String> getAchievements(DBConnection conn, String username)
 	{
-		ArrayList<Achievement> achList = new ArrayList<Achievement>();
+		ArrayList<String> achList = new ArrayList<String>();
 		try
 		{
 			String query = "SELECT * FROM Achievements WHERE Username='" + username + "';";
@@ -262,7 +283,7 @@ public class UserHelper
 				int numRows = temp.getRow();
 				for (int i = 1; i <= numRows; i++)
 				{
-					Achievement achievement = getAchievementFromRecord(results, i);
+					String achievement = getAchievementFromRecord(results, i);
 					achList.add(achievement);
 				}
 			}
@@ -273,6 +294,18 @@ public class UserHelper
 			System.err.println("Error occured when accessing database.");
 		}
 		return achList;
+	}
+	
+	public static void addAchievement(DBConnection conn, String ach, String username){
+		String command = "INSERT INTO Achievements VALUES(\"" + username + "\",\"" + ach + "\");";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(command);
+			ps.execute();
+		} catch (SQLException e) {
+			System.err.println("Error occured when inserting achievement into database.");
+			e.printStackTrace();
+		}
 	}
 	
 	public static HashMap<String, Double> getPastQuizPerformances(DBConnection conn, String Username)
@@ -308,12 +341,12 @@ public class UserHelper
 		return map;
 	}
 	
-	public static Set<User> getFriends(DBConnection conn, String Username)
+	public static ArrayList<String> getFriends(DBConnection conn, String Username)
 	{
-		Set<User> friends = new HashSet<User>();
+		ArrayList<String> friends = new ArrayList<String>();
 		try
 		{
-			String query = "SELECT * FROM Notifications WHERE (Sender = '" + Username + "' OR Recipient = '" + Username + "') AND Status = " + ACCEPTED + ";";
+			String query = "SELECT * FROM Friends WHERE (Sender = '" + Username + "' OR Recipient = '" + Username + "') AND Status = " + ACCEPTED + ";";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			
 			ResultSet results = ps.executeQuery();
@@ -329,8 +362,7 @@ public class UserHelper
 					String sender = results.getString(SENDER);
 					String recipient = results.getString(RECIPIENT);
 					String friendname = (Username.equals(sender)) ? recipient : sender;
-					User friend = getUserByID(conn, friendname);
-					friends.add(friend);
+					friends.add(friendname);
 				}
 			}
 		}
@@ -342,7 +374,7 @@ public class UserHelper
 		return friends;
 	}
 	
-	public static void addUser(DBConnection conn, User user) {
+	public static int addUser(DBConnection conn, User user) {
 		String name = user.getUsername();
 		String pass = user.getPassword();
 		boolean admin = user.isAdmin();
@@ -350,11 +382,48 @@ public class UserHelper
 						+ pass + "\"," + admin + ");";
 		try {
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
-			ps.execute(); // TODO is this right?
+			ps.execute();
 		} catch (SQLException e) {
 			System.err.println("Error occured when inserting user into database.");
 			e.printStackTrace();
+			return -1;
 		}
+		
+		return 1;
+	}
+	
+	public static int makeAdmin(DBConnection conn, String username)
+	{
+		String query = "UPDATE Users SET Admin=1 WHERE Username='" + username + "';";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+		}
+		catch (SQLException e) {
+			System.err.println("Error occured when updating user in database.");
+			e.printStackTrace();
+			return -1;
+		}
+	
+	return 1;	
+		
+	}
+	public static int removeUser(DBConnection conn, String username)
+	{
+		String query = "DELETE FROM Users WHERE Username='" + username + "';";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+		}
+		catch (SQLException e) {
+			System.err.println("Error occured when deleting user into database.");
+			e.printStackTrace();
+			return -1;
+		}
+	
+	return 1;
 	}
 	
 	

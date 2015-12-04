@@ -3,11 +3,20 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
+import db.DBConnection;
+import db.NotificationsHelper;
+import db.QuizHelper;
+import db.UserHelper;
+
 public class User {
 	private String username;
 	private String password;//will be stored as encrypted
 	private boolean admin;
 	private List<User> friends;
+	private List<Quiz> quizzesMade;
+	private Map<Integer, Double> quizzesTaken;//maps quiz id to score
+	private List<NotificationAbstract> notifications;
+	private List<String> achievements;
 	
 	// TODO should only initialize this once
 	public static MessageDigest md;
@@ -16,6 +25,10 @@ public class User {
 		this.username = un;
 		this.admin = false;
 		this.friends = new ArrayList<User>();
+		this.quizzesMade = new ArrayList<Quiz>();
+		this.quizzesTaken = new HashMap<Integer, Double>();
+		this.notifications = new ArrayList<NotificationAbstract>();
+		this.achievements = new ArrayList<String>();
 		try {
 			md = MessageDigest.getInstance("SHA");
 		} catch (NoSuchAlgorithmException e) {
@@ -24,10 +37,29 @@ public class User {
 		password = encryptPass(pw);
 	}
 	
+	public User(String un, String pw, boolean admin, boolean encrypted){//pw is not encrypted
+		this.username = un;
+		this.admin = admin;
+		this.friends = new ArrayList<User>();
+		this.quizzesMade = new ArrayList<Quiz>();
+		this.quizzesTaken = new HashMap<Integer, Double>();
+		this.notifications = new ArrayList<NotificationAbstract>();
+		try {
+			md = MessageDigest.getInstance("SHA");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		password = pw;
+	}
+
+	
 	public User(String un, String pw, boolean admin){//pw is not encrypted
 		this.username = un;
 		this.admin = admin;
 		this.friends = new ArrayList<User>();
+		this.quizzesMade = new ArrayList<Quiz>();
+		this.quizzesTaken = new HashMap<Integer, Double>();
+		this.notifications = new ArrayList<NotificationAbstract>();
 		try {
 			md = MessageDigest.getInstance("SHA");
 		} catch (NoSuchAlgorithmException e) {
@@ -35,6 +67,47 @@ public class User {
 		}
 		password = encryptPass(pw);
 	}
+	
+	public void addQuizTaken(Quiz quiz, DBConnection conn, double score){
+		quizzesTaken.put(quiz.getId(), score);
+		QuizHelper.addQuizTaken(conn, quiz, this.getUsername(), score, String.valueOf(quiz.getStartTime()), String.valueOf(quiz.getEndTime()));
+		if(quizzesTaken.size() == 10){
+			this.addAchievement("Quiz Machine", conn);
+		}
+		if(score >= QuizHelper.getTopScore(conn, quiz.getId()) && !achievements.contains("I am the Greatest")){
+			this.addAchievement("I am the Greatest", conn);
+		}
+	}
+	
+	public void addQuizMade(Quiz quiz, DBConnection conn){
+		QuizHelper.addQuiz(conn, quiz);
+		QuizHelper.addQuizMade(conn, quiz, username);
+		quizzesMade.add(quiz);
+		if(quizzesMade.size() == 1) {
+			this.addAchievement("Amateur Author", conn);
+		} else if(quizzesMade.size() == 5){
+			this.addAchievement("Prolific Author", conn);
+		} else if(quizzesMade.size() == 10){
+			this.addAchievement("Prodigious Author", conn);
+		}
+	}
+	
+	public void addAchievement(String ach, DBConnection conn){
+		UserHelper.addAchievement(conn, ach, username);
+		achievements.add(ach);
+	}
+	
+	public void addChallenge(Challenge challenge, DBConnection conn){
+		NotificationsHelper.addChallenge(conn, challenge);
+		notifications.add(challenge);
+	}
+	
+	public void addNote(Note note, DBConnection conn){
+		NotificationsHelper.addNote(conn, note);
+		notifications.add(note);
+	}
+	
+	//TODO: add friend request once DB help is added
 	
 	public String getUsername() {
 		return username;
@@ -47,6 +120,10 @@ public class User {
 	public boolean isAdmin() {
 		return admin;
 	}
+	
+	public double getScore(int QuizID){
+		return quizzesTaken.get(QuizID);
+	}
 
 	public void addFriend(User friend){
 		friends.add(friend);
@@ -58,17 +135,10 @@ public class User {
 	}
 	
 	private static String encryptPass(String pw) {
-		byte[] pass = pw.getBytes();
-		byte[] bpw = new byte[20]; // Why do we assume this?
-		System.arraycopy(md.digest(pass), 0, bpw, 0, bpw.length);
-		return hexToString(bpw);
-		
-		/* Colin's strategy:
 		byte[] digest = null;
 		md.update(pw.getBytes());
 		digest = md.digest();
 		return hexToString(digest);
-		 */
 	}
 	
 	//took from cracker (hw4)

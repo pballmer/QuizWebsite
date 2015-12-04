@@ -43,18 +43,25 @@ public class AccountCreationServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ServletContext context = getServletContext();
-		AccountManager manager = (AccountManager) context.getAttribute("Account Manager");
 		String name = request.getParameter("name");
 		String pass = request.getParameter("pass");
-		if (manager.accountExists(name)) {
+		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
+		
+		User user = UserHelper.getUserByID(conn, name);
+		if (user != null)
+		{
 			RequestDispatcher dispatch = request.getRequestDispatcher("accountexists.jsp");
 			dispatch.forward(request, response);
 		} else {
-			User newUser = manager.createAccount(name, pass);
 			HttpSession session = request.getSession();
 	        session.setAttribute("name", name);
-	        DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
-	        UserHelper.addUser(conn, newUser);
+	        User newUser = new User(name, pass);
+	        int status = UserHelper.addUser(conn, newUser);
+	        if (status == -1) // TODO kind of weird that we go to accountexists if there was a DB error but okay --> we can make a general error page like they do with twitter and stuff instead, this was jsut place holder
+	        {
+	        	RequestDispatcher dispatch = request.getRequestDispatcher("error.jsp");
+	        	dispatch.forward(request, response);
+	        }
 			RequestDispatcher dispatch = request.getRequestDispatcher("index.jsp");
 			dispatch.forward(request, response);
 		}	
