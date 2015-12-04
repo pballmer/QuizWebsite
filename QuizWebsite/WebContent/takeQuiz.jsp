@@ -72,6 +72,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 					String id = request.getParameter("id").toString();
 					DBConnection dbconn = new DBConnection();
 					Quiz quiz = QuizHelper.getQuizByID(conn, Integer.parseInt(id));
+					QuizHelper.addQuizToTake(conn, quiz, name);
 					System.out.println(quiz.getQuestions().size());
 				%>
 				
