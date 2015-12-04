@@ -94,11 +94,11 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 			fbArray.add("The letter ");
 			fbArray.add(" is the first letter of the alphabet.");
 			String mcQ = "Which is A?";
-			MultipleChoice mc1 = new MultipleChoice(1, 2, mcQ, answer, QuestionAbstract.MULTIPLE_CHOICE, mcArray);
-			QuestionResponse qr1 = new QuestionResponse(2, 2, "What's the first letter of the alphabet?", answer,QuestionAbstract.QUESTION_RESPONSE, mcArray);
-			FillBlank fb1 = new FillBlank(3, 2, "The first letter of the alphabet is ", answer, QuestionAbstract.FILL_IN_BLANK, mcArray);
+			MultipleChoice mc1 = new MultipleChoice(1, 2, mcQ, answer, QuestionHelper.MULTIPLE_CHOICE, mcArray);
+			QuestionResponse qr1 = new QuestionResponse(2, 2, "What's the first letter of the alphabet?", answer,QuestionHelper.QUESTION_RESPONSE, mcArray);
+			FillBlank fb1 = new FillBlank(3, 2, "The first letter of the alphabet is ", answer, QuestionHelper.FILL_IN_BLANK, mcArray);
 			PictureResponse pr1 = new PictureResponse(4, 2, "http://sweetclipart.com/multisite/sweetclipart/files/letter_a.png"
-					, answer, QuestionAbstract.PICTURE_RESPONSE, mcArray);
+					, answer, QuestionHelper.PICTURE_RESPONSE, mcArray);
 
 			ArrayList<QuestionAbstract> questions = new ArrayList<QuestionAbstract>();
 			questions.add(mc1);
@@ -112,25 +112,26 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 					
 					switch (questions.get(i).getType())
 					{
-						case QuestionAbstract.MULTIPLE_CHOICE:
+						case QuestionHelper.MULTIPLE_CHOICE:
 							MultipleChoice mc = (MultipleChoice) questions.get(i);
 							out.println("<h2>" + mc.getQuestion() + "<h2/>"); 
 							for(int j = 0; j < mc.getOptions().size(); j++){
 								out.println("<input type=\"radio\" id=\""+ mc.getQuestionID() +  "" +"\">" + mc.getOptions().get(j) +"<br>"); 
+								System.out.println("j is " + j);
 							}
 							continue;
-						case QuestionAbstract.QUESTION_RESPONSE:
+						case QuestionHelper.QUESTION_RESPONSE:
 							QuestionResponse questionResponse = (QuestionResponse)questions.get(i);
 							out.println("<h2>" + questionResponse.getQuestion() + "<h2/>");
 							out.println("Answer: <input type=\"text\" id= "+questionResponse.getQuestionID()  +"><br>");	
 							continue;
-						case QuestionAbstract.FILL_IN_BLANK:
+						case QuestionHelper.FILL_IN_BLANK:
 							FillBlank fillBlank = (FillBlank)questions.get(i);
 							out.println("<h2>" +  fillBlank.getOptions().get(0) + "<h2>");
 							out.println("<input type=\"text\" id= "+ fillBlank.getQuestionID()  +"><br>");
 							out.println("<h2>" +  fillBlank.getOptions().get(1) + "<h2>");	
 							continue;
-						case QuestionAbstract.PICTURE_RESPONSE:
+						case QuestionHelper.PICTURE_RESPONSE:
 							PictureResponse pr = (PictureResponse)questions.get(i);
 							out.println("<img src="+ pr.getQuestion() +"><br>");
 							out.println("Answer: <input type=\"text\" id= "+ pr.getQuestionID()  +" alt=\"PictureResponse\" height=\"100\" width=\"100\"><br>");
