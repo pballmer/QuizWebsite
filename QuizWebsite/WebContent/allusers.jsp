@@ -38,6 +38,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 				out.println("<a href =\"quizHistory.jsp\" class = \"reg-button\"> Quiz History</a>");
 				
 				User check = UserHelper.getUserByID(conn, name);
+				check.addAchievement("went to the users page", conn);
 				if (check.isAdmin())
 				{
 					out.println("<br>");
