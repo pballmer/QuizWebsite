@@ -15,6 +15,7 @@ ServletContext context = pageContext.getServletContext();
 DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 Integer quizID = (Integer)session.getAttribute("quizID");
 String id = request.getParameter("id").toString();
+<<<<<<< HEAD
 int quizIDOff = 0;
 if (id != null)
 {
@@ -24,6 +25,11 @@ System.out.println(id + " " + quizID);
 //double score = QuizHelper.getScore(conn, quizID, name);
 double score = QuizHelper.getScore(conn, quizIDOff, name);
 long time = QuizHelper.getTimeDiff(conn, quizIDOff, name);
+=======
+double score = QuizHelper.getScore(conn, quizID, name);
+//double score = QuizHelper.getScore(conn, 1, name);
+long time = QuizHelper.getTimeDiff(conn, quizID, name);
+>>>>>>> 55868915fddf2f645dc7a3a935130c840e5fc509
 %>
 <link rel="stylesheet" type="text/css" href="main.css">
 
