@@ -68,15 +68,20 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 	
 	<br>
 				<% //get Quiz title, list of quiz quesitons, 
-					//System.out.println("This is the URL " + request.getRequestURL());
 					String id = request.getParameter("id").toString();
 					//session.setAttribute("id", id);
-					//System.out.println(session.getAttribute("id"));
 					DBConnection dbconn = new DBConnection();
 					Quiz quiz = QuizHelper.getFullQuizByID(conn, Integer.parseInt(id));
 					List<QuestionAbstract> questions = quiz.getQuestions();
+					if (quiz.isRandom()) Collections.shuffle(questions);
+					boolean onePage = quiz.isOnePage();
+					String pageString = request.getParameter("page");
+					int pageNum = 0;
+					if (!onePage && pageString != null) {
+						pageNum = Integer.parseInt(pageString);
+					}
+					boolean immediateCorrection = quiz.isImmediateCorrection();
 					//QuizHelper.addQuizToTake(conn, quiz, name);
-					//System.out.println(quiz.getQuestions().size());
 				%>
 	<div id ="content">		
 		<div id ="form">
@@ -85,12 +90,15 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 			<h1> You're Taking <%=quiz.getName() %></h1>
 			<form action="ScoreServlet" method="post">
 				<input type="hidden" name="quizID" value="<%=id%>" />
+				<input type="hidden" name="onePage" value="<%=Boolean.toString(onePage)%>" />
+				<input type="hidden" name="pageNum" value="<%=pageNum%>" />
 			
 				<%
-				QuizHelper.addQuizToTake(dbconn, quiz, name);
+				if (onePage || pageNum == 0) {
+					QuizHelper.addQuizToTake(dbconn, quiz, name);
+				}
 				Date date = new Date();
 				long currTime = date.getTime();
-				System.out.println("curr time is " + currTime);
 	/* 			ArrayList<String> mcArray = new ArrayList<String>();
 				ArrayList<String> fbArray = new ArrayList<String>();
 				ArrayList<String> answer = new ArrayList<String>();
@@ -115,70 +123,68 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 				questions.add(fb1);
 				questions.add(qr1); */
 				
-				for(int i = 0 ; i < questions.size(); i++){
-					QuestionAbstract curr = questions.get(i);
-					/*
+				if (onePage) {
 					for(int i = 0 ; i < questions.size(); i++){
-						
-						switch (questions.get(i).getType())
-						{
-							case QuestionHelper.MULTIPLE_CHOICE:
-								MultipleChoice mc = (MultipleChoice) questions.get(i);
-								//Colin's going to fix this so it's correct
-								//out.println("<h2>" + mc.getText() + "<h2/>"); 
-								for(int j = 0; j < mc.getOptions().size(); j++){
-									out.println("<input type=\"radio\" id=\""+ mc.getQuestionID() +  "" +"\">" + mc.getOptions().get(j) +"<br>"); 
-									System.out.println("j is " + j);
-								}
-								continue;
-							case QuestionHelper.QUESTION_RESPONSE:
-								QuestionResponse questionResponse = (QuestionResponse)questions.get(i);
-								out.println("<h2>" + questionResponse.getText() + "<h2/>");
-								out.println("Answer: <input type=\"text\" id= "+questionResponse.getQuestionID()  +"><br>");	
-								continue;
-							case QuestionHelper.FILL_IN_BLANK:
-								FillBlank fillBlank = (FillBlank)questions.get(i);
-								out.print("<h2>" +  fillBlank.getTextBefore() + "<h2>");
-								out.print("<input type=\"text\" id= "+ fillBlank.getQuestionID()  +">");
-								out.print("<h2>" +  fillBlank.getTextAfter() + "</h2>");	
-								continue;
-							case QuestionHelper.PICTURE_RESPONSE:
-								PictureResponse pr = (PictureResponse)questions.get(i);
-								out.println("<img src="+ pr.getText() +"><br>");
-								out.println("Answer: <input type=\"text\" id= "+ pr.getQuestionID()  +" alt=\"PictureResponse\" height=\"100\" width=\"100\"><br>");
-								continue;*/
-	
-					switch (curr.getType())
-						{
+						QuestionAbstract curr = questions.get(i);
+		
+						switch (curr.getType()) {
 							case QuestionHelper.MULTIPLE_CHOICE:
 								MultipleChoice mc = (MultipleChoice) curr;
 								out.println("<h2>" + mc.getText() + "<h2/>"); 
 								for(int j = 0; j < mc.getOptions().size(); j++){
 									out.println("<input type=\"radio\" name=\"question"+ i + "" +"\" />" + mc.getOptions().get(j) +"<br>"); 
-									//System.out.println("j is " + j);
 								}
-								continue;
+								break;
 							case QuestionHelper.QUESTION_RESPONSE:
 								QuestionResponse questionResponse = (QuestionResponse) curr;
 								out.println("<h2>" + questionResponse.getText() + "<h2/>");
 								out.println("Answer: <input type=\"text\" name= \"question"+ i +"\" /><br>");	
-								continue;
+								break;
 							case QuestionHelper.FILL_IN_BLANK:
 								FillBlank fillBlank = (FillBlank) curr;
 								out.print("<h2>" +  fillBlank.getTextBefore() + "<h2>");
 								out.print("<input type=\"text\" name= \"question"+ i +"\" />");
 								out.print("<h2>" +  fillBlank.getTextAfter() + "</h2>");	
-								continue;
+								break;
 							case QuestionHelper.PICTURE_RESPONSE:
 								PictureResponse pr = (PictureResponse) curr;
 								out.println("<img src="+ pr.getText() +"><br>");
 								out.println("Answer: <input type=\"text\" name= \"question"+ i +"\" alt=\"PictureResponse\" height=\"100\" width=\"100\" /><br>");
-								continue;
+								break;
 						}					
 					}
+				} else {
+					QuestionAbstract curr = questions.get(pageNum);
+	
+					switch (curr.getType()) {
+						case QuestionHelper.MULTIPLE_CHOICE:
+							MultipleChoice mc = (MultipleChoice) curr;
+							out.println("<h2>" + mc.getText() + "<h2/>"); 
+							for(int j = 0; j < mc.getOptions().size(); j++){
+								out.println("<input type=\"radio\" name=\"question"+ pageNum + "" +"\" />" + mc.getOptions().get(j) +"<br>"); 
+							}
+							break;
+						case QuestionHelper.QUESTION_RESPONSE:
+							QuestionResponse questionResponse = (QuestionResponse) curr;
+							out.println("<h2>" + questionResponse.getText() + "<h2/>");
+							out.println("Answer: <input type=\"text\" name= \"question"+ pageNum +"\" /><br>");	
+							break;
+						case QuestionHelper.FILL_IN_BLANK:
+							FillBlank fillBlank = (FillBlank) curr;
+							out.print("<h2>" +  fillBlank.getTextBefore() + "<h2>");
+							out.print("<input type=\"text\" name= \"question"+ pageNum +"\" />");
+							out.print("<h2>" +  fillBlank.getTextAfter() + "</h2>");	
+							break;
+						case QuestionHelper.PICTURE_RESPONSE:
+							PictureResponse pr = (PictureResponse) curr;
+							out.println("<img src="+ pr.getText() +"><br>");
+							out.println("Answer: <input type=\"text\" name= \"question"+ pageNum +"\" alt=\"PictureResponse\" height=\"100\" width=\"100\" /><br>");
+							break;
+					}					
+				}
+				
 				%>
 				<button type="submit">Submit Quiz</button>
-				<%System.out.println(date.getTime() - currTime); %>
 			</form>
 			</div>
 		

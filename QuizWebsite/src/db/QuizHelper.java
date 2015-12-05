@@ -125,7 +125,7 @@ public class QuizHelper
 			if (results.isBeforeFirst())
 			{
 				results.absolute(1);
-				score = results.getDouble(1);
+				score = results.getDouble("SCORE");
 			}
 		}
 		catch (SQLException ex)
@@ -210,6 +210,9 @@ public class QuizHelper
 		String quizName = "";
 		String quizDesc = "";
 		String creator = "";
+		boolean random = false;
+		boolean onePage = false;
+		boolean autoScore = false;
 		try 
 		{
 			String query = "SELECT * FROM Quiz WHERE QuizID=" + QuizID + ";";
@@ -240,13 +243,24 @@ public class QuizHelper
 //				creator = rs.getString("USERNAME");
 //			}
 			
+			query = "SELECT * FROM QuizProperties WHERE QuizID=" + QuizID + ";";
+			ps = conn.getConnection().prepareStatement(query);
+			rs = ps.executeQuery();
+			
+			if (rs.isBeforeFirst())
+			{
+				random = rs.getBoolean("USERNAME");
+				onePage = rs.getBoolean("USERNAME");
+				autoScore = rs.getBoolean("USERNAME");
+			}
+			
 		}
 		catch (SQLException ex)
 		{
 			ex.printStackTrace();
 			System.err.println("Error occured when accessing database.");
 		}
-		quiz = new Quiz(QuizID, quizName, quizDesc, creator, getQuizQuestions(conn, QuizID));
+		quiz = new Quiz(QuizID, quizName, quizDesc, creator, getQuizQuestions(conn, QuizID), random, onePage, autoScore);
 		return quiz;
 	}
 	
@@ -815,6 +829,9 @@ public class QuizHelper
 			ResultSet rs = stmt.executeQuery("SELECT * FROM Quiz");
 			rs.last();
 			int lastID = Integer.parseInt(rs.getString("QuizID"));
+			command = "INSERT INTO QuizProperties (QuizID) VALUES (" + lastID + ");";
+			ps = conn.getConnection().prepareStatement(command);
+			ps.execute();
 			return lastID;
 		} catch (SQLException e) {
 			System.err.println("Error occured when inserting user into database.");
@@ -953,6 +970,23 @@ public class QuizHelper
 			System.err.println("Error occured when inserting user into database.");
 			e.printStackTrace();	
 		}
+	}
+
+	public static void setProperties(DBConnection conn, Integer quizID,
+			boolean isRandom, boolean onePage, boolean immediate) {
+		String query = "UPDATE QuizProperties SET Random=" + isRandom + ", Page =" 
+						+ onePage + ", Immediate=" + immediate + " WHERE QuizID =" + quizID + ";";
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when inserting user into database.");
+			e.printStackTrace();	
+		}
+		
 	}
 	
 	
