@@ -25,7 +25,7 @@
 		quizname = quiz.getName();
 	}
 %>
-<title> <%= quizname %>'s Profile Page</title>
+<title> <%= quizname %>'s Summary Page</title>
 
 <link rel="stylesheet" type="text/css" href="main.css">
 
@@ -165,12 +165,14 @@
 		out.println("</div>");
 		out.println("<div class=\"tab-content\">");
 				out.println("<div id=\"alltimehigh\" class = \"tab active\">");
-					HashMap<String, Double> allTimeScorers = QuizHelper.getTopScorers(conn, quizId);
-					Set<String> keys = allTimeScorers.keySet();
+					ArrayList<HashMap<String, Double>> allTimeScorers = QuizHelper.getTopScorers(conn, quizId);
+					
 					out.println("<ul>");
-					for (String currUser: keys)
+					for (int i = 0; i < allTimeScorers.size(); i++)
 					{
-						out.println("<li><b> Username: </b>" + currUser + " <b> Score: </b>" + allTimeScorers.get(currUser) + " </li>");
+						Set<String> keys = allTimeScorers.get(i).keySet();
+						for (String currUser: keys)
+						out.println("<li><b> Username: </b>" + currUser + " <b> Score: </b>" + allTimeScorers.get(i).get(currUser) + " </li>");
 						
 					}
 					out.println("</ul>");
@@ -183,26 +185,28 @@
 					int day = date.getDate();
 					String today = year + "-" + month + "-" + day + " 00:00:00";
 					String tomorrow = year + "-" + month + "-" + (day+1) + " 00:00:00";
-					HashMap<String, Double> scores = QuizHelper.getDailyTopScorers(conn, quizId, today, tomorrow);
-					Set<String> dailyScorers = scores.keySet();
+					ArrayList<HashMap<String, Double>> scores = QuizHelper.getDailyTopScorers(conn, quizId, today, tomorrow);
 					out.println("<ul>");
-						for (String username: dailyScorers)
+						for (int i = 0; i < scores.size(); i++)
 						{
-							out.println("<li><b> Username: </b>" + username + " <b> Score: </b>" + scores.get(username) + " </li>");
+							Set<String> keys = scores.get(i).keySet();
+							for (String currUser: keys)
+							out.println("<li><b> Username: </b>" + currUser + " <b> Score: </b>" + scores.get(i).get(currUser) + " </li>");
 							
 						}
 					out.println("</ul>");
 				out.println("</div>");
 				
 				out.println("<div id =\"recenttop\" class =\"tab\">");
-					HashMap<String, Double> recent = QuizHelper.getRecentDailyScorers(conn, quizId, today, tomorrow);
-					Set<String> recentkeys = scores.keySet();
+					ArrayList<HashMap<String, Double>> recent = QuizHelper.getRecentDailyScorers(conn, quizId, today, tomorrow);
 					out.println("<ul>");
-						for (String username: dailyScorers)
-						{
-							out.println("<li><b> Username: </b>" + username + " <b> Score: </b>" + recent.get(username) + " </li>");
-							
-						}
+					for (int i = 0; i < recent.size(); i++)
+					{
+						Set<String> keys = recent.get(i).keySet();
+						for (String currUser: keys)
+						out.println("<li><b> Username: </b>" + currUser + " <b> Score: </b>" + recent.get(i).get(currUser) + " </li>");
+						
+					}
 				out.println("</ul>");
 				out.println("</div>");
 				

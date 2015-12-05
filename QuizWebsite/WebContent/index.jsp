@@ -136,7 +136,7 @@ if (name != null) out.println(" - " + name);
 						int quizID = quiz.getId();
 						String description = quiz.getDescription();
 						
-						out.println("<h5>" + quizName + "</h5>");
+						out.println("<b><a href=\"quizsummary.jsp?id=" + quizID + "\">" + quizName + "</a></b>");
 						out.println("<p>" + description + "</p>");
 						out.println("<br>");
 					}
@@ -153,7 +153,7 @@ if (name != null) out.println(" - " + name);
 						int quizID = quiz.getId();
 						String description = quiz.getDescription();
 						
-						out.println("<h5>" + quizName + "</h5>");
+						out.println("<b><a href=\"quizsummary.jsp?id=" + quizID + "\">" + quizName + "</a></b>");
 						out.println("<p>" + description + "</p>");
 						out.println("<br>");
 					}

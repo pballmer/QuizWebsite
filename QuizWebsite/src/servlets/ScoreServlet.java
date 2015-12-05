@@ -56,7 +56,7 @@ public class ScoreServlet extends HttpServlet {
 		List<QuestionAbstract> questions = quiz.getQuestions();
 		int numCorrect = 0;
 		int numQuestions = questions.size();
-		for (int i = 0; i <= numQuestions; ++i) {
+		for (int i = 0; i < numQuestions; ++i) {
 			String param = "question" + i;
 			String userAnswer = request.getParameter(param);
 			String realAnswer = questions.get(i).getAnswer();
@@ -66,7 +66,7 @@ public class ScoreServlet extends HttpServlet {
 		User user = UserHelper.getUserByID(conn, username);
 		user.addQuizTaken(quiz, conn, score); // this handles achievements and also sets end time, score in database
 		
-        RequestDispatcher dispatch = request.getRequestDispatcher("quizresults.jsp?id=" + quizID);
+        RequestDispatcher dispatch = request.getRequestDispatcher("quizResults.jsp?id=" + quizID);
 		dispatch.forward(request, response);
 	}
 

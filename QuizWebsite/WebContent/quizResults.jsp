@@ -3,6 +3,7 @@
     import="db.*"
     import="java.util.*"
     import="entities.*"
+    import ="java.util.concurrent.TimeUnit"
     %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -14,10 +15,15 @@ ServletContext context = pageContext.getServletContext();
 DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 Integer quizID = (Integer)session.getAttribute("quizID");
 String id = request.getParameter("id").toString();
+int quizIDOff = 0;
+if (id != null)
+{
+	quizIDOff = Integer.parseInt(id);
+}
 System.out.println(id + " " + quizID);
 //double score = QuizHelper.getScore(conn, quizID, name);
-double score = QuizHelper.getScore(conn, 1, name);
-long time = QuizHelper.getTimeDiff(conn, 1, name);
+double score = QuizHelper.getScore(conn, quizIDOff, name);
+long time = QuizHelper.getTimeDiff(conn, quizIDOff, name);
 %>
 <link rel="stylesheet" type="text/css" href="main.css">
 
@@ -79,7 +85,11 @@ long time = QuizHelper.getTimeDiff(conn, 1, name);
 		<div id = "form">
 		<%	
 			out.println("<h1>Score: " + score + "</h1>");
-			out.println("<h2>Time: " + time + "</h2>");
+			out.println("<h2>Time: " + String.format("%d min, %d sec", 
+				    TimeUnit.MILLISECONDS.toMinutes(time),
+				    TimeUnit.MILLISECONDS.toSeconds(time) - 
+				    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time))
+				) + "</h2>");
 		%>
 		</div>
 	</div>

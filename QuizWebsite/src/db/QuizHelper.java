@@ -1,6 +1,6 @@
 package db;
 
-import java.sql.Date;
+import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -218,27 +218,20 @@ public class QuizHelper
 			
 			if (rs.isBeforeFirst())
 			{
+				rs.absolute(1);
 				quizName = rs.getString(QUIZ_NAME);
 				quizDesc = rs.getString(DESCRIPTION);
 			}
 			
 			query = "SELECT * FROM QuizzesMade WHERE QuizID=" + QuizID + ";";
 			ps = conn.getConnection().prepareStatement(query);
-			rs = ps.executeQuery();
+			ResultSet results = ps.executeQuery();
 			
 			if (rs.isBeforeFirst())
 			{
+				results.absolute(1);
 				creator = rs.getString("USERNAME");
 			}
-			
-//			query = "SELECT * FROM QuizzesTaken WHERE QuizID=" + QuizID + ";";
-//			ps = conn.getConnection().prepareStatement(query);
-//			rs = ps.executeQuery();
-//			
-//			if (rs.isBeforeFirst())
-//			{
-//				creator = rs.getString("USERNAME");
-//			}
 			
 		}
 		catch (SQLException ex)
@@ -582,9 +575,9 @@ public class QuizHelper
 		return questionList;
 	}
 	
-	public static HashMap<String, Double> getTopScorers(DBConnection conn, int QuizID)
+	public static ArrayList<HashMap<String, Double>> getTopScorers(DBConnection conn, int QuizID)
 	{
-		HashMap<String, Double> map = new HashMap<String, Double>();
+		ArrayList<HashMap<String, Double>> map = new ArrayList<HashMap<String, Double>>();
 		try {
 			String query = "SELECT * FROM QuizzesTaken WHERE QuizID = " + QuizID + " ORDER BY Score;";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
@@ -601,7 +594,9 @@ public class QuizHelper
 					results.absolute(i);
 					double score = results.getDouble(SCORE);
 					String Username = results.getString(USER_ID);
-					map.put(Username, score);
+					HashMap<String, Double> tempMap = new HashMap<String, Double>();
+					tempMap.put(Username, score);
+					map.add(tempMap);
 				}
 			}
 		}
@@ -737,9 +732,9 @@ public class QuizHelper
 		return quizList;
 	}
 	
-	public static HashMap<String, Double> getDailyTopScorers(DBConnection conn, int quizID, String today, String tomorrow)
+	public static ArrayList<HashMap<String, Double>> getDailyTopScorers(DBConnection conn, int quizID, String today, String tomorrow)
 	{
-		HashMap<String, Double> scores = new HashMap<String, Double>();
+		ArrayList<HashMap<String, Double>> scores = new ArrayList<HashMap<String, Double>>();
 		try {
 			String query = "SELECT Username, Score FROM QuizzesTaken WHERE QuizID =" + quizID + " AND EndTime > '" + today + "' AND EndTime < '" + tomorrow + "' ORDER BY Score DESC;";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
@@ -755,7 +750,9 @@ public class QuizHelper
 				for (int i = 1; i <= total; i++)
 				{
 					results.absolute(i);
-					scores.put(results.getString(1), results.getDouble(2));
+					HashMap<String, Double> tempMap = new HashMap<String, Double>();
+					tempMap.put(results.getString(1), results.getDouble(2));
+					scores.add(tempMap);
 				}
 			}
 			
@@ -769,9 +766,9 @@ public class QuizHelper
 		return scores;
 	}
 	
-	public static HashMap<String, Double> getRecentDailyScorers(DBConnection conn, int quizID, String today, String tomorrow)
+	public static ArrayList<HashMap<String, Double>> getRecentDailyScorers(DBConnection conn, int quizID, String today, String tomorrow)
 	{
-		HashMap<String, Double> scores = new HashMap<String, Double>();
+		ArrayList<HashMap<String, Double>> scores = new ArrayList<HashMap<String, Double>>();
 		try {
 			String query = "SELECT Username, Score FROM QuizzesTaken WHERE QuizID =" + quizID + " AND EndTime > '" + today + "' AND EndTime <'" + tomorrow + "' ORDER BY EndTime DESC;";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
@@ -787,7 +784,9 @@ public class QuizHelper
 				for (int i = 1; i <= total; i++)
 				{
 					results.absolute(i);
-					scores.put(results.getString(1), results.getDouble(2));
+					HashMap<String, Double> tempMap = new HashMap<String, Double>();
+					tempMap.put(results.getString(1), results.getDouble(2));
+					scores.add(tempMap);
 				}
 			}
 			
@@ -889,9 +888,24 @@ public class QuizHelper
 	
 	public static void addEndTime(DBConnection conn, Quiz quiz, String user) {
 		int QuizID = quiz.getId();
+		Date date = new Date();
+		int year = date.getYear()+1900;
+		int month = date.getMonth()+1;
+		int day = date.getDate();
+		int hours = date.getHours();
+		int minutes = date.getMinutes();
+		int seconds = date.getSeconds();
+		
+		String monthString = (month < 10) ? "0" + month : "" + month;
+		String dayString = (day < 10) ? "0" + day : "" + day;
+		String hourString = (hours < 10) ? "0" + hours : "" + hours;
+		String minString = (minutes < 10) ? "0" + minutes : "" + minutes;
+		String secondsString = (seconds < 10) ? "0" + seconds : "" + seconds;
+		String now = year + "-" + monthString + "-" + dayString + " " + hourString + ":" + minString + ":" + secondsString;
+		
 		String command = "UPDATE QuizzesTaken"
-				+ "SET EndTime=NOW()"
-				+ " WHERE QuizID=" + QuizID + ", Username=\"" + user + "\";"; 
+				+ " SET EndTime= '" + now
+				+ "' WHERE QuizID=" + QuizID + " AND Username='" + user + "';"; 
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
@@ -907,7 +921,7 @@ public class QuizHelper
 	public static void setScore(DBConnection conn, Quiz quiz, String user, double score) {
 		int QuizID = quiz.getId();
 		String command = "UPDATE QuizzesTaken SET Score=" + score
-				+ " WHERE QuizID=" + QuizID + ", Username=\"" + user + "\";"; 
+				+ " WHERE QuizID=" + QuizID + ", Username='" + user + "';"; 
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
@@ -922,14 +936,15 @@ public class QuizHelper
 	
 	public static long getTimeDiff(DBConnection conn, int QuizID, String user){
 		long diff = -1;
-		String query = "SELECT StartTime, EndTime FROM QuizzesTaken WHERE QuizID=" + QuizID + ", AND Username=\"" + user + "\";"; 
+		String query = "SELECT StartTime, EndTime FROM QuizzesTaken WHERE QuizID=" + QuizID + " AND Username='" + user + "';"; 
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ResultSet results = ps.executeQuery();
 
-			Date before = results.getDate(1);
-			Date after = results.getDate(2);
+			results.absolute(1);
+			Date before = (Date)results.getTimestamp(1);
+			Date after = (Date)results.getTimestamp(2);
 			diff = after.getTime() - before.getTime();
 		}
 		catch (SQLException e)
