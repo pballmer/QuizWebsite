@@ -6,6 +6,8 @@ import db.DBConnection;
 import db.QuizHelper;
 
 public class Quiz {
+
+
 	private String name;
 	private int id;
 	private String link;
@@ -101,6 +103,15 @@ public class Quiz {
 
 	public User getCreator() {
 		return creator;
+	}
+	
+	public QuestionAbstract getQuestionByID(int id){
+		for(int i = 0; i < questions.size(); i++){
+			if(questions.get(i).getQuestionID() == id){
+				return questions.get(i);
+			}
+		}
+		return null;
 	}
 
 	public List<QuestionAbstract> getQuestions() {

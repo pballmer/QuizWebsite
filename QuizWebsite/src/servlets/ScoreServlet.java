@@ -42,6 +42,8 @@ public class ScoreServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 	}
 
+	
+	
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -49,8 +51,7 @@ public class ScoreServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		ServletContext context = getServletContext();
 		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
-		Integer id = (Integer)session.getAttribute("id");
-//		int id = Integer.parseInt(request.getParameter("id"));
+		int id = Integer.parseInt(request.getParameter("quizID"));
 		String username = (String)session.getAttribute("name");
 		Quiz quiz = QuizHelper.getQuizByID(conn, id);
 		QuizHelper.addEndTime(conn, quiz, username);
@@ -58,9 +59,8 @@ public class ScoreServlet extends HttpServlet {
 		int numCorrect = 0;
 		int numQuestions = questions.size();
 		for (int i = 0; i <= numQuestions; ++i) {
-			String param = "question" + i;
-			String userAnswer = request.getParameter(param);
-			String realAnswer = questions.get(i).getAnswer();
+			String userAnswer = request.getParameter(questions.get(i).getQuestionID() + "");
+			String realAnswer = quiz.getQuestionByID(questions.get(i).getQuestionID()).getAnswer();
 			if (userAnswer.equalsIgnoreCase(realAnswer)) numCorrect++;
 		}
 		double score = (double) numCorrect / numQuestions;
