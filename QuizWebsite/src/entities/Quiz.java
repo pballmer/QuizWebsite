@@ -9,9 +9,12 @@ public class Quiz {
 	private String name;
 	private int id;
 	private String link;
-	private User creator;
+	private String creator;
 	private List<QuestionAbstract> questions;
 	private String description;
+	private long startTime;
+	private long endTime;
+	private double score;
 	private boolean random = false; //set these defaults for what I thought make sense
 	private boolean onePage = true;
 	private boolean immediateCorrection = false;
@@ -33,31 +36,45 @@ public class Quiz {
 		questions = new ArrayList<QuestionAbstract>();
 		tags = new ArrayList<String>();
 	}
-	//constructor without other options being set
-	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link){
-		this.name = nameInput;
-		this.link = link;
-		this.description = descInput;
-		this.questions = new ArrayList<QuestionAbstract>();
-		questions.addAll(questionInput);
-		this.creator = user;
+	
+	public Quiz(int quizid, String quizname, String desc, String creator, ArrayList<QuestionAbstract> questions)
+	{
+		this.id = quizid;
+		this.name = quizname;
+		this.description = desc;
+		this.creator = creator;
+		this.questions = questions;
+//		this.startTime = startTime;
+//		this.endTime = endTime;
+//		this.score = score;
 		tags = new ArrayList<String>();
 	}
 	
+//	//constructor without other options being set
+//	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link){
+//		this.name = nameInput;
+//		this.link = link;
+//		this.description = descInput;
+//		this.questions = new ArrayList<QuestionAbstract>();
+//		questions.addAll(questionInput);
+//		this.creator = user;
+//		tags = new ArrayList<String>();
+//	}
+	
 	//constructor with all options set
-	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link, boolean rand, boolean page, boolean correction){//constructor 
-		this.name = nameInput;
-		this.link = link;
-		this.description = descInput;
-		this.questions = new ArrayList<QuestionAbstract>();
-		questions.addAll(questionInput);
-		this.creator = user;
-		this.random = rand;
-		if(random) randomize();
-		this.onePage = page;
-		this.immediateCorrection = correction;
-		tags = new ArrayList<String>();
-	}
+//	public Quiz(String nameInput, String descInput, ArrayList<QuestionAbstract> questionInput, User user, String link, boolean rand, boolean page, boolean correction){//constructor 
+//		this.name = nameInput;
+//		this.link = link;
+//		this.description = descInput;
+//		this.questions = new ArrayList<QuestionAbstract>();
+//		questions.addAll(questionInput);
+//		this.creator = user;
+//		this.random = rand;
+//		if(random) randomize();
+//		this.onePage = page;
+//		this.immediateCorrection = correction;
+//		tags = new ArrayList<String>();
+//	}
 	
 	public double doScore(ArrayList<String> responses){
 		double score = 0;
@@ -99,7 +116,7 @@ public class Quiz {
 		id = val;
 	}
 
-	public User getCreator() {
+	public String getCreator() {
 		return creator;
 	}
 

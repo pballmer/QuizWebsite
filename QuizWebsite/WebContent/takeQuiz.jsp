@@ -70,10 +70,10 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 				<% //get Quiz title, list of quiz quesitons, 
 					//System.out.println("This is the URL " + request.getRequestURL());
 					String id = request.getParameter("id").toString();
-					session.setAttribute("id", id);
-					System.out.println(session.getAttribute("id"));
+					//session.setAttribute("id", id);
+					//System.out.println(session.getAttribute("id"));
 					DBConnection dbconn = new DBConnection();
-					Quiz quiz = QuizHelper.getQuizByID(conn, Integer.parseInt(id));
+					Quiz quiz = QuizHelper.getFullQuizByID(conn, Integer.parseInt(id));
 					List<QuestionAbstract> questions = quiz.getQuestions();
 					//QuizHelper.addQuizToTake(conn, quiz, name);
 					//System.out.println(quiz.getQuestions().size());

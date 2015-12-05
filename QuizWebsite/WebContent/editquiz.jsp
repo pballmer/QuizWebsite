@@ -11,18 +11,13 @@
 <%String name =(String)session.getAttribute("name");
 ServletContext context = getServletContext();
 DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
-/*Integer quizID = (Integer)session.getAttribute("quizID");
-Quiz currQuiz = null;
-String quizName = "";
-String quizDesc = "";
-if (quizID == null) {
-	quizID = QuizHelper.addQuiz(conn, new Quiz());
-	session.setAttribute("quizID", quizID);
-} else {
-	currQuiz = QuizHelper.getQuizByID(conn, quizID);
-	quizName = currQuiz.getName();
-	quizDesc = currQuiz.getDescription();
-}*/
+int quizID = Integer.parseInt(request.getParameter("id"));
+Quiz currQuiz = QuizHelper.getQuizByID(conn, quizID);
+String quizName = currQuiz.getName();
+String quizDesc = currQuiz.getDescription();
+session.setAttribute("quizID", quizID);
+session.setAttribute("quizName", quizName);
+session.setAttribute("quizDesc", quizDesc);
 %>
 <link rel="stylesheet" type="text/css" href="main.css">
 </head>
