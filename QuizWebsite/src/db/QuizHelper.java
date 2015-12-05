@@ -808,27 +808,27 @@ public class QuizHelper
 		}
 	}
 	
-	public static void addQuizTaken(DBConnection conn, Quiz quiz, String user, double score, String start, String end)
-	{
-		int QuizID = quiz.getId();
-		String query = "INSERT INTO QuizzesTaken VALUES(\"" + user + "\"," + QuizID + ", " + score + ", \"" + start + "\", \"" + end + "\");"; 
-		try
-		{
-			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ps.execute();
-		}
-		catch (SQLException e)
-		{
-			System.err.println("Error occured when inserting user into database.");
-			e.printStackTrace();			
-		}
-	}
+//	public static void addQuizTaken(DBConnection conn, Quiz quiz, String user, double score, String start, String end)
+//	{
+//		int QuizID = quiz.getId();
+//		String query = "INSERT INTO QuizzesTaken VALUES(\"" + user + "\"," + QuizID + ", " + score + ", \"" + start + "\", \"" + end + "\");"; 
+//		try
+//		{
+//			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+//			ps.execute();
+//		}
+//		catch (SQLException e)
+//		{
+//			System.err.println("Error occured when inserting user into database.");
+//			e.printStackTrace();			
+//		}
+//	}
 	
 	//call when user starts to take a quiz
 	public static void addQuizToTake(DBConnection conn, Quiz quiz, String user){ 
 		int QuizID = quiz.getId();
 		String command = "INSERT INTO QuizzesTaken (Username, QuizID, StartTime)"
-				+ " VALUES(\"" + user + "\"," + QuizID + ", NOW());"; 
+				+ " VALUES(\"" + user + "\"," + QuizID + ", -1, NOW(), null);"; 
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
@@ -845,6 +845,22 @@ public class QuizHelper
 		int QuizID = quiz.getId();
 		String command = "UPDATE QuizzesTaken"
 				+ "SET EndTime=NOW()"
+				+ " WHERE QuizID=" + QuizID + ", Username=\"" + user + "\";"; 
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(command);
+			ps.execute();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when adding end time.");
+			e.printStackTrace();			
+		}
+	}
+	
+	public static void setScore(DBConnection conn, Quiz quiz, String user, double score) {
+		int QuizID = quiz.getId();
+		String command = "UPDATE QuizzesTaken SET Score=" + score
 				+ " WHERE QuizID=" + QuizID + ", Username=\"" + user + "\";"; 
 		try
 		{

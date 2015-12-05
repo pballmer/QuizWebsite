@@ -52,6 +52,7 @@ public class ScoreServlet extends HttpServlet {
 		int quizID = Integer.parseInt(request.getParameter("quizID"));
 		String username = (String)session.getAttribute("name");
 		Quiz quiz = QuizHelper.getQuizByID(conn, quizID);
+				
 		List<QuestionAbstract> questions = quiz.getQuestions();
 		int numCorrect = 0;
 		int numQuestions = questions.size();
@@ -63,9 +64,9 @@ public class ScoreServlet extends HttpServlet {
 		}
 		double score = (double) numCorrect / numQuestions;
 		User user = UserHelper.getUserByID(conn, username);
-		user.addQuizTaken(quiz, conn, score); // this handles achievements and also calls QuizHelper.addQuizTaken
+		user.addQuizTaken(quiz, conn, score); // this handles achievements and also sets end time, score in database
+		
         RequestDispatcher dispatch = request.getRequestDispatcher("quizresults.jsp?id=" + quizID);
- 
 		dispatch.forward(request, response);
 	}
 

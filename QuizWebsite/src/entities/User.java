@@ -72,11 +72,16 @@ public class User {
 	
 	public void addQuizTaken(Quiz quiz, DBConnection conn, double score){
 		quizzesTaken.put(quiz.getId(), score);
-		QuizHelper.addQuizTaken(conn, quiz, this.getUsername(), score, String.valueOf(quiz.getStartTime()), String.valueOf(quiz.getEndTime()));
-		if(quizzesTaken.size() == 10){
+		
+		QuizHelper.addEndTime(conn, quiz, username);
+		QuizHelper.setScore(conn, quiz, username, score);
+		
+		achievements = UserHelper.getAchievements(conn, username);
+		
+		if (UserHelper.getNumQuizzesTaken(conn, username) >= 10 && !achievements.contains("Quiz Machine")) {
 			this.addAchievement("Quiz Machine", conn);
 		}
-		if(score >= QuizHelper.getTopScore(conn, quiz.getId()) && !achievements.contains("I am the Greatest")){
+		if (score >= QuizHelper.getTopScore(conn, quiz.getId()) && !achievements.contains("I am the Greatest")){
 			this.addAchievement("I am the Greatest", conn);
 		}
 	}
