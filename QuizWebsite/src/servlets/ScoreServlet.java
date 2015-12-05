@@ -49,7 +49,7 @@ public class ScoreServlet extends HttpServlet {
 		HttpSession session = request.getSession();
 		ServletContext context = getServletContext();
 		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
-		Integer quizID = (Integer)session.getAttribute("quizID");
+		int quizID = Integer.parseInt(request.getParameter("quizID"));
 		String username = (String)session.getAttribute("name");
 		Quiz quiz = QuizHelper.getQuizByID(conn, quizID);
 		List<QuestionAbstract> questions = quiz.getQuestions();
