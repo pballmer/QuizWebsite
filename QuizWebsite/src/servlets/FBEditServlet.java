@@ -41,6 +41,12 @@ public class FBEditServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String textBefore = request.getParameter("textBefore");
 		String answer = request.getParameter("answer");
+		String id = request.getParameter("id");
+		int quizid = 0;
+		if (id != null)
+		{
+			quizid = Integer.parseInt(id);
+		}
 		String textAfter = request.getParameter("textAfter");
 		int questionID = Integer.parseInt(request.getParameter("questionID"));
 		ServletContext context = getServletContext();
@@ -50,7 +56,7 @@ public class FBEditServlet extends HttpServlet {
 		} else {
 			QuestionHelper.setFBAttributes(conn, questionID, textBefore, textAfter, answer);
 		}
-        RequestDispatcher dispatch = request.getRequestDispatcher("editquiz.jsp");
+        RequestDispatcher dispatch = request.getRequestDispatcher("editquiz.jsp?id=" + quizid);
 		dispatch.forward(request, response);
 	}
 

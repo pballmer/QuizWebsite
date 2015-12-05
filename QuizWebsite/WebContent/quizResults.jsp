@@ -20,7 +20,6 @@ if (id != null)
 {
 	quizIDOff = Integer.parseInt(id);
 }
-System.out.println(id + " " + quizID);
 //double score = QuizHelper.getScore(conn, quizID, name);
 double score = QuizHelper.getScore(conn, quizIDOff, name);
 long time = QuizHelper.getTimeDiff(conn, quizIDOff, name);

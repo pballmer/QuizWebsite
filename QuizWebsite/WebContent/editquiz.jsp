@@ -11,7 +11,12 @@
 <%String name =(String)session.getAttribute("name");
 ServletContext context = getServletContext();
 DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
-int quizID = Integer.parseInt(request.getParameter("id"));
+String id = request.getParameter("id");
+int quizID = 0;
+if (id != null)
+{
+	quizID = Integer.parseInt(request.getParameter("id"));
+}
 Quiz currQuiz = QuizHelper.getQuizByID(conn, quizID);
 String quizName = currQuiz.getName();
 String quizDesc = currQuiz.getDescription();
@@ -105,6 +110,7 @@ session.setAttribute("quizDesc", quizDesc);
 						out.println("<form action=\"MCEditServlet\" method=\"post\">");
 						out.println("<input type=\"hidden\" name=\"questionID\" value=" + questionID + " />");
 						out.println("<input type=\"hidden\" name=\"numOptions\" value=\"" + numOptions + "\" />");
+						out.println("<input type=\"hidden\" name=\"id\" value=\"" + quizID + "\" />");
 						out.println("<p>");
 						out.println("Question " + i + ":");
 						out.println("<br>");
@@ -136,6 +142,7 @@ session.setAttribute("quizDesc", quizDesc);
 						out.println("<br>");
 						out.println("<input type=\"text\" name=\"answer\" placeholder=\"Answer\" value=\"" + answer + "\"");
 						out.println("<br>");
+						out.println("<input type=\"hidden\" name=\"id\" value=\"" + quizID + "\" />");
 						out.println("<input type=\"submit\" value=\"Save\"/>");
 						out.println("</p>");
 						out.println("</form>");
@@ -149,6 +156,7 @@ session.setAttribute("quizDesc", quizDesc);
 						out.println("<input type=\"text\" name=\"textBefore\" placeholder=\"Text Before Blank\" value=\"" + ((FillBlank)curr).getTextBefore() + "\"");
 						out.println("<br>");
 						out.println("<input type=\"text\" name=\"answer\" placeholder=\"Answer\" value=\"" + answer + "\"");
+						out.println("<input type=\"hidden\" name=\"id\" value=\"" + quizID + "\" />");
 						out.println("<br>");
 						out.println("<input type=\"text\" name=\"textAfter\" placeholder=\"Text After Blank\" value=\"" + ((FillBlank)curr).getTextAfter() + "\"");
 						out.println("<br>");
@@ -162,6 +170,7 @@ session.setAttribute("quizDesc", quizDesc);
 						out.println("<p>");
 						out.println("Question " + i + ":");
 						out.println("<br>");
+						out.println("<input type=\"hidden\" name=\"id\" value=\"" + quizID + "\" />");
 						out.println("<input type=\"text\" name=\"text\" placeholder=\"Image URL\" value=\"" + ((PictureResponse)curr).getText() + "\"");
 						out.println("<br>");
 						//out.println("<input type=\"submit\" value=\"Save\"/>");

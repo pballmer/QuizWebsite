@@ -183,7 +183,7 @@ if (name != null) out.println(" - " + name);
 						int quizID = quizzesMade.get(i).getId();
 						String description = quizzesMade.get(i).getDescription();
 						
-						out.println("<b><a href=\"quizsummary.jsp?id=" + quizID + "\">" + quizName + "</a></b>");
+						out.println("<b><p>" + quizName + "</p></b>");
 						out.println("<p>" + description + "</p>");
 						out.println("<br>");
 					}
@@ -199,7 +199,7 @@ if (name != null) out.println(" - " + name);
 						String description = quiz.getDescription();
 						double score = QuizHelper.getScore(conn, quizID, name);
 						
-						out.println("<b><a href=\"quizsummary.jsp?id=" + quizID + "\">" +quizName + "</a></b>");
+						out.println("<b><p>" + quizName + "</p></b>");
 						out.println("<p>" + description + "</p>");
 						out.println("<p>Score: " + score + "</p>");
 						out.println("<br>");

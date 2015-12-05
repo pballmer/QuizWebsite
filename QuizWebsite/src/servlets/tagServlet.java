@@ -11,19 +11,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import db.DBConnection;
-import db.QuestionHelper;
+import db.QuizHelper;
+import db.UserHelper;
+import entities.User;
 
 /**
- * Servlet implementation class PREditServlet
+ * Servlet implementation class tagServlet
  */
-@WebServlet("/PREditServlet")
-public class PREditServlet extends HttpServlet {
+@WebServlet("/tagServlet")
+public class tagServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public PREditServlet() {
+    public tagServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -39,24 +41,25 @@ public class PREditServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String text = request.getParameter("text");
-		String answer = request.getParameter("answer");
-		int questionID = Integer.parseInt(request.getParameter("questionID"));
+		ServletContext context = getServletContext();
+		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
+		String tag = request.getParameter("tag");
 		String id = request.getParameter("id");
 		int quizid = 0;
 		if (id != null)
 		{
 			quizid = Integer.parseInt(id);
 		}
-		ServletContext context = getServletContext();
-		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
-		if (text.isEmpty() && answer.isEmpty()) {
-			QuestionHelper.deleteQuestion(conn, questionID, QuestionHelper.PICTURE_RESPONSE);
-		} else {
-			QuestionHelper.setPRAttributes(conn, questionID, text, answer);
+		int status = QuizHelper.addTag(conn, quizid, tag);
+		if (status != -1)
+		{
+	        RequestDispatcher dispatch = request.getRequestDispatcher("quizsummary.jsp?id=" + quizid);
+			dispatch.forward(request, response);
+		}else {
+			String message = "Error occurred when adding tag.";
+			RequestDispatcher dispatch = request.getRequestDispatcher("quizsummary.jsp?id=" + quizid +"&message=" + message);
+			dispatch.forward(request, response);
 		}
-        RequestDispatcher dispatch = request.getRequestDispatcher("editquiz.jsp?id=" + quizid);
-		dispatch.forward(request, response);
 	}
 
 }

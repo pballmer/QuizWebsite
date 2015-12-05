@@ -828,16 +828,17 @@ public class QuizHelper
 		return -1;
 	}
 	
-	public static void addTag(DBConnection conn, Quiz quiz, String tag){
-		int QuizID = quiz.getId();
-		String command = "INSERT INTO Tags VALUES (\"" + QuizID + "\", " + tag + ");";
+	public static int addTag(DBConnection conn, int id, String tag){
+		String command = "INSERT INTO Tags VALUES (" + id + ", \"" + tag + "\");";
 		try {
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
 			ps.execute();
 		} catch (SQLException e){
 			System.err.println("Error occured when inserting tag into database.");
 			e.printStackTrace();
+			return -1;
 		}
+		return 0;
 	}
 	
 	public static void addQuizMade(DBConnection conn, Quiz quiz, String user)

@@ -105,7 +105,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 			{
 					out.println("<a href=\"friendreq.jsp?id=" + user + "&type=pending\" class = \"reg-button\">Add Friend</a>");
 			}
-			else
+			else if (!name.equals(user))
 			{
 				out.println("<a href=\"friendreq.jsp?id=" + user + "&type=reject\" class = \"reg-button\"> Remove</a>");
 			}

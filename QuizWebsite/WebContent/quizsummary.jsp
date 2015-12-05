@@ -121,7 +121,24 @@
 			out.println("<a href =\"takeQuiz.jsp?id=" + quizId + "\" class = \"reg-button\"> Take Quiz</a>");
 		%>
 	</center>
+	</div>
+	
+	<br>
+		<%
+	String message = request.getParameter("message");
+		if (message != null)
+			out.println("<h1 style=\"color:red\">" + message + "</h1>");
+	%>
+		<div id ="form">
+			<h1> Add tags</h1>
+				<form action="tagServlet" method="post">
+				<p>Tag
+				<input type="text" name="tag" />
+				<input type="hidden" name="id" value="<%= quizId %>" />
+				<input type="submit" value="Add tag"/></p>
+				</form>
 		</div>
+		
 		<h2 style="color:white"> Summary Statistics</h2>
 		<div id ="form">
 			<% 

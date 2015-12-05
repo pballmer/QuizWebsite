@@ -56,9 +56,11 @@ public class QuizCreationServlet extends HttpServlet {
         session.removeAttribute("quizID");
     	session.removeAttribute("quizName");
     	session.removeAttribute("quizDesc");
+    	
         RequestDispatcher dispatch = request.getRequestDispatcher("quizsummary.jsp?id=" + quizID);
  
 		dispatch.forward(request, response);
+    	}
 	}
 
 }

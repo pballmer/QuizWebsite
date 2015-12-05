@@ -41,6 +41,12 @@ public class QREditServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String text = request.getParameter("text");
 		String answer = request.getParameter("answer");
+		String id = request.getParameter("id");
+		int quizid = 0;
+		if (id != null)
+		{
+			quizid = Integer.parseInt(id);
+		}
 		int questionID = Integer.parseInt(request.getParameter("questionID"));
 		ServletContext context = getServletContext();
 		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
@@ -49,7 +55,7 @@ public class QREditServlet extends HttpServlet {
 		} else {
 			QuestionHelper.setQRAttributes(conn, questionID, text, answer);
 		}
-        RequestDispatcher dispatch = request.getRequestDispatcher("editquiz.jsp");
+        RequestDispatcher dispatch = request.getRequestDispatcher("editquiz.jsp?id=" + quizid);
 		dispatch.forward(request, response);
 	}
 

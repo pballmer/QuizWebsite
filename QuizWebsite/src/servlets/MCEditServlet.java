@@ -42,6 +42,12 @@ public class MCEditServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String text = request.getParameter("text");
 		int numOptions = Integer.parseInt(request.getParameter("numOptions"));
+		String id = request.getParameter("id");
+		int quizid = 0;
+		if (id != null)
+		{
+			quizid = Integer.parseInt(id);
+		}
 		ArrayList<String> options = new ArrayList<String>();
 		for (int i = 0; i <= numOptions; ++i) {
 			String param = "option" + i;
@@ -57,7 +63,7 @@ public class MCEditServlet extends HttpServlet {
 		} else {
 			QuestionHelper.setMCAttributes(conn, questionID, text, options, answer);
 		}
-        RequestDispatcher dispatch = request.getRequestDispatcher("editquiz.jsp");
+        RequestDispatcher dispatch = request.getRequestDispatcher("editquiz.jsp?id=" + quizid);
 		dispatch.forward(request, response);
 	}
 }
