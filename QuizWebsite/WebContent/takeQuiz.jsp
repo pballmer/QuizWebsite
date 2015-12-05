@@ -73,6 +73,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 					DBConnection dbconn = new DBConnection();
 					Quiz quiz = QuizHelper.getFullQuizByID(conn, Integer.parseInt(id));
 					List<QuestionAbstract> questions = quiz.getQuestions();
+					/*
 					if (quiz.isRandom()) Collections.shuffle(questions);
 					boolean onePage = quiz.isOnePage();
 					String pageString = request.getParameter("page");
@@ -81,6 +82,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 						pageNum = Integer.parseInt(pageString);
 					}
 					boolean immediateCorrection = quiz.isImmediateCorrection();
+					*/
 					//QuizHelper.addQuizToTake(conn, quiz, name);
 				%>
 	<div id ="content">		
@@ -88,40 +90,14 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 			<h1> You're Taking <%=quiz.getName() %></h1>
 			<form action="ScoreServlet" method="post">
 				<input type="hidden" name="quizID" value="<%=id%>" />
-				<input type="hidden" name="onePage" value="<%=Boolean.toString(onePage)%>" />
-				<input type="hidden" name="pageNum" value="<%=pageNum%>" />
 			
 				<%
-				if (onePage || pageNum == 0) {
+				//if (onePage || pageNum == 0) {
 					QuizHelper.addQuizToTake(dbconn, quiz, name);
-				}
+				//}
 				Date date = new Date();
 				long currTime = date.getTime();
-	/* 			ArrayList<String> mcArray = new ArrayList<String>();
-				ArrayList<String> fbArray = new ArrayList<String>();
-				ArrayList<String> answer = new ArrayList<String>();
-				answer.add("A");
-				mcArray.add("A");
-				mcArray.add("B");
-				mcArray.add("C");
-				mcArray.add("D");
-				fbArray.add("The letter ");
-				fbArray.add(" is the first letter of the alphabet.");
-				String mcQ = "Which is A?";
-				//COLIN WILL FIX BELOW
-				//MultipleChoice mc1 = new MultipleChoice(1, 2, mcQ, answer, QuestionHelper.MULTIPLE_CHOICE, mcArray);
-				QuestionResponse qr1 = new QuestionResponse(2,"What's the first letter of the alphabet?", answer.get(0));
-				FillBlank fb1 = new FillBlank(3, "The first letter of the alphabet is ", "", answer.get(0));
-				PictureResponse pr1 = new PictureResponse(4, "http://www.havefunteaching.com/wp-content/uploads/2013/06/letter-a.png"
-						, answer.get(0));
-	
-				ArrayList<QuestionAbstract> questions = new ArrayList<QuestionAbstract>();
-				//questions.add(mc1);
-				questions.add(pr1);
-				questions.add(fb1);
-				questions.add(qr1); */
-				
-				if (onePage) {
+				//if (onePage) {
 					for(int i = 0 ; i < questions.size(); i++){
 						QuestionAbstract curr = questions.get(i);
 		
@@ -130,7 +106,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 								MultipleChoice mc = (MultipleChoice) curr;
 								out.println("<h2>" + mc.getText() + "<h2/>"); 
 								for(int j = 0; j < mc.getOptions().size(); j++){
-									out.println("<input type=\"radio\" name=\"question"+ i + "" +"\" />" + mc.getOptions().get(j) +"<br>"); 
+									out.println("<input type=\"radio\" name=\"question"+ i + "" +"\" value=\"" + mc.getOptions().get(j) + "\"/>" + mc.getOptions().get(j) +"<br>"); 
 								}
 								break;
 							case QuestionHelper.QUESTION_RESPONSE:
@@ -151,7 +127,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 								break;
 						}					
 					}
-				} else {
+				/*} else {
 					QuestionAbstract curr = questions.get(pageNum);
 	
 					switch (curr.getType()) {
@@ -179,8 +155,8 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 							out.println("Answer: <input type=\"text\" name= \"question"+ pageNum +"\" alt=\"PictureResponse\" height=\"100\" width=\"100\" /><br>");
 							break;
 					}					
-				}
 				
+				*/
 				%>
 				<button type="submit">Submit Quiz</button>
 			</form>

@@ -118,14 +118,14 @@ public class QuizHelper
 		double score = 0;
 		try
 		{
-			String query = "SELECT Score FROM QuizzesTaken WHERE QuizID = " + QuizID + " AND Username='" + Username + "';";
+			String query = "SELECT Score FROM QuizzesTaken WHERE QuizID = " + QuizID + " AND Username='" + Username + "' ORDER BY EndTime DESC;";
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
 			ResultSet results = ps.executeQuery();
 			
 			if (results.isBeforeFirst())
 			{
 				results.absolute(1);
-				score = results.getDouble("SCORE");
+				score = results.getDouble(1);
 			}
 		}
 		catch (SQLException ex)
@@ -232,43 +232,16 @@ public class QuizHelper
 			
 			if (results.isBeforeFirst())
 			{
-<<<<<<< HEAD
 				results.absolute(1);
-				creator = rs.getString("USERNAME");
+				creator = rs.getString(1);
 			}
-			
-=======
-				creator = results.getString("USERNAME");
-			}
-			
-//			query = "SELECT * FROM QuizzesTaken WHERE QuizID=" + QuizID + ";";
-//			ps = conn.getConnection().prepareStatement(query);
-//			rs = ps.executeQuery();
-//			
-//			if (rs.isBeforeFirst())
-//			{
-//				creator = rs.getString("USERNAME");
-//			}
-			
-			query = "SELECT * FROM QuizProperties WHERE QuizID=" + QuizID + ";";
-			ps = conn.getConnection().prepareStatement(query);
-			rs = ps.executeQuery();
-			
-			if (rs.isBeforeFirst())
-			{
-				random = rs.getBoolean("USERNAME");
-				onePage = rs.getBoolean("USERNAME");
-				autoScore = rs.getBoolean("USERNAME");
-			}
-			
->>>>>>> 55868915fddf2f645dc7a3a935130c840e5fc509
 		}
 		catch (SQLException ex)
 		{
 			ex.printStackTrace();
 			System.err.println("Error occured when accessing database.");
 		}
-		quiz = new Quiz(QuizID, quizName, quizDesc, creator, getQuizQuestions(conn, QuizID), random, onePage, autoScore);
+		quiz = new Quiz(QuizID, quizName, quizDesc, creator, getQuizQuestions(conn, QuizID));
 		return quiz;
 	}
 	
@@ -928,6 +901,24 @@ public class QuizHelper
 		int minutes = date.getMinutes();
 		int seconds = date.getSeconds();
 		
+		String command = "SELECT StartTime FROM QuizzesTaken WHERE Username='" + user + "' AND QuizID=" + QuizID + " ORDER BY StartTime DESC;";
+		String time = "";
+		try
+		{
+			PreparedStatement p = conn.getConnection().prepareStatement(command);
+			ResultSet result = p.executeQuery();
+			if (result.isBeforeFirst())
+			{
+				result.absolute(1);
+				time = result.getString(1);
+			}
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when adding end time.");
+			e.printStackTrace();			
+		}
+	
 		String monthString = (month < 10) ? "0" + month : "" + month;
 		String dayString = (day < 10) ? "0" + day : "" + day;
 		String hourString = (hours < 10) ? "0" + hours : "" + hours;
@@ -935,14 +926,9 @@ public class QuizHelper
 		String secondsString = (seconds < 10) ? "0" + seconds : "" + seconds;
 		String now = year + "-" + monthString + "-" + dayString + " " + hourString + ":" + minString + ":" + secondsString;
 		
-		String command = "UPDATE QuizzesTaken"
-<<<<<<< HEAD
+		 command = "UPDATE QuizzesTaken"
 				+ " SET EndTime= '" + now
-				+ "' WHERE QuizID=" + QuizID + " AND Username='" + user + "';"; 
-=======
-				+ " SET EndTime=NOW()"
-				+ " WHERE QuizID=" + QuizID + " AND Username='" + user + "';"; 
->>>>>>> 55868915fddf2f645dc7a3a935130c840e5fc509
+				+ "' WHERE QuizID=" + QuizID + " AND Username='" + user + "' AND StartTime='" + time + "';"; 
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
@@ -958,11 +944,7 @@ public class QuizHelper
 	public static void setScore(DBConnection conn, Quiz quiz, String user, double score) {
 		int QuizID = quiz.getId();
 		String command = "UPDATE QuizzesTaken SET Score=" + score
-<<<<<<< HEAD
-				+ " WHERE QuizID=" + QuizID + ", Username='" + user + "';"; 
-=======
-				+ " WHERE QuizID=" + QuizID + " AND Username=\"" + user + "\";"; 
->>>>>>> 55868915fddf2f645dc7a3a935130c840e5fc509
+				+ " WHERE QuizID=" + QuizID + " AND Username='" + user + "';"; 
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
@@ -977,11 +959,7 @@ public class QuizHelper
 	
 	public static long getTimeDiff(DBConnection conn, int QuizID, String user){
 		long diff = -1;
-<<<<<<< HEAD
-		String query = "SELECT StartTime, EndTime FROM QuizzesTaken WHERE QuizID=" + QuizID + " AND Username='" + user + "';"; 
-=======
-		String query = "SELECT StartTime, EndTime FROM QuizzesTaken WHERE QuizID=" + QuizID + " AND Username=\"" + user + "\";"; 
->>>>>>> 55868915fddf2f645dc7a3a935130c840e5fc509
+		String query = "SELECT StartTime, EndTime FROM QuizzesTaken WHERE QuizID=" + QuizID + " AND Username='" + user + "' ORDER BY EndTime DESC;"; 
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);

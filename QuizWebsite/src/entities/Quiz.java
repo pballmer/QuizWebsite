@@ -37,7 +37,7 @@ public class Quiz {
 		tags = new ArrayList<String>();
 	}
 	
-	public Quiz(int quizid, String quizname, String desc, String creator, ArrayList<QuestionAbstract> questions, boolean random, boolean onePage, boolean immediateCorrection)
+	public Quiz(int quizid, String quizname, String desc, String creator, ArrayList<QuestionAbstract> questions)
 	{
 		this.id = quizid;
 		this.name = quizname;
@@ -45,9 +45,6 @@ public class Quiz {
 		this.creator = creator;
 		this.questions = questions;
 		tags = new ArrayList<String>();
-		this.random = random;
-		this.onePage = onePage;
-		this.immediateCorrection = immediateCorrection;
 	}
 	
 //	//constructor without other options being set

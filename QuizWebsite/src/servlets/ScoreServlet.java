@@ -50,8 +50,9 @@ public class ScoreServlet extends HttpServlet {
 		ServletContext context = getServletContext();
 		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 		int quizID = Integer.parseInt(request.getParameter("quizID"));
+		/*
 		boolean onePage = request.getParameter("onePage").equals("true");
-		int pageNum = Integer.parseInt(request.getParameter("pageNum"));
+		int pageNum = Integer.parseInt(request.getParameter("pageNum"));*/
 		String username = (String)session.getAttribute("name");
 		Quiz quiz = QuizHelper.getFullQuizByID(conn, quizID);
 				

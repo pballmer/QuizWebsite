@@ -94,19 +94,6 @@ if (quizID == null) {
 		</form>
 		</div>
 		
-		<div id = "form">
-		<form action="QuizOptionSaveServlet" method="post" id="descform">
-		<p>
-		Options:
-		<br>
-		<input type="checkbox" name="random" value="true"/> Randomize question order? <br>
-		<input type="checkbox" name="page" value="true"/> Display questions on one page? <br>
-		<input type="checkbox" name="feedback" value="true"/> Check answers immediately? <br>
-		<input type="submit" value="Save"/>
-		</p>
-		</form>
-		</div>
-		
 		<%ArrayList<QuestionAbstract> questions = QuizHelper.getQuizQuestions(conn, quizID);
 			for (int i = 0; i < questions.size(); ++i) {
 				out.println("<div id =\"form\">");
