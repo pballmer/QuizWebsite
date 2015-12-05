@@ -227,11 +227,11 @@ public class QuizHelper
 			
 			query = "SELECT * FROM QuizzesMade WHERE QuizID=" + QuizID + ";";
 			ps = conn.getConnection().prepareStatement(query);
-			rs = ps.executeQuery();
+			ResultSet results = ps.executeQuery();
 			
-			if (rs.isBeforeFirst())
+			if (results.isBeforeFirst())
 			{
-				creator = rs.getString("USERNAME");
+				creator = results.getString("USERNAME");
 			}
 			
 //			query = "SELECT * FROM QuizzesTaken WHERE QuizID=" + QuizID + ";";
@@ -907,8 +907,8 @@ public class QuizHelper
 	public static void addEndTime(DBConnection conn, Quiz quiz, String user) {
 		int QuizID = quiz.getId();
 		String command = "UPDATE QuizzesTaken"
-				+ "SET EndTime=NOW()"
-				+ " WHERE QuizID=" + QuizID + ", Username=\"" + user + "\";"; 
+				+ " SET EndTime=NOW()"
+				+ " WHERE QuizID=" + QuizID + " AND Username='" + user + "';"; 
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
@@ -924,7 +924,7 @@ public class QuizHelper
 	public static void setScore(DBConnection conn, Quiz quiz, String user, double score) {
 		int QuizID = quiz.getId();
 		String command = "UPDATE QuizzesTaken SET Score=" + score
-				+ " WHERE QuizID=" + QuizID + ", Username=\"" + user + "\";"; 
+				+ " WHERE QuizID=" + QuizID + " AND Username=\"" + user + "\";"; 
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(command);
@@ -939,7 +939,7 @@ public class QuizHelper
 	
 	public static long getTimeDiff(DBConnection conn, int QuizID, String user){
 		long diff = -1;
-		String query = "SELECT StartTime, EndTime FROM QuizzesTaken WHERE QuizID=" + QuizID + ", AND Username=\"" + user + "\";"; 
+		String query = "SELECT StartTime, EndTime FROM QuizzesTaken WHERE QuizID=" + QuizID + " AND Username=\"" + user + "\";"; 
 		try
 		{
 			PreparedStatement ps = conn.getConnection().prepareStatement(query);
