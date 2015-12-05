@@ -508,6 +508,37 @@ public class QuestionHelper
 			System.err.println("Error occured when accessing database.");
 		}
 	}
+
+	public static void deleteQuestion(DBConnection conn, int questionID, int type) {
+		String table = "";
+		switch (type) {
+			case MULTIPLE_CHOICE:
+				table = "MultipleChoice";
+				break;
+			case QUESTION_RESPONSE:
+				table = "QuestionResponse";
+				break;
+			case FILL_IN_BLANK:
+				table = "FillInBlank";
+				break;
+			case PICTURE_RESPONSE:
+				table = "PictureResponse";
+				break;
+		}
+		String query = "DELETE FROM " + table + " WHERE QuestionID = " + questionID + ";";
+		PreparedStatement ps;
+		try {
+			ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+			
+			query = "DELETE FROM Question WHERE QuestionID = " + questionID + ";";
+			ps = conn.getConnection().prepareStatement(query);
+			ps.execute();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	/*
 	

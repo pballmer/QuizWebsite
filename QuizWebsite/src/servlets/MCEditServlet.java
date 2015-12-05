@@ -1,6 +1,7 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -9,25 +10,21 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import db.DBConnection;
-import db.QuizHelper;
-import db.UserHelper;
-import entities.Quiz;
-import entities.User;
+import db.QuestionHelper;
 
 /**
- * Servlet implementation class QuizCreationServlet
+ * Servlet implementation class MCEditServlet
  */
-@WebServlet("/QuizCreationServlet")
-public class QuizCreationServlet extends HttpServlet {
+@WebServlet("/MCEditServlet")
+public class MCEditServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public QuizCreationServlet() {
+    public MCEditServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -43,22 +40,24 @@ public class QuizCreationServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		Integer quizID = (Integer)session.getAttribute("quizID");
-		String quizName = (String) session.getAttribute("quizName");
-		String quizDesc = (String) session.getAttribute("quizDesc");
-		String username = (String)session.getAttribute("name");
-		Quiz quiz = new Quiz(quizID, quizName, quizDesc);
+		String text = request.getParameter("text");
+		int numOptions = Integer.parseInt(request.getParameter("numOptions"));
+		ArrayList<String> options = new ArrayList<String>();
+		for (int i = 0; i <= numOptions; ++i) {
+			String param = "option" + i;
+			String option = request.getParameter(param);
+			if (!option.isEmpty()) options.add(option);
+		}
+		String answer = request.getParameter("answer");
+		int questionID = Integer.parseInt(request.getParameter("questionID"));
 		ServletContext context = getServletContext();
 		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
-		User user = UserHelper.getUserByID(conn, username);
-        user.addQuizMade(quiz, conn); // this handles achievements and also calls QuizHelper.addQuizMade
-        session.removeAttribute("quizID");
-    	session.removeAttribute("quizName");
-    	session.removeAttribute("quizDesc");
-        RequestDispatcher dispatch = request.getRequestDispatcher("quizsummary.jsp?id=" + quizID);
- 
+		if (text.isEmpty() && options.isEmpty() && answer.isEmpty()) {
+			QuestionHelper.deleteQuestion(conn, questionID, QuestionHelper.MULTIPLE_CHOICE);
+		} else {
+			QuestionHelper.setMCAttributes(conn, questionID, text, options, answer);
+		}
+        RequestDispatcher dispatch = request.getRequestDispatcher("editquiz.jsp");
 		dispatch.forward(request, response);
 	}
-
 }

@@ -168,6 +168,23 @@ public class UserHelper
 		
 	}
 	
+	public static int getNumQuizzesTaken(DBConnection conn, String Username){
+		int numTaken = 0;
+		String query = "SELECT * FROM QuizzesTaken WHERE Username=\"" + Username + "\";";
+		try {
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet results = ps.executeQuery();
+			ResultSet temp = results;
+			temp.last();
+			numTaken = temp.getRow();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		return numTaken;
+		
+	}
+	
 	// TODO purpose of this method?
 	public static User getUser(DBConnection conn, String UserID, String Password, String Admin)
 	{

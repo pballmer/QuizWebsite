@@ -1,6 +1,8 @@
 package servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -14,20 +16,21 @@ import javax.servlet.http.HttpSession;
 import db.DBConnection;
 import db.QuizHelper;
 import db.UserHelper;
+import entities.QuestionAbstract;
 import entities.Quiz;
 import entities.User;
 
 /**
- * Servlet implementation class QuizCreationServlet
+ * Servlet implementation class ScoreServlet
  */
-@WebServlet("/QuizCreationServlet")
-public class QuizCreationServlet extends HttpServlet {
+@WebServlet("/ScoreServlet")
+public class ScoreServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public QuizCreationServlet() {
+    public ScoreServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -44,20 +47,26 @@ public class QuizCreationServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		Integer quizID = (Integer)session.getAttribute("quizID");
-		String quizName = (String) session.getAttribute("quizName");
-		String quizDesc = (String) session.getAttribute("quizDesc");
-		String username = (String)session.getAttribute("name");
-		Quiz quiz = new Quiz(quizID, quizName, quizDesc);
 		ServletContext context = getServletContext();
 		DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
+		int quizID = Integer.parseInt(request.getParameter("quizID"));
+		String username = (String)session.getAttribute("name");
+		Quiz quiz = QuizHelper.getQuizByID(conn, quizID);
+				
+		List<QuestionAbstract> questions = quiz.getQuestions();
+		int numCorrect = 0;
+		int numQuestions = questions.size();
+		for (int i = 0; i <= numQuestions; ++i) {
+			String param = "question" + i;
+			String userAnswer = request.getParameter(param);
+			String realAnswer = questions.get(i).getAnswer();
+			if (userAnswer.equalsIgnoreCase(realAnswer)) numCorrect++;
+		}
+		double score = (double) numCorrect / numQuestions;
 		User user = UserHelper.getUserByID(conn, username);
-        user.addQuizMade(quiz, conn); // this handles achievements and also calls QuizHelper.addQuizMade
-        session.removeAttribute("quizID");
-    	session.removeAttribute("quizName");
-    	session.removeAttribute("quizDesc");
-        RequestDispatcher dispatch = request.getRequestDispatcher("quizsummary.jsp?id=" + quizID);
- 
+		user.addQuizTaken(quiz, conn, score); // this handles achievements and also sets end time, score in database
+		
+        RequestDispatcher dispatch = request.getRequestDispatcher("quizresults.jsp?id=" + quizID);
 		dispatch.forward(request, response);
 	}
 

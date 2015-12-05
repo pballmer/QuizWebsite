@@ -204,6 +204,52 @@ public class QuizHelper
 		return null;
 	}
 	
+	public static Quiz getFullQuizByID(DBConnection conn, int QuizID)
+	{
+		Quiz quiz = null;
+		String quizName = "";
+		String quizDesc = "";
+		String creator = "";
+		try 
+		{
+			String query = "SELECT * FROM Quiz WHERE QuizID=" + QuizID + ";";
+			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+			ResultSet rs = ps.executeQuery();
+			
+			if (rs.isBeforeFirst())
+			{
+				quizName = rs.getString(QUIZ_NAME);
+				quizDesc = rs.getString(DESCRIPTION);
+			}
+			
+			query = "SELECT * FROM QuizzesMade WHERE QuizID=" + QuizID + ";";
+			ps = conn.getConnection().prepareStatement(query);
+			rs = ps.executeQuery();
+			
+			if (rs.isBeforeFirst())
+			{
+				creator = rs.getString("USERNAME");
+			}
+			
+//			query = "SELECT * FROM QuizzesTaken WHERE QuizID=" + QuizID + ";";
+//			ps = conn.getConnection().prepareStatement(query);
+//			rs = ps.executeQuery();
+//			
+//			if (rs.isBeforeFirst())
+//			{
+//				creator = rs.getString("USERNAME");
+//			}
+			
+		}
+		catch (SQLException ex)
+		{
+			ex.printStackTrace();
+			System.err.println("Error occured when accessing database.");
+		}
+		quiz = new Quiz(QuizID, quizName, quizDesc, creator, getQuizQuestions(conn, QuizID));
+		return quiz;
+	}
+	
 	public static Quiz getQuiz(DBConnection conn, int QuizID, String QuizName, String Description)
 	{
 		try 
@@ -808,21 +854,21 @@ public class QuizHelper
 		}
 	}
 	
-	public static void addQuizTaken(DBConnection conn, Quiz quiz, String user, double score, String start, String end)
-	{
-		int QuizID = quiz.getId();
-		String query = "INSERT INTO QuizzesTaken VALUES(\"" + user + "\"," + QuizID + ", " + score + ", \"" + start + "\", \"" + end + "\");"; 
-		try
-		{
-			PreparedStatement ps = conn.getConnection().prepareStatement(query);
-			ps.execute();
-		}
-		catch (SQLException e)
-		{
-			System.err.println("Error occured when inserting user into database.");
-			e.printStackTrace();			
-		}
-	}
+//	public static void addQuizTaken(DBConnection conn, Quiz quiz, String user, double score, String start, String end)
+//	{
+//		int QuizID = quiz.getId();
+//		String query = "INSERT INTO QuizzesTaken VALUES(\"" + user + "\"," + QuizID + ", " + score + ", \"" + start + "\", \"" + end + "\");"; 
+//		try
+//		{
+//			PreparedStatement ps = conn.getConnection().prepareStatement(query);
+//			ps.execute();
+//		}
+//		catch (SQLException e)
+//		{
+//			System.err.println("Error occured when inserting user into database.");
+//			e.printStackTrace();			
+//		}
+//	}
 	
 	//call when user starts to take a quiz
 	public static void addQuizToTake(DBConnection conn, Quiz quiz, String user){ 
@@ -845,6 +891,22 @@ public class QuizHelper
 		int QuizID = quiz.getId();
 		String command = "UPDATE QuizzesTaken"
 				+ "SET EndTime=NOW()"
+				+ " WHERE QuizID=" + QuizID + ", Username=\"" + user + "\";"; 
+		try
+		{
+			PreparedStatement ps = conn.getConnection().prepareStatement(command);
+			ps.execute();
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error occured when adding end time.");
+			e.printStackTrace();			
+		}
+	}
+	
+	public static void setScore(DBConnection conn, Quiz quiz, String user, double score) {
+		int QuizID = quiz.getId();
+		String command = "UPDATE QuizzesTaken SET Score=" + score
 				+ " WHERE QuizID=" + QuizID + ", Username=\"" + user + "\";"; 
 		try
 		{
