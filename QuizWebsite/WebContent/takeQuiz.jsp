@@ -79,7 +79,7 @@ DBConnection conn = (DBConnection) context.getAttribute("Database Connection");
 	<div id ="content">
 
 	
-		<h1> You're Taking <%=quiz.getName() %></h1>
+		<h1 style="color:white"> You're Taking <%=quiz.getName() %></h1>
 		<form action="quizResults.jsp">
 		
 			<%
